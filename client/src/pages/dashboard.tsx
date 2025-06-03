@@ -7,8 +7,13 @@ import { PopiaChecklist } from "@/components/dashboard/popia-checklist";
 import { FileVaultPreview } from "@/components/dashboard/file-vault-preview";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Bell, Shield, Users, AlertTriangle } from "lucide-react";
+import { AnimatedBackground } from "@/components/ui/animated-background";
+import { GlassCard } from "@/components/ui/glass-card";
+import { CyberHUD } from "@/components/ui/cyber-hud";
+import { Bell, Shield, Users, AlertTriangle, Activity, Zap, Database, Lock } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
 
 export default function Dashboard() {
   const { user } = useAuth();

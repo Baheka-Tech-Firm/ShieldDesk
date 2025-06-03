@@ -182,13 +182,14 @@ export default function FileVault() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-red-950">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-red-950">
       <AnimatedBackground />
-      <Sidebar />
-      <main 
-        ref={vaultRef}
-        className="ml-72 min-h-screen overflow-y-auto relative z-10"
-      >
+      <div className="flex">
+        <Sidebar />
+        <main 
+          ref={vaultRef}
+          className="flex-1 min-h-screen overflow-y-auto bg-gradient-to-br from-black via-gray-900 to-red-950"
+        >
         <GlassCard 
           variant="danger" 
           className="m-6 mb-0 glass-effect cyber-border"
@@ -330,6 +331,7 @@ export default function FileVault() {
           </GlassCard>
         </div>
         </main>
+      </div>
       
       <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
         <DialogContent className="sm:max-w-md bg-slate-800 border-cyan-400/20">

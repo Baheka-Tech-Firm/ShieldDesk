@@ -17,6 +17,7 @@ import Reports from "@/pages/reports";
 import UserManagement from "@/pages/user-management";
 import IncidentResponse from "@/pages/incident-response";
 import AdminPanel from "@/pages/admin-panel";
+import SecurityMonitoring from "@/pages/security-monitoring";
 import NotFound from "@/pages/not-found";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {

@@ -26,10 +26,53 @@ export interface IStorage {
   createRiskAssessment(assessment: InsertRiskAssessment): Promise<RiskAssessment>;
   
   // Files
-  getFiles(companyId: number): Promise<File[]>;
+  getFiles(companyId: number, folderId?: number): Promise<File[]>;
   getFile(id: number): Promise<File | undefined>;
   createFile(file: InsertFile): Promise<File>;
+  updateFile(id: number, file: Partial<InsertFile>): Promise<File>;
   deleteFile(id: number): Promise<void>;
+  getFileVersions(parentFileId: number): Promise<File[]>;
+  
+  // Folders
+  getFolders(companyId: number, parentId?: number): Promise<Folder[]>;
+  getFolder(id: number): Promise<Folder | undefined>;
+  createFolder(folder: InsertFolder): Promise<Folder>;
+  updateFolder(id: number, folder: Partial<InsertFolder>): Promise<Folder>;
+  deleteFolder(id: number): Promise<void>;
+  
+  // File Permissions
+  getFilePermissions(fileId: number): Promise<FilePermission[]>;
+  createFilePermission(permission: InsertFilePermission): Promise<FilePermission>;
+  updateFilePermission(id: number, permission: Partial<InsertFilePermission>): Promise<FilePermission>;
+  deleteFilePermission(id: number): Promise<void>;
+  
+  // Folder Permissions
+  getFolderPermissions(folderId: number): Promise<FolderPermission[]>;
+  createFolderPermission(permission: InsertFolderPermission): Promise<FolderPermission>;
+  updateFolderPermission(id: number, permission: Partial<InsertFolderPermission>): Promise<FolderPermission>;
+  deleteFolderPermission(id: number): Promise<void>;
+  
+  // File Access Logs
+  getFileAccessLogs(fileId: number, limit?: number): Promise<FileAccessLog[]>;
+  createFileAccessLog(log: InsertFileAccessLog): Promise<FileAccessLog>;
+  
+  // File Shares
+  getFileShare(shareId: string): Promise<FileShare | undefined>;
+  getFileShares(fileId: number): Promise<FileShare[]>;
+  createFileShare(share: InsertFileShare): Promise<FileShare>;
+  updateFileShare(id: number, share: Partial<InsertFileShare>): Promise<FileShare>;
+  deleteFileShare(id: number): Promise<void>;
+  
+  // File Comments
+  getFileComments(fileId: number): Promise<FileComment[]>;
+  createFileComment(comment: InsertFileComment): Promise<FileComment>;
+  updateFileComment(id: number, comment: Partial<InsertFileComment>): Promise<FileComment>;
+  deleteFileComment(id: number): Promise<void>;
+  
+  // Vault Settings
+  getVaultSettings(companyId: number): Promise<VaultSettings | undefined>;
+  createVaultSettings(settings: InsertVaultSettings): Promise<VaultSettings>;
+  updateVaultSettings(companyId: number, settings: Partial<InsertVaultSettings>): Promise<VaultSettings>;
 
   // POPIA Items
   getPopiaItems(companyId: number): Promise<PopiaItem[]>;

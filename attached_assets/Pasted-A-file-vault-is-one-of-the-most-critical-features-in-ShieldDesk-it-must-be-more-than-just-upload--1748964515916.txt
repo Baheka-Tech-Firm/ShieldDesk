@@ -1,0 +1,101 @@
+A file vault is one of the most critical features in ShieldDesk — it must be more than just “upload/download.” It must embody security, access control, auditability, and compliance.
+
+Here’s a breakdown of the essential and advanced features a file vault should have:
+
+✅ CORE FEATURES (MUST-HAVE)
+1. 🔐 Role-Based Access Control (RBAC)
+Restrict file access by user roles (e.g., Admin, Legal, HR, IT).
+
+Define view, download, upload, delete permissions.
+
+Folder- or file-level access granularity.
+
+2. 🧾 Audit Trail / Access Logs
+Log every action (upload, view, delete, share).
+
+Include user, timestamp, and IP/device metadata.
+
+Exportable for compliance reporting (POPIA, GDPR, etc.).
+
+3. 📤 Secure Upload & Download
+AES-256 encryption at rest (on disk/S3)
+
+TLS encryption in transit
+
+Virus/malware scanning (optional for phase 2)
+
+4. 📁 Folder Structure & Tagging
+Allow clients to create folders or label documents (e.g., "HR", "Legal", "Compliance")
+
+Enable search and filter by tag or filename
+
+5. 🔗 Secure File Sharing
+Generate expiring public/private links
+
+Optional password protection or OTP-based access
+
+View-only vs. download-enabled links
+
+6. 🧑‍💼 Multi-User Collaboration
+Support multiple internal users per client organization
+
+Assign collaborators to files/folders
+
+Track who’s responsible for what
+
+7. 📊 Vault Usage Dashboard
+Show storage used vs. available
+
+File types stored
+
+Last access summary
+
+Recent uploads
+
+🚀 ADVANCED FEATURES (Recommended)
+8. 🧠 Smart Compliance Folders
+Pre-defined folders for "POPIA", "SARS", "HR Policies", etc.
+
+Auto-check for missing files (checklist style)
+
+9. 🛡️ Digital Rights Management (DRM)
+Prevent file download (view-only in-browser)
+
+Watermark files with user info when downloaded
+
+10. 🔔 Notifications & Alerts
+Notify on:
+
+New uploads
+
+File opened/downloaded
+
+Shared link created or accessed
+
+Set rules (e.g., "Notify me if legal folder accessed")
+
+11. 🗃️ Version Control
+Keep version history of documents
+
+Roll back to previous version if needed
+
+12. 📱 Mobile-Optimized Vault Access
+Responsive UI for uploading/viewing files via phone
+
+Especially useful for field workers or remote teams
+
+🔍 Optional Future Enhancements
+Feature	Why Add It
+Optical Character Recognition (OCR)	Make uploaded PDFs/searchable
+AI File Classification	Auto-sort uploads into proper folders
+External Submission Portals	Let third parties (e.g., job applicants, clients) upload directly to secure folders
+Blockchain Hash Logging	For provable non-tampering/immutability
+
+🧠 UX/Design Considerations
+Drag-and-drop upload
+
+Progress bars
+
+Search + filters
+
+“Who has access” modal per file

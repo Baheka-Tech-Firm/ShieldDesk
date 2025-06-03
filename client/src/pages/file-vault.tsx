@@ -182,13 +182,13 @@ export default function FileVault() {
   }
 
   return (
-    <div className="min-h-screen flex relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-red-950">
       <AnimatedBackground />
       <Sidebar />
       
       <main 
         ref={vaultRef}
-        className="flex-1 overflow-y-auto relative z-10"
+        className="ml-64 overflow-y-auto relative z-10"
       >
         <GlassCard 
           variant="security" 

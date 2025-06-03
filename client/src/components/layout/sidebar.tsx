@@ -95,10 +95,10 @@ export function Sidebar() {
   const isActive = (href: string) => location === href;
 
   return (
-    <aside className="w-64 flex flex-col relative z-20">
+    <aside className="w-64 flex flex-col fixed left-0 top-0 h-screen z-20">
       <GlassCard 
-        variant="security" 
-        className="m-4 mb-0 h-full glass-effect"
+        variant="danger" 
+        className="m-4 h-full glass-effect"
         glowIntensity="low"
         animated
       >

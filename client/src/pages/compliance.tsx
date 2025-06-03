@@ -128,13 +128,13 @@ export default function Compliance() {
   }, [isLoading]);
 
   return (
-    <div className="min-h-screen flex relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-red-950">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-red-950">
       <AnimatedBackground />
       <Sidebar />
       
       <main 
         ref={complianceRef}
-        className="flex-1 overflow-y-auto relative z-10"
+        className="ml-64 overflow-y-auto relative z-10"
       >
         <GlassCard 
           variant="danger" 
@@ -172,13 +172,13 @@ export default function Compliance() {
 
         <div className="p-6 space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <GlassCard variant="success" glowIntensity="low" animated className="p-6">
+            <GlassCard variant="danger" glowIntensity="low" animated className="p-6">
               <div className="flex items-center">
-                <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
+                <div className="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center">
                   <CheckCircle2 className="w-6 h-6 text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm text-green-100/80">Completed</p>
+                  <p className="text-sm text-red-100/80">Completed</p>
                   <p className="text-2xl font-bold text-white">{completedCount}</p>
                 </div>
               </div>
@@ -196,32 +196,32 @@ export default function Compliance() {
               </div>
             </GlassCard>
 
-            <GlassCard variant="security" glowIntensity="low" animated className="p-6">
+            <GlassCard variant="danger" glowIntensity="low" animated className="p-6">
               <div className="flex items-center">
-                <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+                <div className="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center">
                   <Shield className="w-6 h-6 text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm text-blue-100/80">Compliance</p>
+                  <p className="text-sm text-red-100/80">Compliance</p>
                   <p className="text-2xl font-bold text-white">{progressPercent}%</p>
                 </div>
               </div>
             </GlassCard>
 
-            <GlassCard variant="security" glowIntensity="low" animated className="p-6">
+            <GlassCard variant="danger" glowIntensity="low" animated className="p-6">
               <div className="flex items-center">
-                <div className="w-12 h-12 bg-cyan-600 rounded-lg flex items-center justify-center">
+                <div className="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center">
                   <Target className="w-6 h-6 text-white" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm text-cyan-100/80">Target</p>
+                  <p className="text-sm text-red-100/80">Target</p>
                   <p className="text-2xl font-bold text-white">100%</p>
                 </div>
               </div>
             </GlassCard>
           </div>
 
-          <GlassCard variant="success" glowIntensity="medium" animated className="p-6">
+          <GlassCard variant="danger" glowIntensity="medium" animated className="p-6">
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-bold text-white">Overall Progress</h3>
@@ -229,42 +229,42 @@ export default function Compliance() {
                   title="STATUS"
                   value={`${progressPercent}%`}
                   subtitle={compliance.level}
-                  status="success"
+                  status="critical"
                   trend="up"
                   size="sm"
                 />
               </div>
               <div className="space-y-4">
                 <Progress value={progressPercent} className="w-full h-4 bg-white/10" />
-                <div className="flex justify-between text-sm text-green-100/80">
+                <div className="flex justify-between text-sm text-red-100/80">
                   <span>Progress: {completedCount} of {totalCount} items</span>
-                  <span className="text-green-300">{compliance.level}</span>
+                  <span className="text-red-300">{compliance.level}</span>
                 </div>
               </div>
             </div>
           </GlassCard>
 
-          <GlassCard variant="security" glowIntensity="medium" animated className="overflow-hidden">
+          <GlassCard variant="danger" glowIntensity="medium" animated className="overflow-hidden">
             <Tabs defaultValue="all" className="w-full">
               <TabsList className="grid w-full grid-cols-3 bg-white/10 border-0">
-                <TabsTrigger value="all" className="data-[state=active]:bg-cyan-600 text-white">All Items</TabsTrigger>
-                <TabsTrigger value="pending" className="data-[state=active]:bg-cyan-600 text-white">Pending</TabsTrigger>
-                <TabsTrigger value="completed" className="data-[state=active]:bg-cyan-600 text-white">Completed</TabsTrigger>
+                <TabsTrigger value="all" className="data-[state=active]:bg-red-600 text-white">All Items</TabsTrigger>
+                <TabsTrigger value="pending" className="data-[state=active]:bg-red-600 text-white">Pending</TabsTrigger>
+                <TabsTrigger value="completed" className="data-[state=active]:bg-red-600 text-white">Completed</TabsTrigger>
               </TabsList>
               
               <TabsContent value="all" className="space-y-4 p-6">
                 <div className="space-y-2 mb-6">
                   <h3 className="text-xl font-bold text-white flex items-center gap-3">
-                    <CheckCircle2 className="w-6 h-6 text-cyan-400" />
+                    <CheckCircle2 className="w-6 h-6 text-red-400" />
                     POPIA Compliance Checklist
                   </h3>
-                  <p className="text-cyan-100/80">Complete all items to achieve full compliance</p>
+                  <p className="text-red-100/80">Complete all items to achieve full compliance</p>
                 </div>
                 <div className="space-y-4">
                   {popiaItems.map((item: PopiaItem) => (
                     <div 
                       key={item.id} 
-                      className="flex items-start space-x-3 p-4 bg-white/10 border border-cyan-400/20 rounded-lg hover:bg-white/15 cursor-pointer transition-all duration-200"
+                      className="flex items-start space-x-3 p-4 bg-white/10 border border-red-400/20 rounded-lg hover:bg-white/15 cursor-pointer transition-all duration-200"
                       onClick={() => handleToggleItem(item.id, item.completed)}
                     >
                       <Checkbox 
@@ -274,16 +274,16 @@ export default function Compliance() {
                       />
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
-                          <h4 className={`font-medium ${item.completed ? 'text-white' : 'text-cyan-100/80'}`}>
+                          <h4 className={`font-medium ${item.completed ? 'text-white' : 'text-red-100/80'}`}>
                             {item.title}
                           </h4>
                           {item.completed ? (
-                            <Badge className="bg-green-600 text-white border-0">
+                            <Badge className="bg-red-600 text-white border-0">
                               <CheckCircle2 className="w-3 h-3 mr-1" />
                               Complete
                             </Badge>
                           ) : (
-                            <Badge className="bg-orange-600 text-white border-0">
+                            <Badge className="bg-gray-600 text-white border-0">
                               <Clock className="w-3 h-3 mr-1" />
                               Pending
                             </Badge>

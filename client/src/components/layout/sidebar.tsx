@@ -12,7 +12,10 @@ import {
   Search,
   AlertTriangle,
   FileText,
-  Bug
+  Bug,
+  Monitor,
+  Eye,
+  Building2
 } from "lucide-react";
 
 export function Sidebar() {
@@ -65,10 +68,22 @@ export function Sidebar() {
       roles: ["admin", "compliance", "it"]
     },
     {
+      name: "Security Monitoring",
+      href: "/security-monitoring",
+      icon: Monitor,
+      roles: ["admin", "it"]
+    },
+    {
       name: "User Management",
       href: "/users",
       icon: Users,
       roles: ["admin", "compliance"]
+    },
+    {
+      name: "Admin Panel",
+      href: "/admin",
+      icon: Building2,
+      roles: ["admin"]
     }
   ];
 

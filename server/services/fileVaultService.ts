@@ -229,7 +229,7 @@ export class FileVaultService {
       });
 
       return file.id;
-    } catch (error) {
+    } catch (error: any) {
       console.error('File upload error:', error);
       throw new Error('Failed to upload and encrypt file');
     }
@@ -300,7 +300,7 @@ export class FileVaultService {
         filename: file.filename,
         mimeType: file.mimeType
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error('File download error:', error);
       await this.logFileAccess(fileId, userId, 'download', ipAddress, userAgent, false, error.message);
       throw error;

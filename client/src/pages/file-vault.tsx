@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getAuthToken } from "@/lib/auth";
 import { Sidebar } from "@/components/layout/sidebar";
@@ -10,6 +10,9 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
+import { AnimatedBackground } from "@/components/ui/animated-background";
+import { GlassCard } from "@/components/ui/glass-card";
+import { CyberHUD } from "@/components/ui/cyber-hud";
 import { 
   Table, 
   TableBody, 
@@ -18,13 +21,14 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Upload, Download, Trash2, FileText, Search, Filter, File, X } from "lucide-react";
+import { Upload, Download, Trash2, FileText, Search, Filter, File, X, Shield, Lock, Database } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { gsap } from "gsap";
 
 const uploadSchema = z.object({
   accessLevel: z.string().min(1, "Access level is required"),
@@ -38,6 +42,8 @@ export default function FileVault() {
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const vaultRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement[]>([]);
 
   const form = useForm({
     resolver: zodResolver(uploadSchema),
@@ -146,33 +152,78 @@ export default function FileVault() {
     );
   }
 
+  useEffect(() => {
+    if (!vaultRef.current || isLoading) return;
+
+    gsap.fromTo(vaultRef.current, 
+      { opacity: 0, scale: 0.95 },
+      { opacity: 1, scale: 1, duration: 1, ease: "power3.out" }
+    );
+
+    if (cardsRef.current.length > 0) {
+      gsap.fromTo(cardsRef.current,
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power3.out", delay: 0.3 }
+      );
+    }
+  }, [isLoading]);
+
   return (
-    <div className="min-h-screen flex bg-gray-50">
+    <div className="min-h-screen flex relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
+      <AnimatedBackground />
       <Sidebar />
       
-      <main className="flex-1 overflow-y-auto">
-        {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-200">
-          <div className="px-6 py-4">
+      <main 
+        ref={vaultRef}
+        className="flex-1 overflow-y-auto relative z-10"
+      >
+        {/* Immersive Header */}
+        <GlassCard 
+          variant="security" 
+          className="m-6 mb-0 glass-effect cyber-border"
+          glowIntensity="medium"
+          animated
+        >
+          <div className="px-8 py-6">
             <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">File Vault</h2>
-                <p className="text-gray-600 mt-1">Secure document storage with role-based access</p>
+              <div className="space-y-2">
+                <h2 className="text-3xl font-bold text-white flex items-center gap-3">
+                  <Database className="w-8 h-8 text-cyan-400" />
+                  Secure File Vault
+                </h2>
+                <p className="text-cyan-100/80 text-lg">
+                  Enterprise-grade document storage with role-based access controls
+                </p>
               </div>
-              <Button 
-                className="bg-primary text-primary-foreground hover:bg-primary/90"
-                onClick={() => setIsUploadDialogOpen(true)}
-              >
-                <Upload className="w-4 h-4 mr-2" />
-                Upload File
-              </Button>
+              <div className="flex items-center space-x-4">
+                <CyberHUD
+                  title="FILES"
+                  value={files.length}
+                  subtitle="Total Stored"
+                  status="success"
+                  trend="stable"
+                  size="sm"
+                />
+                <Button 
+                  className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium px-6 py-3"
+                  onClick={() => setIsUploadDialogOpen(true)}
+                >
+                  <Upload className="w-5 h-5 mr-2" />
+                  Upload File
+                </Button>
+              </div>
             </div>
           </div>
-        </header>
+        </GlassCard>
 
-        {/* Content */}
-        <div className="p-6">
-          <Card>
+        {/* Enhanced Content */}
+        <div className="p-6 space-y-6">
+          <GlassCard 
+            variant="security" 
+            glowIntensity="low" 
+            animated 
+            className="overflow-hidden"
+          >
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>All Files</CardTitle>
@@ -268,7 +319,7 @@ export default function FileVault() {
                 </Table>
               </div>
             </CardContent>
-          </Card>
+          </GlassCard>
         </div>
 
         {/* Upload Dialog */}

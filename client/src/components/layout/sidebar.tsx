@@ -106,12 +106,16 @@ export function Sidebar() {
           {/* Logo and Company */}
           <div className="p-6 border-b border-red-400/20">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
-                <Shield className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-800 rounded-xl flex items-center justify-center shadow-lg">
+                <Shield className="w-7 h-7 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-white">ShieldDesk</h1>
-                <p className="text-sm text-red-100/80">{company.name}</p>
+                <h1 className="text-xl font-bold text-white tracking-tight">ShieldDesk</h1>
+                <p className="text-sm text-red-100/80 font-medium">{company.name}</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                  <span className="text-xs text-emerald-400 font-medium">SECURE</span>
+                </div>
               </div>
             </div>
           </div>

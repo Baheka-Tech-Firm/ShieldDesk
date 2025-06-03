@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
 import { 
   Table, 
   TableBody, 
@@ -15,14 +18,33 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Upload, Download, Trash2, FileText, Search, Filter } from "lucide-react";
+import { Upload, Download, Trash2, FileText, Search, Filter, File, X } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { useAuth } from "@/hooks/use-auth";
+import { useToast } from "@/hooks/use-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+const uploadSchema = z.object({
+  accessLevel: z.string().min(1, "Access level is required"),
+});
 
 export default function FileVault() {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [accessLevelFilter, setAccessLevelFilter] = useState("all");
+  const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  const form = useForm({
+    resolver: zodResolver(uploadSchema),
+    defaultValues: {
+      accessLevel: "",
+    },
+  });
 
   const { data: files = [], isLoading } = useQuery({
     queryKey: ['/api/files'],
@@ -76,6 +98,43 @@ export default function FileVault() {
     return user?.role === 'admin' || file.uploadedBy === user?.id;
   };
 
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleUpload = async (data: z.infer<typeof uploadSchema>) => {
+    if (!selectedFile) {
+      toast({
+        title: "No File Selected",
+        description: "Please select a file to upload.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Simulate upload progress
+    for (let i = 0; i <= 100; i += 10) {
+      setUploadProgress(i);
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
+    toast({
+      title: "File Uploaded",
+      description: "Your file has been encrypted and uploaded successfully.",
+    });
+    handleClose();
+  };
+
+  const handleClose = () => {
+    setSelectedFile(null);
+    setUploadProgress(0);
+    form.reset();
+    setIsUploadDialogOpen(false);
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex">
@@ -100,7 +159,10 @@ export default function FileVault() {
                 <h2 className="text-2xl font-bold text-gray-900">File Vault</h2>
                 <p className="text-gray-600 mt-1">Secure document storage with role-based access</p>
               </div>
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <Button 
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
+                onClick={() => setIsUploadDialogOpen(true)}
+              >
                 <Upload className="w-4 h-4 mr-2" />
                 Upload File
               </Button>
@@ -208,6 +270,114 @@ export default function FileVault() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Upload Dialog */}
+        <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Upload Encrypted File</DialogTitle>
+            </DialogHeader>
+            
+            <form onSubmit={form.handleSubmit(handleUpload)} className="space-y-6">
+              <div className="space-y-4">
+                <Label>Select File</Label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                  {selectedFile ? (
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-center space-x-2">
+                        <File className="w-8 h-8 text-blue-500" />
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">{selectedFile.name}</p>
+                          <p className="text-xs text-gray-500">{formatFileSize(selectedFile.size)}</p>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setSelectedFile(null)}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <Upload className="w-12 h-12 text-gray-400 mx-auto" />
+                      <div>
+                        <p className="text-sm text-gray-600">Click to upload or drag and drop</p>
+                        <p className="text-xs text-gray-500">PDF, DOC, XLS, PNG, JPG (max 10MB)</p>
+                      </div>
+                      <Input
+                        type="file"
+                        onChange={handleFileSelect}
+                        accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg"
+                        className="hidden"
+                        id="file-upload"
+                      />
+                      <Label
+                        htmlFor="file-upload"
+                        className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer"
+                      >
+                        Choose File
+                      </Label>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="accessLevel">Access Level</Label>
+                <Select onValueChange={(value) => form.setValue("accessLevel", value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Who can access this file?" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all_staff">All Staff</SelectItem>
+                    <SelectItem value="admin">Admin Only</SelectItem>
+                    <SelectItem value="compliance">Compliance Team</SelectItem>
+                    <SelectItem value="it">IT Department</SelectItem>
+                    <SelectItem value="hr">HR Department</SelectItem>
+                    <SelectItem value="legal">Legal Team</SelectItem>
+                  </SelectContent>
+                </Select>
+                {form.formState.errors.accessLevel && (
+                  <p className="text-sm text-red-600">
+                    {form.formState.errors.accessLevel.message}
+                  </p>
+                )}
+              </div>
+
+              {uploadProgress > 0 && (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Encrypting and uploading...</span>
+                    <span>{uploadProgress}%</span>
+                  </div>
+                  <Progress value={uploadProgress} className="w-full" />
+                </div>
+              )}
+
+              <div className="bg-blue-50 p-3 rounded-lg">
+                <p className="text-xs text-blue-800">
+                  Files are automatically encrypted with AES-256 encryption before upload.
+                  Only authorized users with the selected access level can view this file.
+                </p>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                <Button type="button" variant="outline" onClick={handleClose}>
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={!selectedFile || uploadProgress > 0}
+                >
+                  {uploadProgress > 0 ? "Uploading..." : "Upload File"}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );

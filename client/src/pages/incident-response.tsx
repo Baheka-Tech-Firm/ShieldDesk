@@ -359,12 +359,16 @@ export default function IncidentResponse() {
       <div className="flex">
         <Sidebar />
         <main className="flex-1 min-h-screen overflow-y-auto bg-gradient-to-br from-black via-gray-900 to-red-950">
-        <header className="bg-white shadow-sm border-b border-gray-200">
+        <GlassCard 
+          variant="danger" 
+          className="m-6 mb-0 glass-effect cyber-border"
+          glowIntensity="medium"
+        >
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Incident Response</h2>
-                <p className="text-gray-600 mt-1">Comprehensive incident management and response coordination</p>
+                <h2 className="text-2xl font-bold text-white">Incident Response</h2>
+                <p className="text-gray-300 mt-1">Comprehensive incident management and response coordination</p>
               </div>
               <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                 <DialogTrigger asChild>
@@ -475,7 +479,7 @@ export default function IncidentResponse() {
               </Dialog>
             </div>
           </div>
-        </header>
+        </GlassCard>
 
         <div className="p-6">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
@@ -724,7 +728,8 @@ export default function IncidentResponse() {
             </TabsContent>
           </Tabs>
         </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

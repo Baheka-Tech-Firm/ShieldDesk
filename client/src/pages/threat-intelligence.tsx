@@ -660,7 +660,8 @@ export default function ThreatIntelligence() {
             </TabsContent>
           </Tabs>
         </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

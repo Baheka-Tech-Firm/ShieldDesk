@@ -151,13 +151,16 @@ export default function Reports() {
       <div className="flex">
         <Sidebar />
         <main className="flex-1 min-h-screen overflow-y-auto bg-gradient-to-br from-black via-gray-900 to-red-950">
-        {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-200">
+        <GlassCard 
+          variant="danger" 
+          className="m-6 mb-0 glass-effect cyber-border"
+          glowIntensity="medium"
+        >
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Security Reports</h2>
-                <p className="text-gray-600 mt-1">Comprehensive security analytics and compliance reporting</p>
+                <h2 className="text-2xl font-bold text-white">Reports & Analytics</h2>
+                <p className="text-gray-300 mt-1">Comprehensive security reporting and data analysis</p>
               </div>
               <div className="flex items-center space-x-4">
                 <Select value={timeRange} onValueChange={setTimeRange}>
@@ -182,14 +185,14 @@ export default function Reports() {
                     <SelectItem value="audit">Audit Trail</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button onClick={generateReport} className="bg-primary text-primary-foreground">
+                <Button onClick={generateReport} className="bg-red-600/80 hover:bg-red-600 border border-red-500/30 text-white">
                   <Download className="w-4 h-4 mr-2" />
                   Export Report
                 </Button>
               </div>
             </div>
           </div>
-        </header>
+        </GlassCard>
 
         {/* Content */}
         <div className="p-6 space-y-6">
@@ -371,7 +374,8 @@ export default function Reports() {
             </CardContent>
           </Card>
         </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

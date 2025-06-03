@@ -247,14 +247,36 @@ export default function Dashboard() {
             </GlassCard>
           </div>
 
-          {/* Recent Activity and POPIA Checklist */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <RecentActivity activityLogs={activityLogs} />
-            <PopiaChecklist items={popiaItems} />
+          {/* Enhanced Activity & Compliance Section */}
+          <div 
+            className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+            ref={(el) => {
+              if (el && !cardsRef.current.includes(el)) {
+                cardsRef.current.push(el);
+              }
+            }}
+          >
+            <GlassCard variant="security" glowIntensity="medium" animated className="overflow-hidden">
+              <RecentActivity activityLogs={activityLogs} />
+            </GlassCard>
+            
+            <GlassCard variant="success" glowIntensity="medium" animated className="overflow-hidden">
+              <PopiaChecklist items={popiaItems} />
+            </GlassCard>
           </div>
 
-          {/* File Vault Preview */}
-          <FileVaultPreview files={files} />
+          {/* Immersive File Vault Preview */}
+          <div 
+            ref={(el) => {
+              if (el && !cardsRef.current.includes(el)) {
+                cardsRef.current.push(el);
+              }
+            }}
+          >
+            <GlassCard variant="security" glowIntensity="high" animated className="overflow-hidden">
+              <FileVaultPreview files={files} />
+            </GlassCard>
+          </div>
         </div>
       </main>
     </div>

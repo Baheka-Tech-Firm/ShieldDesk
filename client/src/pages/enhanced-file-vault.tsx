@@ -172,30 +172,6 @@ export default function EnhancedFileVault() {
     queryKey: ['/api/vault/settings'],
   });
 
-  // Use fetched data or fallback to mock data
-  const currentVaultStats = vaultStats || mockStats;
-  const currentFolders = folders || mockFolders;
-  const currentFiles = files || mockFiles;
-  const currentVaultSettings = vaultSettings || {
-    id: 1,
-    companyId: 1,
-    maxStorageGB: 100,
-    allowedFileTypes: ["pdf", "doc", "docx", "xls", "xlsx", "txt", "jpg", "png", "zip"],
-    maxFileSize: 104857600,
-    enableVirusScanning: true,
-    enableVersionControl: true,
-    defaultRetentionDays: 2555,
-    requireMFA: false,
-    watermarkDownloads: false,
-    blockDownloads: false,
-    notificationSettings: {
-      uploadNotifications: true,
-      shareNotifications: true,
-      accessNotifications: false,
-      securityAlerts: true
-    }
-  };
-
   // Mock data for development
   const mockStats: VaultStats = {
     totalFiles: 1247,
@@ -310,6 +286,30 @@ export default function EnhancedFileVault() {
       isShared: false
     }
   ];
+
+  // Use fetched data or fallback to mock data
+  const currentVaultStats = vaultStats || mockStats;
+  const currentFolders = folders || mockFolders;
+  const currentFiles = files || mockFiles;
+  const currentVaultSettings = vaultSettings || {
+    id: 1,
+    companyId: 1,
+    maxStorageGB: 100,
+    allowedFileTypes: ["pdf", "doc", "docx", "xls", "xlsx", "txt", "jpg", "png", "zip"],
+    maxFileSize: 104857600,
+    enableVirusScanning: true,
+    enableVersionControl: true,
+    defaultRetentionDays: 2555,
+    requireMFA: false,
+    watermarkDownloads: false,
+    blockDownloads: false,
+    notificationSettings: {
+      uploadNotifications: true,
+      shareNotifications: true,
+      accessNotifications: false,
+      securityAlerts: true
+    }
+  };
 
   // Utility functions
   const formatFileSize = (bytes: number): string => {

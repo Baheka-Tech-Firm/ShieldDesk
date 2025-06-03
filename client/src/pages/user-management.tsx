@@ -427,7 +427,6 @@ export default function UserManagement() {
           </Card>
         </div>
       </main>
-      </div>
     </div>
   );
 }

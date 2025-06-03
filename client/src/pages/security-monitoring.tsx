@@ -557,7 +557,6 @@ export default function SecurityMonitoring() {
           </Tabs>
         </div>
       </main>
-      </div>
     </div>
   );
 }

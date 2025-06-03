@@ -783,7 +783,6 @@ export default function AdminPanel() {
           </Tabs>
         </div>
       </main>
-      </div>
     </div>
   );
 }

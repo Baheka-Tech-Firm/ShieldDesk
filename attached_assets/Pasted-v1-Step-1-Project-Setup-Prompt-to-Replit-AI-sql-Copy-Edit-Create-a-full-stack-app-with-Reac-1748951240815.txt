@@ -1,0 +1,124 @@
+v1
+🏁 Step 1: Project Setup
+Prompt to Replit AI:
+
+sql
+Copy
+Edit
+Create a full-stack app with:
+- React + Tailwind frontend
+- Node.js + Express backend
+- PostgreSQL database connection
+Set up folders: /client (frontend) and /server (backend)
+Initialize Git repo and install basic dependencies.
+🔐 Step 2: Setup Firebase Authentication
+Prompt:
+
+pgsql
+Copy
+Edit
+Set up Firebase Auth with email/password and Google login.
+Add Firebase config to the frontend.
+After login, store the user in localStorage and sync with backend.
+Restrict dashboard routes unless authenticated.
+📋 Step 3: Build Onboarding & Assessment Flow
+Prompt:
+
+markdown
+Copy
+Edit
+Create a multi-step onboarding form (wizard) in React:
+1. Company details
+2. Departments and staff count
+3. Security posture checklist (10 yes/no questions)
+4. Current storage and email tools (e.g. Gmail, Dropbox)
+
+After submission:
+- Store results in PostgreSQL
+- Calculate and return a "Cyber Risk Score" (1–100)
+- Show score in dashboard with breakdown
+📁 Step 4: Build File Vault with Role-Based Access
+Prompt:
+
+diff
+Copy
+Edit
+Set up a secure file vault:
+- Files are stored in AWS S3 (or Firebase Storage for now)
+- Use AES-256 encryption for files before uploading
+- Store encrypted file metadata (name, role access, timestamp) in PostgreSQL
+
+Frontend:
+- Allow upload, download, delete
+- Admins can assign file visibility to roles (Admin, HR, Legal, All Staff)
+👤 Step 5: Build Role-Based User Management
+Prompt:
+
+sql
+Copy
+Edit
+On admin dashboard:
+- Allow admins to invite users via email (send link)
+- Set user roles: Admin, Compliance Officer, IT, Employee
+- Show role-based access table (who can see what files)
+
+Restrict frontend content visibility based on role.
+📊 Step 6: Dashboard with Compliance View
+Prompt:
+
+diff
+Copy
+Edit
+Build a dashboard with these widgets:
+- Cyber Risk Score + breakdown
+- Recent uploaded files
+- POPIA checklist (mark items as complete)
+- Staff training completion (optional static tracker)
+📈 Step 7: Create Admin Panel for Internal Use
+Prompt:
+
+diff
+Copy
+Edit
+Create a simple internal admin panel (separate route) with:
+- Client list (org name, contact, status)
+- See last risk score + vault size
+- Manually edit or deactivate accounts
+- Export reports (CSV or PDF)
+🔔 Step 8: Email Notification System
+Prompt:
+
+diff
+Copy
+Edit
+Set up Resend (or SendGrid) to send:
+- New file upload alerts
+- Cyber risk score summary emails
+- POPIA checklist weekly reminders
+🧪 Step 9: QA + Testing
+Prompt:
+
+diff
+Copy
+Edit
+Write unit tests for:
+- Risk score calculator
+- File access logic
+- User role validation
+
+Write integration tests for:
+- Onboarding workflow
+- File upload and access
+🚀 Step 10: Deploy MVP
+Prompt:
+
+vbnet
+Copy
+Edit
+Deploy frontend to Vercel and backend to Railway.
+Use .env for config values.
+Ensure HTTPS is enforced on both frontend and backend.
+Create a landing page for ShieldDesk with:
+- Login
+- Pricing
+- Contact form

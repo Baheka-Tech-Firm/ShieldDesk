@@ -38,18 +38,136 @@ export const riskAssessments = pgTable("risk_assessments", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Files table
+// Folders table
+export const folders = pgTable("folders", {
+  id: serial("id").primaryKey(),
+  companyId: integer("company_id").references(() => companies.id).notNull(),
+  parentId: integer("parent_id").references(() => folders.id),
+  name: text("name").notNull(),
+  description: text("description"),
+  path: text("path").notNull(),
+  color: text("color").default("#374151"),
+  isSystemFolder: boolean("is_system_folder").default(false).notNull(),
+  complianceType: text("compliance_type", { enum: ["popia", "sars", "hr", "legal", "general"] }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  createdBy: integer("created_by").references(() => users.id).notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Enhanced Files table
 export const files = pgTable("files", {
   id: serial("id").primaryKey(),
+  companyId: integer("company_id").references(() => companies.id).notNull(),
+  folderId: integer("folder_id").references(() => folders.id),
   name: text("name").notNull(),
   originalName: text("original_name").notNull(),
+  type: text("type").notNull(),
   mimeType: text("mime_type").notNull(),
   size: integer("size").notNull(),
-  encryptedPath: text("encrypted_path").notNull(),
-  accessLevel: text("access_level").notNull(), // all_staff, admin, compliance, it, hr, legal
+  encryptionKey: text("encryption_key").notNull(),
+  checksum: text("checksum").notNull(),
+  tags: text("tags").array().default([]),
+  description: text("description"),
+  version: integer("version").default(1).notNull(),
+  isLatestVersion: boolean("is_latest_version").default(true).notNull(),
+  parentFileId: integer("parent_file_id").references(() => files.id),
+  downloadCount: integer("download_count").default(0).notNull(),
+  lastAccessedAt: timestamp("last_accessed_at"),
+  uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
   uploadedBy: integer("uploaded_by").references(() => users.id).notNull(),
+  status: text("status", { enum: ["active", "deleted", "quarantined"] }).default("active").notNull(),
+  virusScanStatus: text("virus_scan_status", { enum: ["pending", "clean", "infected", "failed"] }).default("pending").notNull(),
+  retentionPolicy: text("retention_policy"),
+  expiresAt: timestamp("expires_at"),
+});
+
+// File Permissions table
+export const filePermissions = pgTable("file_permissions", {
+  id: serial("id").primaryKey(),
+  fileId: integer("file_id").references(() => files.id).notNull(),
+  userId: integer("user_id").references(() => users.id),
+  role: text("role"),
+  permissions: text("permissions").array().notNull(), // ["view", "download", "edit", "delete", "share"]
+  grantedBy: integer("granted_by").references(() => users.id).notNull(),
+  grantedAt: timestamp("granted_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at"),
+});
+
+// Folder Permissions table
+export const folderPermissions = pgTable("folder_permissions", {
+  id: serial("id").primaryKey(),
+  folderId: integer("folder_id").references(() => folders.id).notNull(),
+  userId: integer("user_id").references(() => users.id),
+  role: text("role"),
+  permissions: text("permissions").array().notNull(), // ["view", "upload", "create_subfolder", "edit", "delete"]
+  grantedBy: integer("granted_by").references(() => users.id).notNull(),
+  grantedAt: timestamp("granted_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at"),
+});
+
+// File Access Logs table
+export const fileAccessLogs = pgTable("file_access_logs", {
+  id: serial("id").primaryKey(),
+  fileId: integer("file_id").references(() => files.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  action: text("action", { enum: ["view", "download", "upload", "edit", "delete", "share", "preview"] }).notNull(),
+  ipAddress: text("ip_address").notNull(),
+  userAgent: text("user_agent"),
+  deviceInfo: text("device_info"),
+  location: text("location"),
+  success: boolean("success").default(true).notNull(),
+  errorMessage: text("error_message"),
+  metadata: jsonb("metadata"),
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+});
+
+// File Shares table
+export const fileShares = pgTable("file_shares", {
+  id: serial("id").primaryKey(),
+  fileId: integer("file_id").references(() => files.id).notNull(),
+  shareId: text("share_id").unique().notNull(),
+  shareType: text("share_type", { enum: ["public", "private", "password", "otp"] }).notNull(),
+  accessLevel: text("access_level", { enum: ["view", "download"] }).default("view").notNull(),
+  password: text("password"),
+  maxAccess: integer("max_access"),
+  currentAccess: integer("current_access").default(0).notNull(),
+  allowDownload: boolean("allow_download").default(false).notNull(),
+  watermark: boolean("watermark").default(false).notNull(),
+  notifyOnAccess: boolean("notify_on_access").default(false).notNull(),
+  createdBy: integer("created_by").references(() => users.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  lastAccessedAt: timestamp("last_accessed_at"),
+});
+
+// File Comments table
+export const fileComments = pgTable("file_comments", {
+  id: serial("id").primaryKey(),
+  fileId: integer("file_id").references(() => files.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  content: text("content").notNull(),
+  parentId: integer("parent_id").references(() => fileComments.id),
+  isResolved: boolean("is_resolved").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Vault Settings table
+export const vaultSettings = pgTable("vault_settings", {
+  id: serial("id").primaryKey(),
   companyId: integer("company_id").references(() => companies.id).notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
+  maxStorageGB: integer("max_storage_gb").default(100).notNull(),
+  allowedFileTypes: text("allowed_file_types").array().default(["pdf", "doc", "docx", "xls", "xlsx", "txt", "jpg", "png"]),
+  maxFileSize: integer("max_file_size").default(104857600).notNull(), // 100MB default
+  enableVirusScanning: boolean("enable_virus_scanning").default(true).notNull(),
+  enableVersionControl: boolean("enable_version_control").default(true).notNull(),
+  defaultRetentionDays: integer("default_retention_days").default(2555).notNull(), // 7 years
+  requireMFA: boolean("require_mfa").default(false).notNull(),
+  watermarkDownloads: boolean("watermark_downloads").default(false).notNull(),
+  blockDownloads: boolean("block_downloads").default(false).notNull(),
+  notificationSettings: jsonb("notification_settings"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 // POPIA compliance items table
@@ -173,9 +291,53 @@ export const insertRiskAssessmentSchema = createInsertSchema(riskAssessments).om
   createdAt: true,
 });
 
-export const insertFileSchema = createInsertSchema(files).omit({
+// Insert schemas
+export const insertFolderSchema = createInsertSchema(folders).omit({
   id: true,
   createdAt: true,
+  updatedAt: true,
+});
+
+export const insertFileSchema = createInsertSchema(files).omit({
+  id: true,
+  uploadedAt: true,
+  lastAccessedAt: true,
+  downloadCount: true,
+  virusScanStatus: true,
+});
+
+export const insertFilePermissionSchema = createInsertSchema(filePermissions).omit({
+  id: true,
+  grantedAt: true,
+});
+
+export const insertFolderPermissionSchema = createInsertSchema(folderPermissions).omit({
+  id: true,
+  grantedAt: true,
+});
+
+export const insertFileAccessLogSchema = createInsertSchema(fileAccessLogs).omit({
+  id: true,
+  timestamp: true,
+});
+
+export const insertFileShareSchema = createInsertSchema(fileShares).omit({
+  id: true,
+  createdAt: true,
+  lastAccessedAt: true,
+  currentAccess: true,
+});
+
+export const insertFileCommentSchema = createInsertSchema(fileComments).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertVaultSettingsSchema = createInsertSchema(vaultSettings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
 });
 
 export const insertPopiaItemSchema = createInsertSchema(popiaItems).omit({

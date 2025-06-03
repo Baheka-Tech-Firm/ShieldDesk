@@ -40,6 +40,8 @@ import {
   Area
 } from "recharts";
 import { useAuth } from "@/hooks/use-auth";
+import { AnimatedBackground } from "@/components/ui/animated-background";
+import { GlassCard } from "@/components/ui/glass-card";
 
 interface ThreatIndicator {
   id: string;
@@ -270,16 +272,21 @@ export default function ThreatIntelligence() {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
-      <Sidebar />
-      
-      <main className="flex-1 overflow-y-auto">
-        <header className="bg-white shadow-sm border-b border-gray-200">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-red-950">
+      <AnimatedBackground />
+      <div className="flex">
+        <Sidebar />
+        <main className="flex-1 min-h-screen overflow-y-auto bg-gradient-to-br from-black via-gray-900 to-red-950">
+        <GlassCard 
+          variant="danger" 
+          className="m-6 mb-0 glass-effect cyber-border"
+          glowIntensity="medium"
+        >
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Threat Intelligence</h2>
-                <p className="text-gray-600 mt-1">Real-time threat monitoring and intelligence analysis</p>
+                <h2 className="text-2xl font-bold text-white">Threat Intelligence</h2>
+                <p className="text-gray-300 mt-1">Real-time threat monitoring and intelligence analysis</p>
               </div>
               <div className="flex items-center space-x-4">
                 <div className="relative">
@@ -288,13 +295,13 @@ export default function ThreatIntelligence() {
                     placeholder="Search indicators..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 w-64"
+                    className="pl-10 w-64 bg-gray-800/50 border-red-500/30 text-white"
                   />
                 </div>
               </div>
             </div>
           </div>
-        </header>
+        </GlassCard>
 
         <div className="p-6">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">

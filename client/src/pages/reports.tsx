@@ -38,6 +38,8 @@ import {
   Clock
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { AnimatedBackground } from "@/components/ui/animated-background";
+import { GlassCard } from "@/components/ui/glass-card";
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
@@ -144,10 +146,11 @@ export default function Reports() {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
-      <Sidebar />
-      
-      <main className="flex-1 overflow-y-auto">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-red-950">
+      <AnimatedBackground />
+      <div className="flex">
+        <Sidebar />
+        <main className="flex-1 min-h-screen overflow-y-auto bg-gradient-to-br from-black via-gray-900 to-red-950">
         {/* Header */}
         <header className="bg-white shadow-sm border-b border-gray-200">
           <div className="px-6 py-4">

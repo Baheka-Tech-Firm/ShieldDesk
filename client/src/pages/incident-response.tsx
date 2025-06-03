@@ -32,13 +32,16 @@ import {
   MessageSquare,
   Bell,
   Target,
-  Activity
+  Activity,
+  Plus
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { AnimatedBackground } from "@/components/ui/animated-background";
+import { GlassCard } from "@/components/ui/glass-card";
 
 const incidentSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -351,10 +354,11 @@ export default function IncidentResponse() {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
-      <Sidebar />
-      
-      <main className="flex-1 overflow-y-auto">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-red-950">
+      <AnimatedBackground />
+      <div className="flex">
+        <Sidebar />
+        <main className="flex-1 min-h-screen overflow-y-auto bg-gradient-to-br from-black via-gray-900 to-red-950">
         <header className="bg-white shadow-sm border-b border-gray-200">
           <div className="px-6 py-4">
             <div className="flex items-center justify-between">

@@ -43,7 +43,6 @@ export default function FileVault() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const vaultRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement[]>([]);
 
   const form = useForm({
     resolver: zodResolver(uploadSchema),
@@ -67,6 +66,15 @@ export default function FileVault() {
     enabled: !!user,
   });
 
+  useEffect(() => {
+    if (!vaultRef.current || isLoading) return;
+
+    gsap.fromTo(vaultRef.current, 
+      { opacity: 0, scale: 0.95 },
+      { opacity: 1, scale: 1, duration: 1, ease: "power3.out" }
+    );
+  }, [isLoading]);
+
   const filteredFiles = files.filter((file: any) => {
     const matchesSearch = file.originalName.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = accessLevelFilter === "all" || file.accessLevel === accessLevelFilter;
@@ -75,15 +83,15 @@ export default function FileVault() {
 
   const getAccessLevelBadge = (accessLevel: string) => {
     const variants: Record<string, { label: string; className: string }> = {
-      all_staff: { label: "All Staff", className: "bg-blue-50 text-blue-700" },
-      admin: { label: "Admin Only", className: "bg-red-50 text-red-700" },
-      compliance: { label: "Compliance", className: "bg-purple-50 text-purple-700" },
-      it: { label: "IT", className: "bg-green-50 text-green-700" },
-      hr: { label: "HR", className: "bg-yellow-50 text-yellow-700" },
-      legal: { label: "Legal", className: "bg-indigo-50 text-indigo-700" },
+      all_staff: { label: "All Staff", className: "bg-blue-100 text-blue-800" },
+      admin: { label: "Admin Only", className: "bg-red-100 text-red-800" },
+      compliance: { label: "Compliance", className: "bg-purple-100 text-purple-800" },
+      it: { label: "IT", className: "bg-green-100 text-green-800" },
+      hr: { label: "HR", className: "bg-yellow-100 text-yellow-800" },
+      legal: { label: "Legal", className: "bg-indigo-100 text-indigo-800" },
     };
 
-    const variant = variants[accessLevel] || { label: accessLevel, className: "bg-gray-50 text-gray-700" };
+    const variant = variants[accessLevel] || { label: accessLevel, className: "bg-gray-100 text-gray-800" };
     
     return (
       <Badge variant="secondary" className={variant.className}>
@@ -96,43 +104,6 @@ export default function FileVault() {
     return user?.role === 'admin' || file.uploadedBy === user?.id;
   };
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-    }
-  };
-
-  const handleUpload = async (data: z.infer<typeof uploadSchema>) => {
-    if (!selectedFile) {
-      toast({
-        title: "No File Selected",
-        description: "Please select a file to upload.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Simulate upload progress
-    for (let i = 0; i <= 100; i += 10) {
-      setUploadProgress(i);
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
-
-    toast({
-      title: "File Uploaded",
-      description: "Your file has been encrypted and uploaded successfully.",
-    });
-    handleClose();
-  };
-
-  const handleClose = () => {
-    setSelectedFile(null);
-    setUploadProgress(0);
-    form.reset();
-    setIsUploadDialogOpen(false);
-  };
-
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -141,32 +112,74 @@ export default function FileVault() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleUpload = async (data: any) => {
+    if (!selectedFile) return;
+
+    try {
+      setUploadProgress(10);
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      formData.append('accessLevel', data.accessLevel);
+
+      setUploadProgress(50);
+      const token = getAuthToken();
+      const response = await fetch('/api/files/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      setUploadProgress(90);
+
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+
+      setUploadProgress(100);
+      toast({
+        title: "Success",
+        description: "File uploaded and encrypted successfully",
+      });
+
+      handleClose();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to upload file",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadProgress(0);
+    }
+  };
+
+  const handleClose = () => {
+    setIsUploadDialogOpen(false);
+    setSelectedFile(null);
+    setUploadProgress(0);
+    form.reset();
+  };
+
   if (isLoading) {
     return (
-      <div className="min-h-screen flex">
+      <div className="min-h-screen flex relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
+        <AnimatedBackground />
         <Sidebar />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+        <main className="flex-1 flex items-center justify-center relative z-10">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-cyan-400"></div>
         </main>
       </div>
     );
   }
-
-  useEffect(() => {
-    if (!vaultRef.current || isLoading) return;
-
-    gsap.fromTo(vaultRef.current, 
-      { opacity: 0, scale: 0.95 },
-      { opacity: 1, scale: 1, duration: 1, ease: "power3.out" }
-    );
-
-    if (cardsRef.current.length > 0) {
-      gsap.fromTo(cardsRef.current,
-        { y: 50, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power3.out", delay: 0.3 }
-      );
-    }
-  }, [isLoading]);
 
   return (
     <div className="min-h-screen flex relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
@@ -177,7 +190,6 @@ export default function FileVault() {
         ref={vaultRef}
         className="flex-1 overflow-y-auto relative z-10"
       >
-        {/* Immersive Header */}
         <GlassCard 
           variant="security" 
           className="m-6 mb-0 glass-effect cyber-border"
@@ -216,7 +228,6 @@ export default function FileVault() {
           </div>
         </GlassCard>
 
-        {/* Enhanced Content */}
         <div className="p-6 space-y-6">
           <GlassCard 
             variant="security" 
@@ -224,24 +235,22 @@ export default function FileVault() {
             animated 
             className="overflow-hidden"
           >
-            <CardHeader>
+            <CardHeader className="text-white">
               <div className="flex items-center justify-between">
-                <CardTitle>All Files</CardTitle>
+                <CardTitle className="text-white">All Files</CardTitle>
                 <div className="flex items-center space-x-4">
-                  {/* Search */}
                   <div className="relative">
                     <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
                       placeholder="Search files..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 w-64"
+                      className="pl-10 w-64 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                     />
                   </div>
                   
-                  {/* Filter */}
                   <Select value={accessLevelFilter} onValueChange={setAccessLevelFilter}>
-                    <SelectTrigger className="w-48">
+                    <SelectTrigger className="w-48 bg-white/10 border-white/20 text-white">
                       <Filter className="w-4 h-4 mr-2" />
                       <SelectValue placeholder="Filter by access level" />
                     </SelectTrigger>
@@ -263,17 +272,17 @@ export default function FileVault() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>File Name</TableHead>
-                      <TableHead>Access Level</TableHead>
-                      <TableHead>Size</TableHead>
-                      <TableHead>Uploaded</TableHead>
-                      <TableHead>Actions</TableHead>
+                      <TableHead className="text-white">File Name</TableHead>
+                      <TableHead className="text-white">Access Level</TableHead>
+                      <TableHead className="text-white">Size</TableHead>
+                      <TableHead className="text-white">Uploaded</TableHead>
+                      <TableHead className="text-white">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filteredFiles.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+                        <TableCell colSpan={5} className="text-center py-8 text-gray-300">
                           {searchTerm || accessLevelFilter !== "all" 
                             ? "No files match your search criteria" 
                             : "No files uploaded yet"
@@ -285,8 +294,8 @@ export default function FileVault() {
                         <TableRow key={file.id}>
                           <TableCell>
                             <div className="flex items-center">
-                              <FileText className="w-5 h-5 text-blue-500 mr-3" />
-                              <span className="text-gray-900 font-medium">
+                              <FileText className="w-5 h-5 text-cyan-400 mr-3" />
+                              <span className="text-white font-medium">
                                 {file.originalName}
                               </span>
                             </div>
@@ -294,19 +303,19 @@ export default function FileVault() {
                           <TableCell>
                             {getAccessLevelBadge(file.accessLevel)}
                           </TableCell>
-                          <TableCell className="text-gray-500">
+                          <TableCell className="text-gray-300">
                             {formatFileSize(file.size)}
                           </TableCell>
-                          <TableCell className="text-gray-500">
+                          <TableCell className="text-gray-300">
                             {formatDistanceToNow(new Date(file.createdAt), { addSuffix: true })}
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center space-x-2">
-                              <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80">
+                              <Button variant="ghost" size="sm" className="text-cyan-400 hover:text-cyan-300">
                                 <Download className="w-4 h-4" />
                               </Button>
                               {canDelete(file) && (
-                                <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700">
+                                <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300">
                                   <Trash2 className="w-4 h-4" />
                                 </Button>
                               )}
@@ -321,115 +330,98 @@ export default function FileVault() {
             </CardContent>
           </GlassCard>
         </div>
+      </main>
 
-        {/* Upload Dialog */}
-        <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Upload Encrypted File</DialogTitle>
-            </DialogHeader>
-            
-            <form onSubmit={form.handleSubmit(handleUpload)} className="space-y-6">
-              <div className="space-y-4">
-                <Label>Select File</Label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                  {selectedFile ? (
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-center space-x-2">
-                        <File className="w-8 h-8 text-blue-500" />
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">{selectedFile.name}</p>
-                          <p className="text-xs text-gray-500">{formatFileSize(selectedFile.size)}</p>
-                        </div>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setSelectedFile(null)}
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <Upload className="w-12 h-12 text-gray-400 mx-auto" />
+      <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
+        <DialogContent className="sm:max-w-md bg-slate-800 border-cyan-400/20">
+          <DialogHeader>
+            <DialogTitle className="text-white">Upload Encrypted File</DialogTitle>
+          </DialogHeader>
+          
+          <form onSubmit={form.handleSubmit(handleUpload)} className="space-y-6">
+            <div className="space-y-4">
+              <Label className="text-white">Select File</Label>
+              <div className="border-2 border-dashed border-cyan-400/30 rounded-lg p-6 text-center bg-slate-700/50">
+                {selectedFile ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-center space-x-2">
+                      <File className="w-8 h-8 text-cyan-400" />
                       <div>
-                        <p className="text-sm text-gray-600">Click to upload or drag and drop</p>
-                        <p className="text-xs text-gray-500">PDF, DOC, XLS, PNG, JPG (max 10MB)</p>
+                        <p className="text-sm font-medium text-white">{selectedFile.name}</p>
+                        <p className="text-xs text-gray-300">{formatFileSize(selectedFile.size)}</p>
                       </div>
-                      <Input
-                        type="file"
-                        onChange={handleFileSelect}
-                        accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg"
-                        className="hidden"
-                        id="file-upload"
-                      />
-                      <Label
-                        htmlFor="file-upload"
-                        className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer"
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSelectedFile(null)}
+                        className="text-gray-400 hover:text-white"
                       >
-                        Choose File
-                      </Label>
+                        <X className="w-4 h-4" />
+                      </Button>
                     </div>
-                  )}
-                </div>
+                  </div>
+                ) : (
+                  <div>
+                    <Upload className="mx-auto h-12 w-12 text-cyan-400 mb-4" />
+                    <div className="flex text-sm leading-6 text-gray-300">
+                      <label className="relative cursor-pointer rounded-md font-semibold text-cyan-400 focus-within:outline-none hover:text-cyan-300">
+                        <span>Choose a file</span>
+                        <input 
+                          type="file" 
+                          className="sr-only" 
+                          onChange={handleFileSelect}
+                        />
+                      </label>
+                      <p className="pl-1">or drag and drop</p>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="accessLevel">Access Level</Label>
-                <Select onValueChange={(value) => form.setValue("accessLevel", value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Who can access this file?" />
+                <Label className="text-white">Access Level</Label>
+                <Select onValueChange={(value) => form.setValue('accessLevel', value)}>
+                  <SelectTrigger className="bg-slate-700 border-cyan-400/20 text-white">
+                    <SelectValue placeholder="Select access level" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all_staff">All Staff</SelectItem>
                     <SelectItem value="admin">Admin Only</SelectItem>
-                    <SelectItem value="compliance">Compliance Team</SelectItem>
-                    <SelectItem value="it">IT Department</SelectItem>
-                    <SelectItem value="hr">HR Department</SelectItem>
-                    <SelectItem value="legal">Legal Team</SelectItem>
+                    <SelectItem value="compliance">Compliance</SelectItem>
+                    <SelectItem value="it">IT</SelectItem>
+                    <SelectItem value="hr">HR</SelectItem>
+                    <SelectItem value="legal">Legal</SelectItem>
                   </SelectContent>
                 </Select>
                 {form.formState.errors.accessLevel && (
-                  <p className="text-sm text-red-600">
-                    {form.formState.errors.accessLevel.message}
-                  </p>
+                  <p className="text-sm text-red-400">{form.formState.errors.accessLevel.message}</p>
                 )}
               </div>
 
               {uploadProgress > 0 && (
                 <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Encrypting and uploading...</span>
-                    <span>{uploadProgress}%</span>
-                  </div>
+                  <Label className="text-white">Upload Progress</Label>
                   <Progress value={uploadProgress} className="w-full" />
                 </div>
               )}
+            </div>
 
-              <div className="bg-blue-50 p-3 rounded-lg">
-                <p className="text-xs text-blue-800">
-                  Files are automatically encrypted with AES-256 encryption before upload.
-                  Only authorized users with the selected access level can view this file.
-                </p>
-              </div>
-
-              <div className="flex justify-end space-x-2">
-                <Button type="button" variant="outline" onClick={handleClose}>
-                  Cancel
-                </Button>
-                <Button 
-                  type="submit" 
-                  disabled={!selectedFile || uploadProgress > 0}
-                >
-                  {uploadProgress > 0 ? "Uploading..." : "Upload File"}
-                </Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
-      </main>
+            <div className="flex justify-end space-x-4">
+              <Button type="button" variant="outline" onClick={handleClose} className="text-white border-white/20">
+                Cancel
+              </Button>
+              <Button 
+                type="submit" 
+                disabled={!selectedFile || uploadProgress > 0}
+                className="bg-cyan-600 hover:bg-cyan-700"
+              >
+                {uploadProgress > 0 ? "Uploading..." : "Upload File"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

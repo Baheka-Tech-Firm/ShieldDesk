@@ -7,6 +7,9 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AnimatedBackground } from "@/components/ui/animated-background";
+import { GlassCard } from "@/components/ui/glass-card";
+import { CyberHUD } from "@/components/ui/cyber-hud";
 import { 
   CheckCircle2, 
   AlertCircle, 
@@ -19,6 +22,8 @@ import {
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
 
 interface PopiaItem {
   id: number;
@@ -33,6 +38,8 @@ export default function Compliance() {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const complianceRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement[]>([]);
 
   const { data: popiaItems = [], isLoading } = useQuery({
     queryKey: ['/api/popia'],

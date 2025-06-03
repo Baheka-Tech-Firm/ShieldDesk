@@ -77,14 +77,14 @@ export function Sidebar() {
           const Icon = item.icon;
           return (
             <Link key={item.name} href={item.href}>
-              <a className={`flex items-center space-x-3 px-3 py-2 rounded-lg font-medium transition-colors ${
+              <div className={`flex items-center space-x-3 px-3 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
                 isActive(item.href) 
                   ? "bg-primary/10 text-primary" 
                   : "text-gray-600 hover:bg-gray-50"
               }`}>
                 <Icon className="w-5 h-5" />
                 <span>{item.name}</span>
-              </a>
+              </div>
             </Link>
           );
         })}

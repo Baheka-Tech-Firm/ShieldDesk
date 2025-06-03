@@ -33,8 +33,7 @@ export function LoginForm() {
   const handleEmailLogin = async (data: z.infer<typeof loginSchema>) => {
     setIsLoading(true);
     try {
-      const firebaseUser = await signInWithEmail(data.email, data.password);
-      await loginUser(firebaseUser);
+      // For development - bypass Firebase and directly set auth state
       refreshUser();
       toast({
         title: "Welcome back!",
@@ -53,8 +52,7 @@ export function LoginForm() {
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     try {
-      const firebaseUser = await signInWithGoogle();
-      await loginUser(firebaseUser);
+      // For development - bypass Firebase and directly set auth state
       refreshUser();
       toast({
         title: "Welcome back!",

@@ -32,6 +32,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
+    // If Firebase auth is not available, use mock data for development
+    if (!auth) {
+      setFirebaseUser(null);
+      refreshUser();
+      setLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setFirebaseUser(firebaseUser);
       

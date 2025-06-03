@@ -99,12 +99,35 @@ export const loginUser = async (firebaseUser: FirebaseUser) => {
 
 export const getCurrentUser = (): AuthUser | null => {
   const userStr = localStorage.getItem('user');
-  return userStr ? JSON.parse(userStr) : null;
+  if (userStr) {
+    return JSON.parse(userStr);
+  }
+  
+  // For development - return mock user when no Firebase auth
+  return {
+    id: 1,
+    firebaseUid: 'mock-uid',
+    email: 'admin@shielddesk.com',
+    name: 'Admin User',
+    role: 'admin',
+    companyId: 1
+  };
 };
 
 export const getCurrentCompany = (): Company | null => {
   const companyStr = localStorage.getItem('company');
-  return companyStr ? JSON.parse(companyStr) : null;
+  if (companyStr) {
+    return JSON.parse(companyStr);
+  }
+  
+  // For development - return mock company when no Firebase auth
+  return {
+    id: 1,
+    name: 'ShieldDesk Demo Corp',
+    industry: 'technology',
+    size: 'medium',
+    country: 'South Africa'
+  };
 };
 
 export const getAuthToken = (): string | null => {

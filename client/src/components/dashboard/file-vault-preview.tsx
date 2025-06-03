@@ -118,7 +118,10 @@ export function FileVaultPreview({ files }: FileVaultPreviewProps) {
                       {formatFileSize(file.size)}
                     </TableCell>
                     <TableCell className="text-gray-500">
-                      {formatDistanceToNow(new Date(file.createdAt), { addSuffix: true })}
+                      {file.createdAt && !isNaN(new Date(file.createdAt).getTime()) 
+                        ? formatDistanceToNow(new Date(file.createdAt), { addSuffix: true })
+                        : 'Recently'
+                      }
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-2">

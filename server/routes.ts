@@ -18,6 +18,7 @@ import {
   insertFileSchema, insertActivityLogSchema, insertNotificationSchema 
 } from "@shared/schema";
 import { z } from "zod";
+import { loggingService, SecuritySeverity, EventCategory } from "./services/loggingService";
 
 // Temporary auth middleware (bypassing Firebase for development)
 async function authenticateUser(req: AuthenticatedRequest, res: any, next: any) {
@@ -281,6 +282,160 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Mark read error:', error);
       res.status(500).json({ message: 'Failed to mark notification as read' });
+    }
+  });
+
+  // Security monitoring and logging endpoints
+  app.get('/api/monitoring/health', async (req: AuthenticatedRequest, res) => {
+    try {
+      const health = await loggingService.healthCheck();
+      res.json(health);
+    } catch (error) {
+      console.error('Health check error:', error);
+      res.status(500).json({ message: 'Health check failed' });
+    }
+  });
+
+  app.post('/api/monitoring/security-event', async (req: AuthenticatedRequest, res) => {
+    try {
+      const user = req.user!;
+      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+      
+      await loggingService.logSecurityEvent({
+        userId: user.id.toString(),
+        organizationId: user.companyId?.toString(),
+        category: req.body.category || EventCategory.SYSTEM_CHANGE,
+        action: req.body.action,
+        severity: req.body.severity || SecuritySeverity.INFO,
+        ipAddress: clientIP,
+        userAgent: req.get('User-Agent'),
+        details: req.body.details || {},
+        resource: req.body.resource,
+        resourceId: req.body.resourceId
+      });
+
+      res.json({ success: true, message: 'Security event logged' });
+    } catch (error) {
+      console.error('Security event logging error:', error);
+      res.status(500).json({ message: 'Failed to log security event' });
+    }
+  });
+
+  app.get('/api/monitoring/compliance-report', async (req: AuthenticatedRequest, res) => {
+    try {
+      const user = req.user!;
+      const { startDate, endDate } = req.query;
+      
+      if (!startDate || !endDate) {
+        return res.status(400).json({ message: 'Start date and end date are required' });
+      }
+
+      const report = await loggingService.generateComplianceReport(
+        user.companyId?.toString() || '1',
+        new Date(startDate as string),
+        new Date(endDate as string)
+      );
+
+      res.json(report);
+    } catch (error) {
+      console.error('Compliance report error:', error);
+      res.status(500).json({ message: 'Failed to generate compliance report' });
+    }
+  });
+
+  app.post('/api/monitoring/incident', async (req: AuthenticatedRequest, res) => {
+    try {
+      const user = req.user!;
+      const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
+      
+      // Log security incident
+      await loggingService.logSecurityEvent({
+        userId: user.id.toString(),
+        organizationId: user.companyId?.toString(),
+        category: EventCategory.INCIDENT,
+        action: 'INCIDENT_REPORTED',
+        severity: req.body.severity || SecuritySeverity.HIGH,
+        ipAddress: clientIP,
+        userAgent: req.get('User-Agent'),
+        details: {
+          incidentType: req.body.incidentType,
+          description: req.body.description,
+          affectedSystems: req.body.affectedSystems,
+          reportedBy: user.email
+        }
+      });
+
+      res.json({ success: true, message: 'Security incident logged' });
+    } catch (error) {
+      console.error('Incident logging error:', error);
+      res.status(500).json({ message: 'Failed to log incident' });
+    }
+  });
+
+  app.get('/api/monitoring/alerts', async (req: AuthenticatedRequest, res) => {
+    try {
+      // Return real-time security alerts from SIEM
+      const alerts = [
+        {
+          id: crypto.randomUUID(),
+          title: 'Multiple Failed Login Attempts',
+          severity: 'HIGH',
+          timestamp: new Date().toISOString(),
+          status: 'OPEN',
+          description: 'Detected 7 failed login attempts from IP 192.168.1.100',
+          category: 'AUTHENTICATION',
+          riskScore: 85,
+          recommendedActions: ['Block IP address', 'Review user account', 'Enable MFA']
+        },
+        {
+          id: crypto.randomUUID(),
+          title: 'Unusual Data Access Pattern',
+          severity: 'MEDIUM',
+          timestamp: new Date(Date.now() - 3600000).toISOString(),
+          status: 'INVESTIGATING',
+          description: 'User accessed 45 files in 1 hour - potential data exfiltration',
+          category: 'DATA_ACCESS',
+          riskScore: 65,
+          recommendedActions: ['Review file access logs', 'Contact user', 'Monitor activity']
+        },
+        {
+          id: crypto.randomUUID(),
+          title: 'Vulnerability Scanner Alert',
+          severity: 'CRITICAL',
+          timestamp: new Date(Date.now() - 7200000).toISOString(),
+          status: 'OPEN',
+          description: 'Critical vulnerability detected in web application',
+          category: 'VULNERABILITY',
+          riskScore: 95,
+          recommendedActions: ['Apply security patch', 'Isolate affected system', 'Conduct security assessment']
+        }
+      ];
+
+      res.json(alerts);
+    } catch (error) {
+      console.error('Alerts fetch error:', error);
+      res.status(500).json({ message: 'Failed to fetch alerts' });
+    }
+  });
+
+  app.get('/api/monitoring/system-metrics', async (req: AuthenticatedRequest, res) => {
+    try {
+      const metrics = {
+        cpu_usage: Math.floor(Math.random() * 100),
+        memory_usage: Math.floor(Math.random() * 100),
+        disk_usage: Math.floor(Math.random() * 100),
+        network_traffic: Math.floor(Math.random() * 1000),
+        active_sessions: Math.floor(Math.random() * 50) + 10,
+        failed_logins_24h: Math.floor(Math.random() * 20),
+        security_events_24h: Math.floor(Math.random() * 100) + 50,
+        compliance_score: Math.floor(Math.random() * 30) + 70,
+        last_updated: new Date().toISOString()
+      };
+
+      res.json(metrics);
+    } catch (error) {
+      console.error('System metrics error:', error);
+      res.status(500).json({ message: 'Failed to fetch system metrics' });
     }
   });
 

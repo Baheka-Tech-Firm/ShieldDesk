@@ -786,7 +786,9 @@ export default function EnhancedFileVault() {
                                 <div className="flex items-center space-x-3">
                                   {getFileIcon(file.type)}
                                   <div>
-                                    <p className="font-medium text-white">{file.originalName}</p>
+                                    <Link href={`/file/${file.id}`}>
+                                      <p className="font-medium text-white hover:text-red-400 cursor-pointer transition-colors">{file.originalName}</p>
+                                    </Link>
                                     <div className="flex items-center space-x-2 mt-1">
                                       {file.tags.map((tag) => (
                                         <Badge key={tag} variant="outline" className="text-xs border-gray-600 text-gray-400">

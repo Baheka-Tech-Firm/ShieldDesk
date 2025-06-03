@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getAuthToken } from "@/lib/auth";
 import { Sidebar } from "@/components/layout/sidebar";
+import { AnimatedBackground } from "@/components/ui/animated-background";
+import { GlassCard } from "@/components/ui/glass-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -165,21 +167,31 @@ export default function UserManagement() {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
+    <div className="min-h-screen flex relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-red-950">
+      <AnimatedBackground />
       <Sidebar />
       
-      <main className="flex-1 overflow-y-auto">
-        {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-200">
-          <div className="px-6 py-4">
+      <main className="flex-1 overflow-y-auto relative z-10">
+        <GlassCard 
+          variant="danger" 
+          className="m-6 mb-0 glass-effect cyber-border"
+          glowIntensity="medium"
+          animated
+        >
+          <div className="px-8 py-6">
             <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">User Management</h2>
-                <p className="text-gray-600 mt-1">Manage team members and their access permissions</p>
+              <div className="space-y-2">
+                <h2 className="text-3xl font-bold text-white flex items-center gap-3">
+                  <Users className="w-8 h-8 text-red-400" />
+                  User Management
+                </h2>
+                <p className="text-red-100/80 text-lg">
+                  Manage team members and their access permissions
+                </p>
               </div>
               <Dialog open={isInviteDialogOpen} onOpenChange={setIsInviteDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+                  <Button className="bg-red-600 hover:bg-red-700 text-white">
                     <UserPlus className="w-4 h-4 mr-2" />
                     Invite User
                   </Button>
@@ -257,7 +269,7 @@ export default function UserManagement() {
               </Dialog>
             </div>
           </div>
-        </header>
+        </GlassCard>
 
         {/* Content */}
         <div className="p-6 space-y-6">

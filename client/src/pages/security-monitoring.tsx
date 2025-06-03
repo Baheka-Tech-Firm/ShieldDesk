@@ -129,27 +129,35 @@ export default function SecurityMonitoring() {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
+    <div className="min-h-screen flex relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-red-950">
+      <AnimatedBackground />
       <Sidebar />
       
-      <main className="flex-1 overflow-y-auto">
-        <header className="bg-white shadow-sm border-b border-gray-200">
-          <div className="px-6 py-4">
+      <main className="flex-1 overflow-y-auto relative z-10">
+        <GlassCard 
+          variant="danger" 
+          className="m-6 mb-0 glass-effect cyber-border"
+          glowIntensity="medium"
+          animated
+        >
+          <div className="px-8 py-6">
             <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 flex items-center">
-                  <Monitor className="w-6 h-6 mr-2 text-primary" />
+              <div className="space-y-2">
+                <h2 className="text-3xl font-bold text-white flex items-center gap-3">
+                  <Monitor className="w-8 h-8 text-red-400" />
                   Security Monitoring
                 </h2>
-                <p className="text-gray-600 mt-1">Real-time security monitoring and SIEM integration</p>
+                <p className="text-red-100/80 text-lg">
+                  Real-time security monitoring and SIEM integration
+                </p>
               </div>
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-sm text-gray-600">Live Monitoring</span>
+                  <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm text-red-100/80">Live Monitoring</span>
                 </div>
                 <Button 
-                  variant="outline" 
+                  className="bg-red-600 hover:bg-red-700 text-white" 
                   size="sm"
                   onClick={() => window.location.reload()}
                 >
@@ -159,7 +167,7 @@ export default function SecurityMonitoring() {
               </div>
             </div>
           </div>
-        </header>
+        </GlassCard>
 
         <div className="p-6">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">

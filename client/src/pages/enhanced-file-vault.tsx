@@ -376,6 +376,20 @@ export default function EnhancedFileVault() {
           await new Promise(resolve => setTimeout(resolve, 100));
         }
         
+        // Upload file
+        await apiRequest('/api/vault/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fileName: file.name,
+            fileSize: file.size,
+            fileType: file.type,
+            folderId: currentFolder,
+            tags: [],
+            description: ""
+          })
+        });
+        
         toast({
           title: "File uploaded successfully",
           description: `${file.name} has been uploaded and encrypted.`,
@@ -399,6 +413,7 @@ export default function EnhancedFileVault() {
     try {
       await apiRequest('/api/vault/folders', {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: newFolderName,
           description: newFolderDescription,
@@ -423,6 +438,79 @@ export default function EnhancedFileVault() {
       toast({
         title: "Failed to create folder",
         description: "There was an error creating the folder.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // File operations
+  const handleFileDelete = async (fileId: number) => {
+    try {
+      await apiRequest(`/api/vault/files/${fileId}`, {
+        method: 'DELETE'
+      });
+      
+      toast({
+        title: "File deleted",
+        description: "File has been moved to trash.",
+      });
+      
+      queryClient.invalidateQueries({ queryKey: ['/api/vault/files'] });
+    } catch (error) {
+      toast({
+        title: "Delete failed",
+        description: "Failed to delete file.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleFileDownload = async (fileId: number, fileName: string) => {
+    try {
+      const response = await apiRequest(`/api/vault/files/${fileId}/download`);
+      
+      toast({
+        title: "Download started",
+        description: `Downloading ${fileName}...`,
+      });
+      
+      // Update file access time
+      queryClient.invalidateQueries({ queryKey: ['/api/vault/files'] });
+    } catch (error) {
+      toast({
+        title: "Download failed",
+        description: "Failed to download file.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleFileShare = async (fileId: number) => {
+    try {
+      const shareData = {
+        shareType: "public",
+        accessLevel: "view",
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7 days
+      };
+      
+      const response = await apiRequest(`/api/vault/files/${fileId}/share`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(shareData)
+      });
+      
+      navigator.clipboard.writeText(response.shareUrl);
+      
+      toast({
+        title: "Share link created",
+        description: "Share link copied to clipboard.",
+      });
+      
+      queryClient.invalidateQueries({ queryKey: ['/api/vault/files'] });
+    } catch (error) {
+      toast({
+        title: "Share failed",
+        description: "Failed to create share link.",
         variant: "destructive"
       });
     }
@@ -570,7 +658,7 @@ export default function EnhancedFileVault() {
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
-                        <Select value={filterBy} onValueChange={setFilterBy}>
+                        <Select value={filterBy} onValueChange={(value: any) => setFilterBy(value)}>
                           <SelectTrigger className="w-48 bg-gray-800/50 border-red-500/30 text-white">
                             <SelectValue />
                           </SelectTrigger>
@@ -583,7 +671,7 @@ export default function EnhancedFileVault() {
                           </SelectContent>
                         </Select>
 
-                        <Select value={sortBy} onValueChange={setSortBy}>
+                        <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
                           <SelectTrigger className="w-32 bg-gray-800/50 border-red-500/30 text-white">
                             <SelectValue />
                           </SelectTrigger>
@@ -706,28 +794,29 @@ export default function EnhancedFileVault() {
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    onClick={() => setSelectedFile(file)}
+                                    onClick={() => handleFileDownload(file.id, file.originalName)}
                                     className="h-8 w-8 p-0 text-gray-400 hover:text-white hover:bg-gray-700"
+                                    title="Download file"
                                   >
-                                    <Eye className="w-4 h-4" />
+                                    <Download className="w-4 h-4" />
                                   </Button>
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    onClick={() => {
-                                      setSelectedFile(file);
-                                      setIsShareDialogOpen(true);
-                                    }}
+                                    onClick={() => handleFileShare(file.id)}
                                     className="h-8 w-8 p-0 text-gray-400 hover:text-white hover:bg-gray-700"
+                                    title="Share file"
                                   >
                                     <Share className="w-4 h-4" />
                                   </Button>
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="h-8 w-8 p-0 text-gray-400 hover:text-white hover:bg-gray-700"
+                                    onClick={() => handleFileDelete(file.id)}
+                                    className="h-8 w-8 p-0 text-gray-400 hover:text-red-400 hover:bg-gray-700"
+                                    title="Delete file"
                                   >
-                                    <MoreHorizontal className="w-4 h-4" />
+                                    <Trash2 className="w-4 h-4" />
                                   </Button>
                                 </div>
                               </TableCell>
@@ -754,7 +843,12 @@ export default function EnhancedFileVault() {
               <TabsContent value="folders" className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {mockFolders.map((folder) => (
-                    <GlassCard key={folder.id} variant="security" className="glass-effect hover:glow-md transition-all cursor-pointer">
+                    <GlassCard 
+                      key={folder.id} 
+                      variant="security" 
+                      className="glass-effect hover:glow-md transition-all cursor-pointer"
+                      onClick={() => setCurrentFolder(folder.id)}
+                    >
                       <CardContent className="p-6">
                         <div className="flex items-center justify-between mb-4">
                           <div className="flex items-center space-x-3">
@@ -777,6 +871,10 @@ export default function EnhancedFileVault() {
                           <Button
                             variant="ghost"
                             size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              // Handle folder options
+                            }}
                             className="h-8 w-8 p-0 text-gray-400 hover:text-white hover:bg-gray-700"
                           >
                             <MoreHorizontal className="w-4 h-4" />
@@ -810,7 +908,37 @@ export default function EnhancedFileVault() {
                     <CardTitle className="text-white">Shared Files & Links</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-gray-400">Manage file shares and access links</p>
+                    <div className="space-y-4">
+                      {filteredFiles.filter(f => f.isShared).map((file) => (
+                        <div key={file.id} className="flex items-center justify-between p-4 bg-gray-800/30 rounded-lg">
+                          <div className="flex items-center space-x-3">
+                            {getFileIcon(file.type)}
+                            <div>
+                              <p className="font-medium text-white">{file.originalName}</p>
+                              <p className="text-sm text-gray-400">Shared on {new Date(file.uploadedAt).toLocaleDateString()}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleFileShare(file.id)}
+                              className="bg-gray-700/50 border-red-500/30 text-white hover:bg-gray-600"
+                            >
+                              <Copy className="w-4 h-4 mr-2" />
+                              Copy Link
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="bg-gray-700/50 border-red-500/30 text-white hover:bg-gray-600"
+                            >
+                              <Settings className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </CardContent>
                 </GlassCard>
               </TabsContent>
@@ -819,24 +947,119 @@ export default function EnhancedFileVault() {
               <TabsContent value="activity" className="space-y-6">
                 <GlassCard variant="security" className="glass-effect">
                   <CardHeader>
-                    <CardTitle className="text-white">Vault Activity</CardTitle>
+                    <CardTitle className="text-white">Recent Activity</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-gray-400">File access logs and audit trail</p>
+                    <div className="space-y-4">
+                      {[
+                        { action: "uploaded", file: "POPIA Compliance Policy.pdf", time: "2 hours ago", user: "Current User" },
+                        { action: "downloaded", file: "Employee Handbook 2024.docx", time: "4 hours ago", user: "Current User" },
+                        { action: "shared", file: "Network Security Audit.xlsx", time: "1 day ago", user: "Current User" },
+                        { action: "commented on", file: "Contract Template.docx", time: "2 days ago", user: "Current User" },
+                        { action: "viewed", file: "Financial Report Q1.pdf", time: "3 days ago", user: "Current User" }
+                      ].map((activity, index) => (
+                        <div key={index} className="flex items-center space-x-3 p-3 bg-gray-800/30 rounded-lg">
+                          <div className="w-8 h-8 bg-red-600/20 rounded-full flex items-center justify-center">
+                            {activity.action === "uploaded" && <Upload className="w-4 h-4 text-red-400" />}
+                            {activity.action === "downloaded" && <Download className="w-4 h-4 text-blue-400" />}
+                            {activity.action === "shared" && <Share className="w-4 h-4 text-green-400" />}
+                            {activity.action === "commented on" && <MessageCircle className="w-4 h-4 text-purple-400" />}
+                            {activity.action === "viewed" && <Eye className="w-4 h-4 text-gray-400" />}
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-white">
+                              <span className="font-medium">{activity.user}</span> {activity.action} <span className="font-medium">{activity.file}</span>
+                            </p>
+                            <p className="text-sm text-gray-400">{activity.time}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </CardContent>
                 </GlassCard>
               </TabsContent>
 
               {/* Settings Tab */}
               <TabsContent value="settings" className="space-y-6">
-                <GlassCard variant="security" className="glass-effect">
-                  <CardHeader>
-                    <CardTitle className="text-white">Vault Settings</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-400">Configure security policies and access controls</p>
-                  </CardContent>
-                </GlassCard>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <GlassCard variant="security" className="glass-effect">
+                    <CardHeader>
+                      <CardTitle className="text-white">Security Settings</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <Label className="text-white">Virus Scanning</Label>
+                          <p className="text-sm text-gray-400">Automatically scan uploaded files</p>
+                        </div>
+                        <Switch checked={mockVaultSettings.enableVirusScanning} />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <Label className="text-white">Version Control</Label>
+                          <p className="text-sm text-gray-400">Keep file version history</p>
+                        </div>
+                        <Switch checked={mockVaultSettings.enableVersionControl} />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <Label className="text-white">Watermark Downloads</Label>
+                          <p className="text-sm text-gray-400">Add watermarks to downloaded files</p>
+                        </div>
+                        <Switch checked={mockVaultSettings.watermarkDownloads} />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <Label className="text-white">Require MFA</Label>
+                          <p className="text-sm text-gray-400">Multi-factor authentication for access</p>
+                        </div>
+                        <Switch checked={mockVaultSettings.requireMFA} />
+                      </div>
+                    </CardContent>
+                  </GlassCard>
+
+                  <GlassCard variant="security" className="glass-effect">
+                    <CardHeader>
+                      <CardTitle className="text-white">Storage Settings</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div>
+                        <Label className="text-white">Maximum Storage (GB)</Label>
+                        <Input
+                          type="number"
+                          value={mockVaultSettings.maxStorageGB}
+                          className="mt-2 bg-gray-700 border-gray-600 text-white"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-white">Maximum File Size (MB)</Label>
+                        <Input
+                          type="number"
+                          value={Math.round(mockVaultSettings.maxFileSize / 1024 / 1024)}
+                          className="mt-2 bg-gray-700 border-gray-600 text-white"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-white">Default Retention (Days)</Label>
+                        <Input
+                          type="number"
+                          value={mockVaultSettings.defaultRetentionDays}
+                          className="mt-2 bg-gray-700 border-gray-600 text-white"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-white">Allowed File Types</Label>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {mockVaultSettings.allowedFileTypes.map((type) => (
+                            <Badge key={type} variant="outline" className="border-gray-600 text-gray-300">
+                              {type}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </GlassCard>
+                </div>
               </TabsContent>
             </Tabs>
           </div>

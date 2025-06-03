@@ -151,8 +151,7 @@ export class DatabaseStorage implements IStorage {
   async getFiles(companyId: number): Promise<File[]> {
     return await db.select()
       .from(files)
-      .where(eq(files.companyId, companyId))
-      .orderBy(desc(files.createdAt));
+      .where(eq(files.companyId, companyId));
   }
 
   async getFile(id: number): Promise<File | undefined> {

@@ -87,6 +87,11 @@ function Router() {
           <UserManagement />
         </ProtectedRoute>
       </Route>
+      <Route path="/security-monitoring">
+        <ProtectedRoute>
+          <SecurityMonitoring />
+        </ProtectedRoute>
+      </Route>
       <Route path="/admin">
         <ProtectedRoute>
           <AdminPanel />

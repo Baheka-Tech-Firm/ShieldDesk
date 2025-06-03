@@ -1,9 +1,13 @@
 import { 
-  users, companies, riskAssessments, files, popiaItems, activityLogs, notifications,
+  users, companies, riskAssessments, files, folders, filePermissions, folderPermissions,
+  fileAccessLogs, fileShares, fileComments, vaultSettings, popiaItems, activityLogs, notifications,
   type User, type InsertUser, type Company, type InsertCompany, 
   type RiskAssessment, type InsertRiskAssessment, type File, type InsertFile,
-  type PopiaItem, type InsertPopiaItem, type ActivityLog, type InsertActivityLog,
-  type Notification, type InsertNotification
+  type Folder, type InsertFolder, type FilePermission, type InsertFilePermission,
+  type FolderPermission, type InsertFolderPermission, type FileAccessLog, type InsertFileAccessLog,
+  type FileShare, type InsertFileShare, type FileComment, type InsertFileComment,
+  type VaultSettings, type InsertVaultSettings, type PopiaItem, type InsertPopiaItem, 
+  type ActivityLog, type InsertActivityLog, type Notification, type InsertNotification
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
@@ -164,8 +168,171 @@ export class DatabaseStorage implements IStorage {
     return file;
   }
 
+  async updateFile(id: number, updateData: Partial<InsertFile>): Promise<File> {
+    const [file] = await db.update(files).set(updateData).where(eq(files.id, id)).returning();
+    return file;
+  }
+
   async deleteFile(id: number): Promise<void> {
     await db.delete(files).where(eq(files.id, id));
+  }
+
+  async getFileVersions(parentFileId: number): Promise<File[]> {
+    return await db.select()
+      .from(files)
+      .where(eq(files.parentFileId, parentFileId))
+      .orderBy(desc(files.version));
+  }
+
+  // Folders
+  async getFolders(companyId: number, parentId?: number): Promise<Folder[]> {
+    const whereCondition = parentId 
+      ? and(eq(folders.companyId, companyId), eq(folders.parentId, parentId))
+      : and(eq(folders.companyId, companyId), eq(folders.parentId, null));
+    
+    return await db.select()
+      .from(folders)
+      .where(whereCondition)
+      .orderBy(folders.name);
+  }
+
+  async getFolder(id: number): Promise<Folder | undefined> {
+    const [folder] = await db.select().from(folders).where(eq(folders.id, id));
+    return folder || undefined;
+  }
+
+  async createFolder(insertFolder: InsertFolder): Promise<Folder> {
+    const [folder] = await db.insert(folders).values(insertFolder).returning();
+    return folder;
+  }
+
+  async updateFolder(id: number, updateData: Partial<InsertFolder>): Promise<Folder> {
+    const [folder] = await db.update(folders).set(updateData).where(eq(folders.id, id)).returning();
+    return folder;
+  }
+
+  async deleteFolder(id: number): Promise<void> {
+    await db.delete(folders).where(eq(folders.id, id));
+  }
+
+  // File Permissions
+  async getFilePermissions(fileId: number): Promise<FilePermission[]> {
+    return await db.select()
+      .from(filePermissions)
+      .where(eq(filePermissions.fileId, fileId));
+  }
+
+  async createFilePermission(insertPermission: InsertFilePermission): Promise<FilePermission> {
+    const [permission] = await db.insert(filePermissions).values(insertPermission).returning();
+    return permission;
+  }
+
+  async updateFilePermission(id: number, updateData: Partial<InsertFilePermission>): Promise<FilePermission> {
+    const [permission] = await db.update(filePermissions).set(updateData).where(eq(filePermissions.id, id)).returning();
+    return permission;
+  }
+
+  async deleteFilePermission(id: number): Promise<void> {
+    await db.delete(filePermissions).where(eq(filePermissions.id, id));
+  }
+
+  // Folder Permissions
+  async getFolderPermissions(folderId: number): Promise<FolderPermission[]> {
+    return await db.select()
+      .from(folderPermissions)
+      .where(eq(folderPermissions.folderId, folderId));
+  }
+
+  async createFolderPermission(insertPermission: InsertFolderPermission): Promise<FolderPermission> {
+    const [permission] = await db.insert(folderPermissions).values(insertPermission).returning();
+    return permission;
+  }
+
+  async updateFolderPermission(id: number, updateData: Partial<InsertFolderPermission>): Promise<FolderPermission> {
+    const [permission] = await db.update(folderPermissions).set(updateData).where(eq(folderPermissions.id, id)).returning();
+    return permission;
+  }
+
+  async deleteFolderPermission(id: number): Promise<void> {
+    await db.delete(folderPermissions).where(eq(folderPermissions.id, id));
+  }
+
+  // File Access Logs
+  async getFileAccessLogs(fileId: number, limit: number = 50): Promise<FileAccessLog[]> {
+    return await db.select()
+      .from(fileAccessLogs)
+      .where(eq(fileAccessLogs.fileId, fileId))
+      .orderBy(desc(fileAccessLogs.accessedAt))
+      .limit(limit);
+  }
+
+  async createFileAccessLog(insertLog: InsertFileAccessLog): Promise<FileAccessLog> {
+    const [log] = await db.insert(fileAccessLogs).values(insertLog).returning();
+    return log;
+  }
+
+  // File Shares
+  async getFileShare(shareId: string): Promise<FileShare | undefined> {
+    const [share] = await db.select().from(fileShares).where(eq(fileShares.shareId, shareId));
+    return share || undefined;
+  }
+
+  async getFileShares(fileId: number): Promise<FileShare[]> {
+    return await db.select()
+      .from(fileShares)
+      .where(eq(fileShares.fileId, fileId));
+  }
+
+  async createFileShare(insertShare: InsertFileShare): Promise<FileShare> {
+    const [share] = await db.insert(fileShares).values(insertShare).returning();
+    return share;
+  }
+
+  async updateFileShare(id: number, updateData: Partial<InsertFileShare>): Promise<FileShare> {
+    const [share] = await db.update(fileShares).set(updateData).where(eq(fileShares.id, id)).returning();
+    return share;
+  }
+
+  async deleteFileShare(id: number): Promise<void> {
+    await db.delete(fileShares).where(eq(fileShares.id, id));
+  }
+
+  // File Comments
+  async getFileComments(fileId: number): Promise<FileComment[]> {
+    return await db.select()
+      .from(fileComments)
+      .where(eq(fileComments.fileId, fileId))
+      .orderBy(desc(fileComments.createdAt));
+  }
+
+  async createFileComment(insertComment: InsertFileComment): Promise<FileComment> {
+    const [comment] = await db.insert(fileComments).values(insertComment).returning();
+    return comment;
+  }
+
+  async updateFileComment(id: number, updateData: Partial<InsertFileComment>): Promise<FileComment> {
+    const [comment] = await db.update(fileComments).set(updateData).where(eq(fileComments.id, id)).returning();
+    return comment;
+  }
+
+  async deleteFileComment(id: number): Promise<void> {
+    await db.delete(fileComments).where(eq(fileComments.id, id));
+  }
+
+  // Vault Settings
+  async getVaultSettings(companyId: number): Promise<VaultSettings | undefined> {
+    const [settings] = await db.select().from(vaultSettings).where(eq(vaultSettings.companyId, companyId));
+    return settings || undefined;
+  }
+
+  async createVaultSettings(insertSettings: InsertVaultSettings): Promise<VaultSettings> {
+    const [settings] = await db.insert(vaultSettings).values(insertSettings).returning();
+    return settings;
+  }
+
+  async updateVaultSettings(companyId: number, updateData: Partial<InsertVaultSettings>): Promise<VaultSettings> {
+    const [settings] = await db.update(vaultSettings).set(updateData).where(eq(vaultSettings.companyId, companyId)).returning();
+    return settings;
   }
 
   // POPIA Items

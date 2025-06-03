@@ -214,14 +214,22 @@ export const usersRelations = relations(users, ({ one, many }) => ({
   uploadedFiles: many(files),
   activityLogs: many(activityLogs),
   notifications: many(notifications),
+  createdFolders: many(folders),
+  filePermissions: many(filePermissions),
+  folderPermissions: many(folderPermissions),
+  fileAccessLogs: many(fileAccessLogs),
+  fileShares: many(fileShares),
+  fileComments: many(fileComments),
 }));
 
-export const companiesRelations = relations(companies, ({ many }) => ({
+export const companiesRelations = relations(companies, ({ many, one }) => ({
   users: many(users),
   riskAssessments: many(riskAssessments),
   files: many(files),
+  folders: many(folders),
   popiaItems: many(popiaItems),
   activityLogs: many(activityLogs),
+  vaultSettings: one(vaultSettings),
 }));
 
 export const riskAssessmentsRelations = relations(riskAssessments, ({ one }) => ({
@@ -235,13 +243,114 @@ export const riskAssessmentsRelations = relations(riskAssessments, ({ one }) => 
   }),
 }));
 
-export const filesRelations = relations(files, ({ one }) => ({
+export const foldersRelations = relations(folders, ({ one, many }) => ({
+  company: one(companies, {
+    fields: [folders.companyId],
+    references: [companies.id],
+  }),
+  parent: one(folders, {
+    fields: [folders.parentId],
+    references: [folders.id],
+  }),
+  children: many(folders),
+  files: many(files),
+  createdBy: one(users, {
+    fields: [folders.createdBy],
+    references: [users.id],
+  }),
+  permissions: many(folderPermissions),
+}));
+
+export const filesRelations = relations(files, ({ one, many }) => ({
   uploadedByUser: one(users, {
     fields: [files.uploadedBy],
     references: [users.id],
   }),
   company: one(companies, {
     fields: [files.companyId],
+    references: [companies.id],
+  }),
+  folder: one(folders, {
+    fields: [files.folderId],
+    references: [folders.id],
+  }),
+  parentFile: one(files, {
+    fields: [files.parentFileId],
+    references: [files.id],
+  }),
+  versions: many(files),
+  permissions: many(filePermissions),
+  accessLogs: many(fileAccessLogs),
+  shares: many(fileShares),
+  comments: many(fileComments),
+}));
+
+export const filePermissionsRelations = relations(filePermissions, ({ one }) => ({
+  file: one(files, {
+    fields: [filePermissions.fileId],
+    references: [files.id],
+  }),
+  user: one(users, {
+    fields: [filePermissions.userId],
+    references: [users.id],
+  }),
+  grantedBy: one(users, {
+    fields: [filePermissions.grantedBy],
+    references: [users.id],
+  }),
+}));
+
+export const folderPermissionsRelations = relations(folderPermissions, ({ one }) => ({
+  folder: one(folders, {
+    fields: [folderPermissions.folderId],
+    references: [folders.id],
+  }),
+  user: one(users, {
+    fields: [folderPermissions.userId],
+    references: [users.id],
+  }),
+  grantedBy: one(users, {
+    fields: [folderPermissions.grantedBy],
+    references: [users.id],
+  }),
+}));
+
+export const fileAccessLogsRelations = relations(fileAccessLogs, ({ one }) => ({
+  file: one(files, {
+    fields: [fileAccessLogs.fileId],
+    references: [files.id],
+  }),
+  user: one(users, {
+    fields: [fileAccessLogs.userId],
+    references: [users.id],
+  }),
+}));
+
+export const fileSharesRelations = relations(fileShares, ({ one }) => ({
+  file: one(files, {
+    fields: [fileShares.fileId],
+    references: [files.id],
+  }),
+  createdBy: one(users, {
+    fields: [fileShares.createdBy],
+    references: [users.id],
+  }),
+}));
+
+export const fileCommentsRelations = relations(fileComments, ({ one }) => ({
+  file: one(files, {
+    fields: [fileComments.fileId],
+    references: [files.id],
+  }),
+  user: one(users, {
+    fields: [fileComments.userId],
+    references: [users.id],
+  }),
+}));
+
+export const vaultSettingsRelations = relations(vaultSettings, ({ one }) => ({
+  company: one(companies, {
+    fields: [vaultSettings.companyId],
     references: [companies.id],
   }),
 }));

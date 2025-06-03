@@ -58,6 +58,16 @@ function Router() {
           <EnhancedFileVault />
         </ProtectedRoute>
       </Route>
+      <Route path="/enhanced-file-vault">
+        <ProtectedRoute>
+          <EnhancedFileVault />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/file-vault">
+        <ProtectedRoute>
+          <FileVault />
+        </ProtectedRoute>
+      </Route>
       <Route path="/vulnerability-scanner">
         <ProtectedRoute>
           <VulnerabilityScanner />

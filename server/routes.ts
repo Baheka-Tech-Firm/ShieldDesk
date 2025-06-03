@@ -441,6 +441,95 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // File vault individual file routes
+  app.get('/api/vault/file/:id', async (req: AuthenticatedRequest, res) => {
+    try {
+      const fileId = parseInt(req.params.id);
+      const file = await storage.getFile(fileId);
+      
+      if (!file) {
+        return res.status(404).json({ message: 'File not found' });
+      }
+
+      res.json(file);
+    } catch (error) {
+      console.error('File fetch error:', error);
+      res.status(500).json({ message: 'Failed to fetch file' });
+    }
+  });
+
+  app.get('/api/vault/file/:id/permissions', async (req: AuthenticatedRequest, res) => {
+    try {
+      const fileId = parseInt(req.params.id);
+      const permissions = await storage.getFilePermissions(fileId);
+      res.json(permissions);
+    } catch (error) {
+      console.error('File permissions fetch error:', error);
+      res.status(500).json({ message: 'Failed to fetch file permissions' });
+    }
+  });
+
+  app.get('/api/vault/file/:id/access-logs', async (req: AuthenticatedRequest, res) => {
+    try {
+      const fileId = parseInt(req.params.id);
+      const logs = await storage.getFileAccessLogs(fileId);
+      res.json(logs);
+    } catch (error) {
+      console.error('File access logs fetch error:', error);
+      res.status(500).json({ message: 'Failed to fetch file access logs' });
+    }
+  });
+
+  app.get('/api/vault/file/:id/comments', async (req: AuthenticatedRequest, res) => {
+    try {
+      const fileId = parseInt(req.params.id);
+      const comments = await storage.getFileComments(fileId);
+      res.json(comments);
+    } catch (error) {
+      console.error('File comments fetch error:', error);
+      res.status(500).json({ message: 'Failed to fetch file comments' });
+    }
+  });
+
+  app.get('/api/vault/file/:id/versions', async (req: AuthenticatedRequest, res) => {
+    try {
+      const fileId = parseInt(req.params.id);
+      const versions = await storage.getFileVersions(fileId);
+      res.json(versions);
+    } catch (error) {
+      console.error('File versions fetch error:', error);
+      res.status(500).json({ message: 'Failed to fetch file versions' });
+    }
+  });
+
+  // Folder individual routes
+  app.get('/api/vault/folder/:id', async (req: AuthenticatedRequest, res) => {
+    try {
+      const folderId = parseInt(req.params.id);
+      const folder = await storage.getFolder(folderId);
+      
+      if (!folder) {
+        return res.status(404).json({ message: 'Folder not found' });
+      }
+
+      res.json(folder);
+    } catch (error) {
+      console.error('Folder fetch error:', error);
+      res.status(500).json({ message: 'Failed to fetch folder' });
+    }
+  });
+
+  app.get('/api/vault/folder/:id/permissions', async (req: AuthenticatedRequest, res) => {
+    try {
+      const folderId = parseInt(req.params.id);
+      const permissions = await storage.getFolderPermissions(folderId);
+      res.json(permissions);
+    } catch (error) {
+      console.error('Folder permissions fetch error:', error);
+      res.status(500).json({ message: 'Failed to fetch folder permissions' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

@@ -175,7 +175,7 @@ export default function FileDetails() {
     if (status === "quarantined") {
       return <Badge variant="destructive" className="bg-orange-600/80"><Lock className="w-3 h-3 mr-1" />Quarantined</Badge>;
     }
-    return <Badge variant="outline" className="border-green-500/50 text-green-400"><CheckCircle className="w-3 h-3 mr-1" />Clean</Badge>;
+    return <Badge variant="outline" className="border-gray-500/50 text-gray-400"><CheckCircle className="w-3 h-3 mr-1" />Clean</Badge>;
   };
 
   return (
@@ -310,7 +310,7 @@ export default function FileDetails() {
                       <div>
                         <Label className="text-gray-400">Encryption</Label>
                         <p className="font-medium flex items-center">
-                          <Lock className="w-4 h-4 mr-2 text-green-400" />
+                          <Lock className="w-4 h-4 mr-2 text-red-400" />
                           AES-256 Encrypted
                         </p>
                       </div>
@@ -433,7 +433,7 @@ export default function FileDetails() {
                             </TableCell>
                             <TableCell>
                               {log.success ? (
-                                <Badge variant="outline" className="border-green-500/50 text-green-400">
+                                <Badge variant="outline" className="border-gray-500/50 text-gray-400">
                                   <CheckCircle className="w-3 h-3 mr-1" />
                                   Success
                                 </Badge>

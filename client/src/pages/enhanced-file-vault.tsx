@@ -796,7 +796,7 @@ export default function EnhancedFileVault() {
                                         </Badge>
                                       ))}
                                       {file.hasComments && <MessageCircle className="w-3 h-3 text-blue-400" />}
-                                      {file.isShared && <Share className="w-3 h-3 text-green-400" />}
+                                      {file.isShared && <Share className="w-3 h-3 text-red-400" />}
                                       {file.version > 1 && <History className="w-3 h-3 text-purple-400" />}
                                     </div>
                                   </div>
@@ -812,7 +812,7 @@ export default function EnhancedFileVault() {
                               <TableCell>
                                 <div className="flex items-center space-x-1">
                                   {file.permissions.includes("view") && <Eye className="w-3 h-3 text-blue-400" />}
-                                  {file.permissions.includes("download") && <Download className="w-3 h-3 text-green-400" />}
+                                  {file.permissions.includes("download") && <Download className="w-3 h-3 text-red-400" />}
                                   {file.permissions.includes("share") && <Share className="w-3 h-3 text-purple-400" />}
                                 </div>
                               </TableCell>

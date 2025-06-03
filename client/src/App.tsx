@@ -10,6 +10,12 @@ import Login from "@/pages/login";
 import Dashboard from "@/pages/dashboard";
 import Onboarding from "@/pages/onboarding";
 import FileVault from "@/pages/file-vault";
+import VulnerabilityScanner from "@/pages/vulnerability-scanner";
+import ThreatIntelligence from "@/pages/threat-intelligence";
+import Compliance from "@/pages/compliance";
+import Reports from "@/pages/reports";
+import UserManagement from "@/pages/user-management";
+import IncidentResponse from "@/pages/incident-response";
 import NotFound from "@/pages/not-found";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -47,6 +53,36 @@ function Router() {
       <Route path="/files">
         <ProtectedRoute>
           <FileVault />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/vulnerability-scanner">
+        <ProtectedRoute>
+          <VulnerabilityScanner />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/threat-intelligence">
+        <ProtectedRoute>
+          <ThreatIntelligence />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/compliance">
+        <ProtectedRoute>
+          <Compliance />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/reports">
+        <ProtectedRoute>
+          <Reports />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/incident-response">
+        <ProtectedRoute>
+          <IncidentResponse />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/users">
+        <ProtectedRoute>
+          <UserManagement />
         </ProtectedRoute>
       </Route>
       <Route path="/">

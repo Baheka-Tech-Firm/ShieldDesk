@@ -59,6 +59,12 @@ export function Sidebar() {
       roles: ["admin", "compliance", "it"]
     },
     {
+      name: "Incident Response",
+      href: "/incident-response",
+      icon: AlertTriangle,
+      roles: ["admin", "compliance", "it"]
+    },
+    {
       name: "User Management",
       href: "/users",
       icon: Users,

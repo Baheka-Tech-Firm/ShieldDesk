@@ -457,7 +457,7 @@ export default function AdminPanel() {
               </div>
             </div>
           </div>
-        </header>
+        </GlassCard>
 
         <div className="p-6">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">

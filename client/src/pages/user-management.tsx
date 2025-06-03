@@ -167,11 +167,11 @@ export default function UserManagement() {
   };
 
   return (
-    <div className="min-h-screen flex relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-red-950">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-red-950">
       <AnimatedBackground />
-      <Sidebar />
-      
-      <main className="flex-1 overflow-y-auto relative z-10">
+      <div className="flex">
+        <Sidebar />
+        <main className="flex-1 ml-0 md:ml-72 min-h-screen overflow-y-auto relative z-10">
         <GlassCard 
           variant="danger" 
           className="m-6 mb-0 glass-effect cyber-border"
@@ -428,6 +428,7 @@ export default function UserManagement() {
           </Card>
         </div>
       </main>
+      </div>
     </div>
   );
 }

@@ -128,7 +128,7 @@ export default function Compliance() {
   }, [isLoading]);
 
   return (
-    <div className="min-h-screen flex relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
+    <div className="min-h-screen flex relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-red-950">
       <AnimatedBackground />
       <Sidebar />
       
@@ -137,7 +137,7 @@ export default function Compliance() {
         className="flex-1 overflow-y-auto relative z-10"
       >
         <GlassCard 
-          variant="success" 
+          variant="danger" 
           className="m-6 mb-0 glass-effect cyber-border"
           glowIntensity="medium"
           animated
@@ -146,10 +146,10 @@ export default function Compliance() {
             <div className="flex items-center justify-between">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold text-white flex items-center gap-3">
-                  <Shield className="w-8 h-8 text-green-400" />
+                  <Shield className="w-8 h-8 text-red-400" />
                   POPIA Compliance Center
                 </h2>
-                <p className="text-green-100/80 text-lg">
+                <p className="text-red-100/80 text-lg">
                   Monitor and manage your data protection compliance requirements
                 </p>
               </div>

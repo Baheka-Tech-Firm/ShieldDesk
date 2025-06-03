@@ -203,7 +203,7 @@ export default function FileVault() {
                   <Database className="w-8 h-8 text-cyan-400" />
                   Secure File Vault
                 </h2>
-                <p className="text-cyan-100/80 text-lg">
+                <p className="text-red-100/80 text-lg">
                   Enterprise-grade document storage with role-based access controls
                 </p>
               </div>

@@ -600,14 +600,15 @@ export default function ThreatIntelligence() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {threatIndicators
-                        .filter(i => i.geolocation)
-                        .reduce((acc, indicator) => {
-                          const country = indicator.geolocation!.country;
-                          acc[country] = (acc[country] || 0) + 1;
-                          return acc;
-                        }, {} as Record<string, number>)
-                        |> Object.entries(#)
+                      {Object.entries(
+                        threatIndicators
+                          .filter(i => i.geolocation)
+                          .reduce((acc, indicator) => {
+                            const country = indicator.geolocation!.country;
+                            acc[country] = (acc[country] || 0) + 1;
+                            return acc;
+                          }, {} as Record<string, number>)
+                      )
                         .sort((a, b) => b[1] - a[1])
                         .slice(0, 5)
                         .map(([country, count]) => (
@@ -629,13 +630,14 @@ export default function ThreatIntelligence() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {threatIndicators
-                        .flatMap(i => i.threat_types)
-                        .reduce((acc, type) => {
-                          acc[type] = (acc[type] || 0) + 1;
-                          return acc;
-                        }, {} as Record<string, number>)
-                        |> Object.entries(#)
+                      {Object.entries(
+                        threatIndicators
+                          .flatMap(i => i.threat_types)
+                          .reduce((acc, type) => {
+                            acc[type] = (acc[type] || 0) + 1;
+                            return acc;
+                          }, {} as Record<string, number>)
+                      )
                         .sort((a, b) => b[1] - a[1])
                         .slice(0, 6)
                         .map(([type, count]) => (

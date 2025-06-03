@@ -8,7 +8,11 @@ import {
   CheckCircle, 
   Users, 
   Settings,
-  LogOut 
+  LogOut,
+  Search,
+  AlertTriangle,
+  FileText,
+  Bug
 } from "lucide-react";
 
 export function Sidebar() {
@@ -31,22 +35,34 @@ export function Sidebar() {
       roles: ["admin", "compliance", "it", "employee"]
     },
     {
+      name: "Vulnerability Scanner",
+      href: "/vulnerability-scanner",
+      icon: Bug,
+      roles: ["admin", "compliance", "it"]
+    },
+    {
+      name: "Threat Intelligence",
+      href: "/threat-intelligence",
+      icon: AlertTriangle,
+      roles: ["admin", "compliance", "it"]
+    },
+    {
       name: "Compliance",
       href: "/compliance",
       icon: CheckCircle,
       roles: ["admin", "compliance", "it", "employee"]
     },
     {
+      name: "Reports",
+      href: "/reports",
+      icon: FileText,
+      roles: ["admin", "compliance", "it"]
+    },
+    {
       name: "User Management",
       href: "/users",
       icon: Users,
       roles: ["admin", "compliance"]
-    },
-    {
-      name: "Admin Panel",
-      href: "/admin",
-      icon: Settings,
-      roles: ["admin"]
     }
   ];
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AnimatedBackground } from "@/components/ui/animated-background";
+import { GlassCard } from "@/components/ui/glass-card";
+import { CyberHUD } from "@/components/ui/cyber-hud";
 import { 
   Table, 
   TableBody, 
@@ -28,6 +31,7 @@ import {
   Lock
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { gsap } from "gsap";
 
 interface SecurityAlert {
   id: string;

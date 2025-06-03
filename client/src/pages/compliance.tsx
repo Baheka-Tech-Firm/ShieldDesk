@@ -106,86 +106,113 @@ export default function Compliance() {
     );
   }
 
+  useEffect(() => {
+    if (!complianceRef.current || isLoading) return;
+
+    gsap.fromTo(complianceRef.current, 
+      { opacity: 0, scale: 0.95 },
+      { opacity: 1, scale: 1, duration: 1, ease: "power3.out" }
+    );
+
+    if (cardsRef.current.length > 0) {
+      gsap.fromTo(cardsRef.current,
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power3.out", delay: 0.3 }
+      );
+    }
+  }, [isLoading]);
+
   return (
-    <div className="min-h-screen flex bg-gray-50">
+    <div className="min-h-screen flex relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800">
+      <AnimatedBackground />
       <Sidebar />
       
-      <main className="flex-1 overflow-y-auto">
-        {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-200">
-          <div className="px-6 py-4">
+      <main 
+        ref={complianceRef}
+        className="flex-1 overflow-y-auto relative z-10"
+      >
+        <GlassCard 
+          variant="success" 
+          className="m-6 mb-0 glass-effect cyber-border"
+          glowIntensity="medium"
+          animated
+        >
+          <div className="px-8 py-6">
             <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">POPIA Compliance</h2>
-                <p className="text-gray-600 mt-1">Monitor and manage your data protection compliance</p>
+              <div className="space-y-2">
+                <h2 className="text-3xl font-bold text-white flex items-center gap-3">
+                  <Shield className="w-8 h-8 text-green-400" />
+                  POPIA Compliance Center
+                </h2>
+                <p className="text-green-100/80 text-lg">
+                  Monitor and manage your data protection compliance requirements
+                </p>
               </div>
-              <div className="flex items-center space-x-4">
-                <Badge className={`${compliance.bgColor} ${compliance.color} border-0`}>
+              <div className="flex items-center space-x-6">
+                <CyberHUD
+                  title="COMPLIANCE"
+                  value={`${progressPercent}%`}
+                  subtitle="Complete"
+                  status={compliance.status as any}
+                  trend="up"
+                  size="md"
+                />
+                <Badge className={`${compliance.bgColor} ${compliance.color} border-0 px-4 py-2 text-lg`}>
                   {compliance.level}
                 </Badge>
-                <span className="text-2xl font-bold text-gray-900">{progressPercent}%</span>
               </div>
             </div>
           </div>
-        </header>
+        </GlassCard>
 
-        {/* Content */}
-        <div className="p-6 space-y-6">
-          {/* Overview Cards */}
+        <div className="p-6 space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
-                    <CheckCircle2 className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm text-gray-600">Completed</p>
-                    <p className="text-xl font-semibold text-gray-900">{completedCount}</p>
-                  </div>
+            <GlassCard variant="success" glowIntensity="low" animated className="p-6">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
+                  <CheckCircle2 className="w-6 h-6 text-white" />
                 </div>
-              </CardContent>
-            </Card>
+                <div className="ml-4">
+                  <p className="text-sm text-green-100/80">Completed</p>
+                  <p className="text-2xl font-bold text-white">{completedCount}</p>
+                </div>
+              </div>
+            </GlassCard>
 
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center">
-                    <AlertCircle className="w-5 h-5 text-red-600" />
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm text-gray-600">Outstanding</p>
-                    <p className="text-xl font-semibold text-gray-900">{totalCount - completedCount}</p>
-                  </div>
+            <GlassCard variant="danger" glowIntensity="low" animated className="p-6">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center">
+                  <AlertCircle className="w-6 h-6 text-white" />
                 </div>
-              </CardContent>
-            </Card>
+                <div className="ml-4">
+                  <p className="text-sm text-red-100/80">Outstanding</p>
+                  <p className="text-2xl font-bold text-white">{totalCount - completedCount}</p>
+                </div>
+              </div>
+            </GlassCard>
 
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-                    <Shield className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm text-gray-600">Compliance</p>
-                    <p className="text-xl font-semibold text-gray-900">{progressPercent}%</p>
-                  </div>
+            <GlassCard variant="info" glowIntensity="low" animated className="p-6">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <Shield className="w-6 h-6 text-white" />
                 </div>
-              </CardContent>
-            </Card>
+                <div className="ml-4">
+                  <p className="text-sm text-blue-100/80">Compliance</p>
+                  <p className="text-2xl font-bold text-white">{progressPercent}%</p>
+                </div>
+              </div>
+            </GlassCard>
 
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
-                    <Target className="w-5 h-5 text-purple-600" />
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm text-gray-600">Target</p>
-                    <p className="text-xl font-semibold text-gray-900">100%</p>
-                  </div>
+            <GlassCard variant="security" glowIntensity="low" animated className="p-6">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-cyan-600 rounded-lg flex items-center justify-center">
+                  <Target className="w-6 h-6 text-white" />
                 </div>
+                <div className="ml-4">
+                  <p className="text-sm text-cyan-100/80">Target</p>
+                  <p className="text-2xl font-bold text-white">100%</p>
+                </div>
+              </div>
               </CardContent>
             </Card>
           </div>

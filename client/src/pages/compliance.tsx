@@ -50,52 +50,57 @@ export default function Compliance() {
           'Authorization': `Bearer ${token}`,
         },
       });
-      if (!response.ok) throw new Error('Failed to fetch POPIA items');
+      if (!response.ok) {
+        throw new Error('Failed to fetch POPIA items');
+      }
       return response.json();
-    },
-    enabled: !!user,
+    }
   });
 
-  const updateItemMutation = useMutation({
+  const updateMutation = useMutation({
     mutationFn: async ({ id, completed }: { id: number; completed: boolean }) => {
-      const response = await apiRequest('PUT', `/api/popia/${id}`, { completed });
-      return response.json();
+      const token = getAuthToken();
+      return apiRequest(`/api/popia/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ completed }),
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/popia'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/dashboard'] });
       toast({
-        title: "Updated",
-        description: "POPIA compliance item updated successfully",
+        title: "Success",
+        description: "Compliance item updated successfully",
       });
     },
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to update POPIA item",
+        description: "Failed to update compliance item",
         variant: "destructive",
       });
     },
   });
 
-  const handleToggleItem = (id: number, completed: boolean) => {
-    updateItemMutation.mutate({ id, completed: !completed });
+  const handleToggleItem = (id: number, currentStatus: boolean) => {
+    updateMutation.mutate({ id, completed: !currentStatus });
   };
 
-  const completedCount = popiaItems.filter(item => item.completed).length;
+  const completedCount = popiaItems.filter((item: PopiaItem) => item.completed).length;
   const totalCount = popiaItems.length;
   const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+  const pendingCount = totalCount - completedCount;
 
-  const getComplianceLevel = (percent: number) => {
-    if (percent >= 90) return { level: "Excellent", color: "text-green-600", bgColor: "bg-green-50" };
-    if (percent >= 70) return { level: "Good", color: "text-blue-600", bgColor: "bg-blue-50" };
-    if (percent >= 50) return { level: "Fair", color: "text-yellow-600", bgColor: "bg-yellow-50" };
-    return { level: "Needs Attention", color: "text-red-600", bgColor: "bg-red-50" };
+  const compliance = {
+    level: progressPercent >= 90 ? "Excellent" : progressPercent >= 70 ? "Good" : progressPercent >= 50 ? "Fair" : "Poor",
+    color: progressPercent >= 90 ? "text-green-700" : progressPercent >= 70 ? "text-blue-700" : progressPercent >= 50 ? "text-yellow-700" : "text-red-700",
+    bgColor: progressPercent >= 90 ? "bg-green-50" : progressPercent >= 70 ? "bg-blue-50" : progressPercent >= 50 ? "bg-yellow-50" : "bg-red-50",
   };
 
-  const compliance = getComplianceLevel(progressPercent);
-
-  if (isLoading) {
+  if (!user) {
     return (
       <div className="min-h-screen flex">
         <Sidebar />
@@ -153,7 +158,7 @@ export default function Compliance() {
                   title="COMPLIANCE"
                   value={`${progressPercent}%`}
                   subtitle="Complete"
-                  status={compliance.status as any}
+                  status="success"
                   trend="up"
                   size="md"
                 />
@@ -191,7 +196,7 @@ export default function Compliance() {
               </div>
             </GlassCard>
 
-            <GlassCard variant="info" glowIntensity="low" animated className="p-6">
+            <GlassCard variant="security" glowIntensity="low" animated className="p-6">
               <div className="flex items-center">
                 <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
                   <Shield className="w-6 h-6 text-white" />
@@ -213,159 +218,157 @@ export default function Compliance() {
                   <p className="text-2xl font-bold text-white">100%</p>
                 </div>
               </div>
-              </CardContent>
-            </Card>
+            </GlassCard>
           </div>
 
-          {/* Compliance Progress */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Overall Progress</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <GlassCard variant="success" glowIntensity="medium" animated className="p-6">
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold text-white">Overall Progress</h3>
+                <CyberHUD
+                  title="STATUS"
+                  value={`${progressPercent}%`}
+                  subtitle={compliance.level}
+                  status="success"
+                  trend="up"
+                  size="sm"
+                />
+              </div>
               <div className="space-y-4">
-                <Progress value={progressPercent} className="w-full h-3" />
-                <div className="flex justify-between text-sm text-gray-600">
+                <Progress value={progressPercent} className="w-full h-4 bg-white/10" />
+                <div className="flex justify-between text-sm text-green-100/80">
                   <span>Progress: {completedCount} of {totalCount} items</span>
-                  <span>{compliance.level}</span>
+                  <span className="text-green-300">{compliance.level}</span>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </GlassCard>
 
-          {/* Compliance Items */}
-          <Tabs defaultValue="all" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="all">All Items</TabsTrigger>
-              <TabsTrigger value="pending">Pending</TabsTrigger>
-              <TabsTrigger value="completed">Completed</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="all" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>POPIA Compliance Checklist</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {popiaItems.map((item) => (
-                      <div 
-                        key={item.id} 
-                        className="flex items-start space-x-3 p-4 border rounded-lg hover:bg-gray-50 cursor-pointer"
-                        onClick={() => handleToggleItem(item.id, item.completed)}
-                      >
-                        <Checkbox 
-                          checked={item.completed}
-                          onChange={() => handleToggleItem(item.id, item.completed)}
-                          className="mt-1"
-                        />
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between">
-                            <h4 className={`font-medium ${item.completed ? 'text-gray-900' : 'text-gray-700'}`}>
-                              {item.title}
-                            </h4>
-                            {item.completed ? (
-                              <Badge variant="secondary" className="bg-green-50 text-green-700">
-                                <CheckCircle2 className="w-3 h-3 mr-1" />
-                                Complete
-                              </Badge>
-                            ) : (
-                              <Badge variant="secondary" className="bg-yellow-50 text-yellow-700">
-                                <Clock className="w-3 h-3 mr-1" />
-                                Pending
-                              </Badge>
-                            )}
-                          </div>
-                          {item.description && (
-                            <p className="text-sm text-gray-500 mt-1">{item.description}</p>
-                          )}
-                          {item.completedAt && (
-                            <p className="text-xs text-gray-400 mt-2">
-                              Completed on {new Date(item.completedAt).toLocaleDateString()}
-                            </p>
+          <GlassCard variant="security" glowIntensity="medium" animated className="overflow-hidden">
+            <Tabs defaultValue="all" className="w-full">
+              <TabsList className="grid w-full grid-cols-3 bg-white/10 border-0">
+                <TabsTrigger value="all" className="data-[state=active]:bg-cyan-600 text-white">All Items</TabsTrigger>
+                <TabsTrigger value="pending" className="data-[state=active]:bg-cyan-600 text-white">Pending</TabsTrigger>
+                <TabsTrigger value="completed" className="data-[state=active]:bg-cyan-600 text-white">Completed</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="all" className="space-y-4 p-6">
+                <div className="space-y-2 mb-6">
+                  <h3 className="text-xl font-bold text-white flex items-center gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-cyan-400" />
+                    POPIA Compliance Checklist
+                  </h3>
+                  <p className="text-cyan-100/80">Complete all items to achieve full compliance</p>
+                </div>
+                <div className="space-y-4">
+                  {popiaItems.map((item: PopiaItem) => (
+                    <div 
+                      key={item.id} 
+                      className="flex items-start space-x-3 p-4 bg-white/10 border border-cyan-400/20 rounded-lg hover:bg-white/15 cursor-pointer transition-all duration-200"
+                      onClick={() => handleToggleItem(item.id, item.completed)}
+                    >
+                      <Checkbox 
+                        checked={item.completed}
+                        onChange={() => handleToggleItem(item.id, item.completed)}
+                        className="mt-1"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <h4 className={`font-medium ${item.completed ? 'text-white' : 'text-cyan-100/80'}`}>
+                            {item.title}
+                          </h4>
+                          {item.completed ? (
+                            <Badge className="bg-green-600 text-white border-0">
+                              <CheckCircle2 className="w-3 h-3 mr-1" />
+                              Complete
+                            </Badge>
+                          ) : (
+                            <Badge className="bg-orange-600 text-white border-0">
+                              <Clock className="w-3 h-3 mr-1" />
+                              Pending
+                            </Badge>
                           )}
                         </div>
+                        {item.description && (
+                          <p className="text-sm text-cyan-100/60 mt-1">{item.description}</p>
+                        )}
+                        {item.completedAt && (
+                          <p className="text-xs text-cyan-100/40 mt-2">
+                            Completed on {new Date(item.completedAt).toLocaleDateString()}
+                          </p>
+                        )}
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
+                    </div>
+                  ))}
+                </div>
+              </TabsContent>
 
-            <TabsContent value="pending" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Pending Items</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {popiaItems.filter(item => !item.completed).map((item) => (
-                      <div 
-                        key={item.id} 
-                        className="flex items-start space-x-3 p-4 border rounded-lg hover:bg-gray-50 cursor-pointer"
-                        onClick={() => handleToggleItem(item.id, item.completed)}
-                      >
-                        <Checkbox 
-                          checked={item.completed}
-                          onChange={() => handleToggleItem(item.id, item.completed)}
-                          className="mt-1"
-                        />
-                        <div className="flex-1">
-                          <h4 className="font-medium text-gray-700">{item.title}</h4>
-                          {item.description && (
-                            <p className="text-sm text-gray-500 mt-1">{item.description}</p>
-                          )}
+              <TabsContent value="pending" className="space-y-4 p-6">
+                <div className="space-y-4">
+                  {popiaItems.filter((item: PopiaItem) => !item.completed).map((item: PopiaItem) => (
+                    <div 
+                      key={item.id} 
+                      className="flex items-start space-x-3 p-4 bg-white/10 border border-orange-400/20 rounded-lg hover:bg-white/15 cursor-pointer transition-all duration-200"
+                      onClick={() => handleToggleItem(item.id, item.completed)}
+                    >
+                      <Checkbox 
+                        checked={item.completed}
+                        onChange={() => handleToggleItem(item.id, item.completed)}
+                        className="mt-1"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-medium text-orange-100/80">{item.title}</h4>
+                          <Badge className="bg-orange-600 text-white border-0">
+                            <Clock className="w-3 h-3 mr-1" />
+                            Pending
+                          </Badge>
                         </div>
+                        {item.description && (
+                          <p className="text-sm text-orange-100/60 mt-1">{item.description}</p>
+                        )}
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
+                    </div>
+                  ))}
+                </div>
+              </TabsContent>
 
-            <TabsContent value="completed" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Completed Items</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {popiaItems.filter(item => item.completed).map((item) => (
-                      <div 
-                        key={item.id} 
-                        className="flex items-start space-x-3 p-4 border rounded-lg bg-green-50"
-                      >
-                        <CheckCircle2 className="w-5 h-5 text-green-600 mt-1" />
-                        <div className="flex-1">
-                          <h4 className="font-medium text-gray-900">{item.title}</h4>
-                          {item.description && (
-                            <p className="text-sm text-gray-500 mt-1">{item.description}</p>
-                          )}
-                          {item.completedAt && (
-                            <p className="text-xs text-gray-400 mt-2">
-                              Completed on {new Date(item.completedAt).toLocaleDateString()}
-                            </p>
-                          )}
+              <TabsContent value="completed" className="space-y-4 p-6">
+                <div className="space-y-4">
+                  {popiaItems.filter((item: PopiaItem) => item.completed).map((item: PopiaItem) => (
+                    <div 
+                      key={item.id} 
+                      className="flex items-start space-x-3 p-4 bg-white/10 border border-green-400/20 rounded-lg hover:bg-white/15 cursor-pointer transition-all duration-200"
+                      onClick={() => handleToggleItem(item.id, item.completed)}
+                    >
+                      <Checkbox 
+                        checked={item.completed}
+                        onChange={() => handleToggleItem(item.id, item.completed)}
+                        className="mt-1"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-medium text-white">{item.title}</h4>
+                          <Badge className="bg-green-600 text-white border-0">
+                            <CheckCircle2 className="w-3 h-3 mr-1" />
+                            Complete
+                          </Badge>
                         </div>
+                        {item.description && (
+                          <p className="text-sm text-green-100/60 mt-1">{item.description}</p>
+                        )}
+                        {item.completedAt && (
+                          <p className="text-xs text-green-100/40 mt-2">
+                            Completed on {new Date(item.completedAt).toLocaleDateString()}
+                          </p>
+                        )}
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-
-          {/* Action Buttons */}
-          <div className="flex justify-end space-x-4">
-            <Button variant="outline">
-              <FileText className="w-4 h-4 mr-2" />
-              Export Report
-            </Button>
-            <Button disabled={completedCount === 0}>
-              <Shield className="w-4 h-4 mr-2" />
-              Generate Certificate
-            </Button>
-          </div>
+                    </div>
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
+          </GlassCard>
         </div>
       </main>
     </div>

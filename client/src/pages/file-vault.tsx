@@ -191,7 +191,7 @@ export default function FileVault() {
         className="ml-64 overflow-y-auto relative z-10"
       >
         <GlassCard 
-          variant="security" 
+          variant="danger" 
           className="m-6 mb-0 glass-effect cyber-border"
           glowIntensity="medium"
           animated
@@ -200,7 +200,7 @@ export default function FileVault() {
             <div className="flex items-center justify-between">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold text-white flex items-center gap-3">
-                  <Database className="w-8 h-8 text-cyan-400" />
+                  <Database className="w-8 h-8 text-red-400" />
                   Secure File Vault
                 </h2>
                 <p className="text-red-100/80 text-lg">
@@ -217,7 +217,7 @@ export default function FileVault() {
                   size="sm"
                 />
                 <Button 
-                  className="bg-cyan-600 hover:bg-cyan-700 text-white font-medium px-6 py-3"
+                  className="bg-red-600 hover:bg-red-700 text-white font-medium px-6 py-3"
                   onClick={() => setIsUploadDialogOpen(true)}
                 >
                   <Upload className="w-5 h-5 mr-2" />
@@ -230,7 +230,7 @@ export default function FileVault() {
 
         <div className="p-6 space-y-6">
           <GlassCard 
-            variant="security" 
+            variant="danger" 
             glowIntensity="low" 
             animated 
             className="overflow-hidden"
@@ -294,7 +294,7 @@ export default function FileVault() {
                         <TableRow key={file.id}>
                           <TableCell>
                             <div className="flex items-center">
-                              <FileText className="w-5 h-5 text-cyan-400 mr-3" />
+                              <FileText className="w-5 h-5 text-red-400 mr-3" />
                               <span className="text-white font-medium">
                                 {file.originalName}
                               </span>
@@ -311,7 +311,7 @@ export default function FileVault() {
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center space-x-2">
-                              <Button variant="ghost" size="sm" className="text-cyan-400 hover:text-cyan-300">
+                              <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300">
                                 <Download className="w-4 h-4" />
                               </Button>
                               {canDelete(file) && (

@@ -1,0 +1,268 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.7% 60%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 3.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 3.9%;
+  --border: 240 5.9% 90%;
+  --input: 240 5.9% 90%;
+  --primary: 207 90% 54%; /* #1565C0 - Professional blue for cybersecurity theme */
+  --primary-foreground: 0 0% 98%;
+  --secondary: 240 4.8% 95.9%;
+  --secondary-foreground: 240 5.9% 10%;
+  --accent: 240 4.8% 95.9%;
+  --accent-foreground: 240 5.9% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 207 90% 54%;
+  --radius: 0.5rem;
+  --chart-1: 207 90% 54%;
+  --chart-2: 160 60% 45%;
+  --chart-3: 30 80% 55%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 340 75% 55%;
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --primary: 207 90% 54%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 207 90% 54%;
+  --chart-1: 207 90% 54%;
+  --chart-2: 160 60% 45%;
+  --chart-3: 30 80% 55%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 340 75% 55%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /* Custom scrollbar for better UX */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-lg;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400;
+  }
+}
+
+@layer components {
+  /* Custom component styles */
+  .risk-score-circle {
+    transition: stroke-dasharray 0.5s ease-in-out;
+  }
+
+  .sidebar-nav-item {
+    @apply flex items-center space-x-3 px-3 py-2 rounded-lg font-medium transition-colors;
+  }
+
+  .sidebar-nav-item-active {
+    @apply bg-primary/10 text-primary;
+  }
+
+  .sidebar-nav-item-inactive {
+    @apply text-gray-600 hover:bg-gray-50;
+  }
+
+  /* File type icons styling */
+  .file-icon {
+    @apply w-5 h-5 mr-3;
+  }
+
+  .file-icon-pdf {
+    @apply text-red-500;
+  }
+
+  .file-icon-doc {
+    @apply text-blue-500;
+  }
+
+  .file-icon-excel {
+    @apply text-green-500;
+  }
+
+  .file-icon-image {
+    @apply text-purple-500;
+  }
+
+  .file-icon-default {
+    @apply text-gray-500;
+  }
+
+  /* Access level badges */
+  .access-badge-all-staff {
+    @apply bg-blue-50 text-blue-700;
+  }
+
+  .access-badge-admin {
+    @apply bg-red-50 text-red-700;
+  }
+
+  .access-badge-compliance {
+    @apply bg-purple-50 text-purple-700;
+  }
+
+  .access-badge-it {
+    @apply bg-green-50 text-green-700;
+  }
+
+  .access-badge-hr {
+    @apply bg-yellow-50 text-yellow-700;
+  }
+
+  .access-badge-legal {
+    @apply bg-indigo-50 text-indigo-700;
+  }
+
+  /* Status indicators */
+  .status-success {
+    @apply bg-green-50 text-green-700;
+  }
+
+  .status-warning {
+    @apply bg-yellow-50 text-yellow-700;
+  }
+
+  .status-danger {
+    @apply bg-red-50 text-red-700;
+  }
+
+  .status-info {
+    @apply bg-blue-50 text-blue-700;
+  }
+
+  /* Activity indicators */
+  .activity-upload {
+    @apply bg-primary/10 text-primary;
+  }
+
+  .activity-download {
+    @apply bg-yellow-50 text-yellow-600;
+  }
+
+  .activity-delete {
+    @apply bg-red-50 text-red-600;
+  }
+
+  /* Loading animations */
+  .pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Progress bars */
+  .progress-high {
+    @apply bg-green-500;
+  }
+
+  .progress-medium {
+    @apply bg-yellow-500;
+  }
+
+  .progress-low {
+    @apply bg-red-500;
+  }
+}
+
+@layer utilities {
+  /* Custom utility classes */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-in {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  /* Focus states for accessibility */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
+  }
+
+  /* Glass morphism effects for modern look */
+  .glass {
+    @apply backdrop-blur-sm bg-white/90 border border-white/20;
+  }
+
+  .glass-dark {
+    @apply backdrop-blur-sm bg-gray-900/90 border border-gray-700/20;
+  }
+
+  /* Gradient backgrounds */
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)) 100%);
+  }
+
+  .gradient-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  }
+
+  .gradient-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  }
+
+  .gradient-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  }
+}

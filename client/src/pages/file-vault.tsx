@@ -188,7 +188,7 @@ export default function FileVault() {
         <Sidebar />
         <main 
           ref={vaultRef}
-          className="flex-1 ml-0 md:ml-72 min-h-screen overflow-y-auto relative z-10"
+          className="flex-1 min-h-screen overflow-y-auto relative z-10"
         >
         <GlassCard 
           variant="danger" 

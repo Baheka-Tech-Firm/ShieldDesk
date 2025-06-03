@@ -82,7 +82,7 @@ export default function Dashboard() {
         <Sidebar />
         <main 
           ref={dashboardRef}
-          className="flex-1 ml-0 md:ml-72 min-h-screen overflow-y-auto relative z-10"
+          className="flex-1 min-h-screen overflow-y-auto relative z-10"
         >
         {/* Immersive Header with Glass Effect */}
         <GlassCard 

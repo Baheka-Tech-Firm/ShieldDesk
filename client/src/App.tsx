@@ -10,6 +10,8 @@ import Login from "@/pages/login";
 import Dashboard from "@/pages/dashboard";
 import Onboarding from "@/pages/onboarding";
 import FileVault from "@/pages/file-vault";
+import Compliance from "@/pages/compliance";
+import UserManagement from "@/pages/user-management";
 import NotFound from "@/pages/not-found";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -47,6 +49,16 @@ function Router() {
       <Route path="/files">
         <ProtectedRoute>
           <FileVault />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/compliance">
+        <ProtectedRoute>
+          <Compliance />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/users">
+        <ProtectedRoute>
+          <UserManagement />
         </ProtectedRoute>
       </Route>
       <Route path="/">

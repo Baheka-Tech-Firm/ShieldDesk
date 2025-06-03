@@ -67,14 +67,6 @@ export default function FileVault() {
     return matchesSearch && matchesFilter;
   });
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
-
   const getAccessLevelBadge = (accessLevel: string) => {
     const variants: Record<string, { label: string; className: string }> = {
       all_staff: { label: "All Staff", className: "bg-blue-50 text-blue-700" },
@@ -133,6 +125,14 @@ export default function FileVault() {
     setUploadProgress(0);
     form.reset();
     setIsUploadDialogOpen(false);
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
   if (isLoading) {

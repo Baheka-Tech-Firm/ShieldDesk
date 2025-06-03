@@ -72,14 +72,14 @@ export default function Dashboard() {
   const notifications = dashboardData?.notifications || [];
 
   return (
-    <div className="min-h-screen flex relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-red-950">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-red-950">
       <AnimatedBackground />
-      <Sidebar />
-      
-      <main 
-        ref={dashboardRef}
-        className="flex-1 overflow-y-auto relative z-10"
-      >
+      <div className="flex">
+        <Sidebar />
+        <main 
+          ref={dashboardRef}
+          className="flex-1 ml-0 md:ml-72 min-h-screen overflow-y-auto relative z-10"
+        >
         {/* Immersive Header with Glass Effect */}
         <GlassCard 
           variant="danger" 

@@ -330,7 +330,8 @@ export default function FileVault() {
             </CardContent>
           </GlassCard>
         </div>
-      </main>
+        </main>
+      </div>
 
       <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
         <DialogContent className="sm:max-w-md bg-slate-800 border-cyan-400/20">

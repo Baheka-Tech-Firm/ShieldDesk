@@ -370,7 +370,8 @@ export default function Compliance() {
             </Tabs>
           </GlassCard>
         </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

@@ -278,7 +278,8 @@ export default function Dashboard() {
             </GlassCard>
           </div>
         </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

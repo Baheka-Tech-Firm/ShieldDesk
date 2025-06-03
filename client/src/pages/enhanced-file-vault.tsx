@@ -60,6 +60,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AnimatedBackground } from "@/components/ui/animated-background";
 import { GlassCard } from "@/components/ui/glass-card";
 import { apiRequest } from "@/lib/queryClient";
+import { Link } from "wouter";
 
 interface EnhancedFile {
   id: number;
@@ -866,61 +867,61 @@ export default function EnhancedFileVault() {
               {/* Folders Tab */}
               <TabsContent value="folders" className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {currentFolders.map((folder) => (
-                    <GlassCard 
-                      key={folder.id} 
-                      variant="security" 
-                      className="glass-effect hover:glow-md transition-all cursor-pointer"
-                      onClick={() => setCurrentFolder(folder.id)}
-                    >
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <div className="flex items-center space-x-3">
-                            <div 
-                              className="w-10 h-10 rounded-lg flex items-center justify-center"
-                              style={{ backgroundColor: folder.color + '20', border: `1px solid ${folder.color}` }}
+                  {mockFolders.map((folder) => (
+                    <Link key={folder.id} href={`/folder/${folder.id}`}>
+                      <GlassCard 
+                        variant="security" 
+                        className="glass-effect hover:glow-md transition-all cursor-pointer"
+                      >
+                        <CardContent className="p-6">
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center space-x-3">
+                              <div 
+                                className="w-10 h-10 rounded-lg flex items-center justify-center"
+                                style={{ backgroundColor: folder.color + '20', border: `1px solid ${folder.color}` }}
+                              >
+                                <Folder className="w-5 h-5" style={{ color: folder.color }} />
+                              </div>
+                              <div>
+                                <h3 className="font-semibold text-white">{folder.name}</h3>
+                                {folder.isSystemFolder && (
+                                  <Badge variant="outline" className="text-xs border-yellow-500/50 text-yellow-400">
+                                    <Shield className="w-3 h-3 mr-1" />
+                                    System
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                // Handle folder options
+                              }}
+                              className="h-8 w-8 p-0 text-gray-400 hover:text-white hover:bg-gray-700"
                             >
-                              <Folder className="w-5 h-5" style={{ color: folder.color }} />
-                            </div>
-                            <div>
-                              <h3 className="font-semibold text-white">{folder.name}</h3>
-                              {folder.isSystemFolder && (
-                                <Badge variant="outline" className="text-xs border-yellow-500/50 text-yellow-400">
-                                  <Shield className="w-3 h-3 mr-1" />
-                                  System
-                                </Badge>
-                              )}
-                            </div>
+                              <MoreHorizontal className="w-4 h-4" />
+                            </Button>
                           </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              // Handle folder options
-                            }}
-                            className="h-8 w-8 p-0 text-gray-400 hover:text-white hover:bg-gray-700"
-                          >
-                            <MoreHorizontal className="w-4 h-4" />
-                          </Button>
-                        </div>
-                        
-                        <p className="text-gray-400 text-sm mb-4">{folder.description}</p>
-                        
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-gray-400">{folder.fileCount} files</span>
-                          <span className="text-gray-400">{formatFileSize(folder.size)}</span>
-                        </div>
-                        
-                        {folder.complianceType && (
-                          <div className="mt-3 pt-3 border-t border-gray-700">
-                            <Badge variant="outline" className="text-xs border-blue-500/50 text-blue-400">
-                              {folder.complianceType.toUpperCase()} Compliance
-                            </Badge>
+                          
+                          <p className="text-gray-400 text-sm mb-4">{folder.description}</p>
+                          
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-gray-400">{folder.fileCount} files</span>
+                            <span className="text-gray-400">{formatFileSize(folder.size)}</span>
                           </div>
-                        )}
-                      </CardContent>
-                    </GlassCard>
+                          
+                          {folder.complianceType && (
+                            <div className="mt-3 pt-3 border-t border-gray-700">
+                              <Badge variant="outline" className="text-xs border-blue-500/50 text-blue-400">
+                                {folder.complianceType.toUpperCase()} Compliance
+                              </Badge>
+                            </div>
+                          )}
+                        </CardContent>
+                      </GlassCard>
+                    </Link>
                   ))}
                 </div>
               </TabsContent>

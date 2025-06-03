@@ -11,6 +11,8 @@ import Dashboard from "@/pages/dashboard";
 import Onboarding from "@/pages/onboarding";
 import FileVault from "@/pages/file-vault";
 import EnhancedFileVault from "@/pages/enhanced-file-vault";
+import FileDetails from "@/pages/file-details";
+import FolderDetails from "@/pages/folder-details";
 import VulnerabilityScanner from "@/pages/vulnerability-scanner";
 import ThreatIntelligence from "@/pages/threat-intelligence";
 import Compliance from "@/pages/compliance";
@@ -66,6 +68,16 @@ function Router() {
       <Route path="/file-vault">
         <ProtectedRoute>
           <FileVault />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/file/:id">
+        <ProtectedRoute>
+          <FileDetails />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/folder/:id">
+        <ProtectedRoute>
+          <FolderDetails />
         </ProtectedRoute>
       </Route>
       <Route path="/vulnerability-scanner">

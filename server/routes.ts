@@ -19,6 +19,7 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 import { loggingService, SecuritySeverity, EventCategory } from "./services/loggingService";
+import { registerVaultRoutes } from "./routes/vault";
 
 // Temporary auth middleware (bypassing Firebase for development)
 async function authenticateUser(req: AuthenticatedRequest, res: any, next: any) {
@@ -99,6 +100,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use('/api/assessment', authenticateUser);
   app.use('/api/popia', authenticateUser);
   app.use('/api/notifications', authenticateUser);
+  app.use('/api/vault', authenticateUser);
 
   // Dashboard data
   app.get('/api/dashboard', async (req: AuthenticatedRequest, res) => {

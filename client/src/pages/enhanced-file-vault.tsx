@@ -172,6 +172,30 @@ export default function EnhancedFileVault() {
     queryKey: ['/api/vault/settings'],
   });
 
+  // Use fetched data or fallback to mock data
+  const currentVaultStats = vaultStats || mockStats;
+  const currentFolders = folders || mockFolders;
+  const currentFiles = files || mockFiles;
+  const currentVaultSettings = vaultSettings || {
+    id: 1,
+    companyId: 1,
+    maxStorageGB: 100,
+    allowedFileTypes: ["pdf", "doc", "docx", "xls", "xlsx", "txt", "jpg", "png", "zip"],
+    maxFileSize: 104857600,
+    enableVirusScanning: true,
+    enableVersionControl: true,
+    defaultRetentionDays: 2555,
+    requireMFA: false,
+    watermarkDownloads: false,
+    blockDownloads: false,
+    notificationSettings: {
+      uploadNotifications: true,
+      shareNotifications: true,
+      accessNotifications: false,
+      securityAlerts: true
+    }
+  };
+
   // Mock data for development
   const mockStats: VaultStats = {
     totalFiles: 1247,
@@ -324,7 +348,7 @@ export default function EnhancedFileVault() {
   };
 
   // Filter and sort files
-  const filteredFiles = (mockFiles || []).filter(file => {
+  const filteredFiles = (currentFiles || []).filter(file => {
     if (searchQuery && !file.name.toLowerCase().includes(searchQuery.toLowerCase()) && 
         !file.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))) {
       return false;
@@ -594,7 +618,7 @@ export default function EnhancedFileVault() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-400">Total Files</p>
-                      <p className="text-2xl font-bold text-white">{mockStats.totalFiles.toLocaleString()}</p>
+                      <p className="text-2xl font-bold text-white">{currentVaultStats.totalFiles.toLocaleString()}</p>
                     </div>
                     <FileIcon className="w-8 h-8 text-red-400" />
                   </div>
@@ -622,7 +646,7 @@ export default function EnhancedFileVault() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-400">Shared Files</p>
-                      <p className="text-2xl font-bold text-white">{mockStats.sharedFiles}</p>
+                      <p className="text-2xl font-bold text-white">{currentVaultStats.sharedFiles}</p>
                     </div>
                     <Share className="w-8 h-8 text-green-400" />
                   </div>
@@ -634,7 +658,7 @@ export default function EnhancedFileVault() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-400">Recent Uploads</p>
-                      <p className="text-2xl font-bold text-white">{mockStats.recentUploads}</p>
+                      <p className="text-2xl font-bold text-white">{currentVaultStats.recentUploads}</p>
                     </div>
                     <Upload className="w-8 h-8 text-purple-400" />
                   </div>
@@ -842,7 +866,7 @@ export default function EnhancedFileVault() {
               {/* Folders Tab */}
               <TabsContent value="folders" className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {mockFolders.map((folder) => (
+                  {currentFolders.map((folder) => (
                     <GlassCard 
                       key={folder.id} 
                       variant="security" 
@@ -992,28 +1016,28 @@ export default function EnhancedFileVault() {
                           <Label className="text-white">Virus Scanning</Label>
                           <p className="text-sm text-gray-400">Automatically scan uploaded files</p>
                         </div>
-                        <Switch checked={mockVaultSettings.enableVirusScanning} />
+                        <Switch checked={currentVaultSettings.enableVirusScanning} />
                       </div>
                       <div className="flex items-center justify-between">
                         <div>
                           <Label className="text-white">Version Control</Label>
                           <p className="text-sm text-gray-400">Keep file version history</p>
                         </div>
-                        <Switch checked={mockVaultSettings.enableVersionControl} />
+                        <Switch checked={currentVaultSettings.enableVersionControl} />
                       </div>
                       <div className="flex items-center justify-between">
                         <div>
                           <Label className="text-white">Watermark Downloads</Label>
                           <p className="text-sm text-gray-400">Add watermarks to downloaded files</p>
                         </div>
-                        <Switch checked={mockVaultSettings.watermarkDownloads} />
+                        <Switch checked={currentVaultSettings.watermarkDownloads} />
                       </div>
                       <div className="flex items-center justify-between">
                         <div>
                           <Label className="text-white">Require MFA</Label>
                           <p className="text-sm text-gray-400">Multi-factor authentication for access</p>
                         </div>
-                        <Switch checked={mockVaultSettings.requireMFA} />
+                        <Switch checked={currentVaultSettings.requireMFA} />
                       </div>
                     </CardContent>
                   </GlassCard>
@@ -1027,7 +1051,7 @@ export default function EnhancedFileVault() {
                         <Label className="text-white">Maximum Storage (GB)</Label>
                         <Input
                           type="number"
-                          value={mockVaultSettings.maxStorageGB}
+                          value={currentVaultSettings.maxStorageGB}
                           className="mt-2 bg-gray-700 border-gray-600 text-white"
                         />
                       </div>
@@ -1035,7 +1059,7 @@ export default function EnhancedFileVault() {
                         <Label className="text-white">Maximum File Size (MB)</Label>
                         <Input
                           type="number"
-                          value={Math.round(mockVaultSettings.maxFileSize / 1024 / 1024)}
+                          value={Math.round(currentVaultSettings.maxFileSize / 1024 / 1024)}
                           className="mt-2 bg-gray-700 border-gray-600 text-white"
                         />
                       </div>
@@ -1043,14 +1067,14 @@ export default function EnhancedFileVault() {
                         <Label className="text-white">Default Retention (Days)</Label>
                         <Input
                           type="number"
-                          value={mockVaultSettings.defaultRetentionDays}
+                          value={currentVaultSettings.defaultRetentionDays}
                           className="mt-2 bg-gray-700 border-gray-600 text-white"
                         />
                       </div>
                       <div>
                         <Label className="text-white">Allowed File Types</Label>
                         <div className="mt-2 flex flex-wrap gap-2">
-                          {mockVaultSettings.allowedFileTypes.map((type) => (
+                          {currentVaultSettings.allowedFileTypes.map((type) => (
                             <Badge key={type} variant="outline" className="border-gray-600 text-gray-300">
                               {type}
                             </Badge>

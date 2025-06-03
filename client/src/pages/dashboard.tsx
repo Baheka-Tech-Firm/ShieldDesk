@@ -78,12 +78,11 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-red-950">
       <AnimatedBackground />
-      <div className="flex">
-        <Sidebar />
-        <main 
-          ref={dashboardRef}
-          className="flex-1 min-h-screen overflow-y-auto relative z-10"
-        >
+      <Sidebar />
+      <main 
+        ref={dashboardRef}
+        className="ml-72 min-h-screen overflow-y-auto relative z-10"
+      >
         {/* Immersive Header with Glass Effect */}
         <GlassCard 
           variant="danger" 

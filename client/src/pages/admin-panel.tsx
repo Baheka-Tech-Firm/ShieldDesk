@@ -300,9 +300,8 @@ export default function AdminPanel() {
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-black via-gray-900 to-red-950">
       <AnimatedBackground />
-      <div className="flex">
-        <Sidebar />
-        <main className="flex-1 min-h-screen overflow-y-auto relative z-10">
+      <Sidebar />
+      <main className="ml-72 min-h-screen overflow-y-auto relative z-10">
         <GlassCard 
           variant="danger" 
           className="m-6 mb-0 glass-effect cyber-border"

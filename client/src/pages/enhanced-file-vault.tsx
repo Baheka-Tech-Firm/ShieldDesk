@@ -579,11 +579,12 @@ export default function EnhancedFileVault() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-red-950">
       <ThreeBackground variant="vault" intensity={0.8} />
-      <Sidebar />
-      <main 
-        ref={vaultRef}
-        className="ml-64 pt-12 pl-6 pr-8 pb-8 relative z-50 min-h-screen overflow-y-auto bg-gradient-to-br from-black via-gray-900 to-red-950"
-      >
+      <div className="flex">
+        <Sidebar />
+        <main 
+          ref={vaultRef}
+          className="flex-1 ml-64 pt-12 pl-6 pr-8 pb-8 min-h-screen overflow-y-auto bg-gradient-to-br from-black via-gray-900 to-red-950"
+        >
           {/* Enhanced Header */}
           <GlassMorphismCard 
             variant="cyber" 
@@ -626,7 +627,7 @@ export default function EnhancedFileVault() {
             </div>
           </GlassMorphismCard>
 
-          <div className="p-6">
+          <div className="space-y-6">
             {/* Vault Statistics */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
               <GlassMorphismCard variant="cyber" className="animate-scale-in" animated={true}>

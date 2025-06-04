@@ -263,7 +263,7 @@ export default function EnhancedFileVault() {
         <Sidebar />
         <main 
           ref={vaultRef}
-          className="flex-1 min-h-screen overflow-y-auto"
+          className="flex-1 ml-64 pt-12 pl-6 pr-8 pb-8 min-h-screen overflow-y-auto"
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
@@ -271,7 +271,7 @@ export default function EnhancedFileVault() {
           {/* Enhanced Header */}
           <GlassMorphismCard 
             variant="cyber" 
-            className="m-6 mb-0 animate-slide-up"
+            className="mb-6 animate-slide-up"
             animated={true}
             borderGlow={true}
           >
@@ -308,7 +308,7 @@ export default function EnhancedFileVault() {
             </div>
           </GlassMorphismCard>
 
-          <div className="p-6">
+          <div className="space-y-6">
             {/* Vault Statistics */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
               <GlassMorphismCard variant="cyber" className="animate-scale-in hover-lift" animated={true}>

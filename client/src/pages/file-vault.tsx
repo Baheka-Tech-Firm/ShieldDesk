@@ -188,11 +188,11 @@ export default function FileVault() {
         <Sidebar />
         <main 
           ref={vaultRef}
-          className="flex-1 min-h-screen overflow-y-auto bg-gradient-to-br from-black via-gray-900 to-red-950"
+          className="flex-1 ml-64 pt-12 pl-6 pr-8 pb-8 min-h-screen overflow-y-auto bg-gradient-to-br from-black via-gray-900 to-red-950"
         >
         <GlassCard 
           variant="danger" 
-          className="m-6 mb-0 glass-effect cyber-border"
+          className="mb-6 glass-effect cyber-border"
           glowIntensity="medium"
           animated
         >
@@ -228,7 +228,7 @@ export default function FileVault() {
           </div>
         </GlassCard>
 
-        <div className="p-6 space-y-6">
+        <div className="space-y-6">
           <GlassCard 
             variant="danger" 
             glowIntensity="low" 

@@ -508,7 +508,7 @@ export default function UltimateDashboard() {
               const changePercent = ((change / metric.previousValue) * 100).toFixed(1);
               
               return (
-                <div key={metric.id} className="cyber-metric glassmorphism rounded-xl p-4 hover:scale-105 transition-all duration-300">
+                <div key={metric.id} className="cyber-metric glassmorphism rounded-xl p-6 min-h-[140px] hover:scale-105 transition-all duration-300">
                   <div className="flex items-center justify-between mb-3">
                     <div className={`p-2 rounded-lg bg-gray-900/40`}>
                       <Icon className={`w-5 h-5 ${metric.color}`} />
@@ -527,11 +527,11 @@ export default function UltimateDashboard() {
                     </div>
                   </div>
                   
-                  <div className="space-y-2">
-                    <div className={`metric-value ${getStatusColor(metric.status)}`}>
+                  <div className="space-y-3">
+                    <div className={`metric-value text-2xl font-bold ${getStatusColor(metric.status)}`}>
                       {metric.value}{metric.unit}
                     </div>
-                    <div className="text-xs text-gray-400 font-medium">{metric.name}</div>
+                    <div className="text-sm text-gray-300 font-medium">{metric.name}</div>
                     <div className="w-full bg-gray-800 rounded-full h-1.5">
                       <div 
                         className={`h-1.5 rounded-full transition-all duration-1000 ${

@@ -3,6 +3,7 @@ import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "@/components/ui/glass-card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   Shield, 
   LayoutDashboard, 

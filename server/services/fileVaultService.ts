@@ -37,14 +37,14 @@ export class FileVaultService {
   private encryptFileData(data: Buffer, key?: string): EncryptionResult {
     const encryptionKey = key ? Buffer.from(key, 'hex') : crypto.randomBytes(KEY_LENGTH);
     const iv = crypto.randomBytes(IV_LENGTH);
-    const cipher = crypto.createCipher(ENCRYPTION_ALGORITHM, encryptionKey);
+    const cipher = crypto.createCipheriv(ENCRYPTION_ALGORITHM, encryptionKey, iv);
 
     const encryptedChunks: Buffer[] = [];
     encryptedChunks.push(cipher.update(data));
     encryptedChunks.push(cipher.final());
 
     const encryptedData = Buffer.concat(encryptedChunks);
-    const tag = Buffer.alloc(16); // Mock tag for GCM simulation
+    const tag = cipher.getAuthTag();
 
     return {
       encryptedData,
@@ -58,9 +58,14 @@ export class FileVaultService {
    * Decrypt file data using AES-256-GCM
    */
   private decryptFileData(params: DecryptionParams): Buffer {
-    const { encryptedData, key } = params;
-    
-    const decipher = crypto.createDecipher(ENCRYPTION_ALGORITHM, Buffer.from(key, 'hex'));
+    const { encryptedData, key, iv, tag } = params;
+
+    const decipher = crypto.createDecipheriv(
+      ENCRYPTION_ALGORITHM,
+      Buffer.from(key, 'hex'),
+      Buffer.from(iv, 'hex')
+    );
+    decipher.setAuthTag(Buffer.from(tag, 'hex'));
 
     const decryptedChunks: Buffer[] = [];
     decryptedChunks.push(decipher.update(encryptedData));

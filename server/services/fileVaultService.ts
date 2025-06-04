@@ -35,15 +35,21 @@ export class FileVaultService {
    * Encrypt file data using AES-256-GCM
    */
   private encryptFileData(data: Buffer, key?: string): EncryptionResult {
-    const encryptionKey = key ? Buffer.from(key, 'hex') : crypto.randomBytes(KEY_LENGTH);
+    const encryptionKey = key
+      ? Buffer.from(key, 'hex')
+      : crypto.randomBytes(KEY_LENGTH);
     const iv = crypto.randomBytes(IV_LENGTH);
-    const cipher = crypto.createCipheriv(ENCRYPTION_ALGORITHM, encryptionKey, iv);
 
-    const encryptedChunks: Buffer[] = [];
-    encryptedChunks.push(cipher.update(data));
-    encryptedChunks.push(cipher.final());
+    const cipher = crypto.createCipheriv(
+      ENCRYPTION_ALGORITHM,
+      encryptionKey,
+      iv
+    );
 
-    const encryptedData = Buffer.concat(encryptedChunks);
+    const encryptedData = Buffer.concat([
+      cipher.update(data),
+      cipher.final()
+    ]);
     const tag = cipher.getAuthTag();
 
     return {
@@ -67,11 +73,12 @@ export class FileVaultService {
     );
     decipher.setAuthTag(Buffer.from(tag, 'hex'));
 
-    const decryptedChunks: Buffer[] = [];
-    decryptedChunks.push(decipher.update(encryptedData));
-    decryptedChunks.push(decipher.final());
+    const decryptedData = Buffer.concat([
+      decipher.update(encryptedData),
+      decipher.final()
+    ]);
 
-    return Buffer.concat(decryptedChunks);
+    return decryptedData;
   }
 
   /**

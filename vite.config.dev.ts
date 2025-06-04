@@ -23,7 +23,12 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5000,
-    allowedHosts: 'all',
+    allowedHosts: [
+      'localhost',
+      '127.0.0.1',
+      '130a9921-c16e-4e96-afd6-bab723873bee-00-es8cxb1r6vsx.janeway.replit.dev',
+      /\.janeway\.replit\.dev$/
+    ],
     strictPort: false,
     proxy: {
       '/api': {

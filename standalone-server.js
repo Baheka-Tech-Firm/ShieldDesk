@@ -25,7 +25,12 @@ async function startServer() {
     server: { 
       middlewareMode: true,
       host: '0.0.0.0',
-      allowedHosts: 'all'
+      allowedHosts: [
+        'localhost',
+        '127.0.0.1',
+        '130a9921-c16e-4e96-afd6-bab723873bee-00-es8cxb1r6vsx.janeway.replit.dev',
+        /\.janeway\.replit\.dev$/
+      ]
     },
     appType: 'spa',
     root: path.join(__dirname, 'client'),

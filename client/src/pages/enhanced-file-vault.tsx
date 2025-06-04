@@ -577,12 +577,12 @@ export default function EnhancedFileVault() {
   };
 
   return (
-    <div className="min-h-screen bg-black relative">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-red-950">
       <ThreeBackground variant="vault" intensity={0.8} />
       <Sidebar />
       <main 
         ref={vaultRef}
-        className="ml-64 pt-12 pl-6 pr-8 pb-8 relative z-50 min-h-screen overflow-y-auto"
+        className="ml-64 pt-12 pl-6 pr-8 pb-8 relative z-50 min-h-screen overflow-y-auto bg-gradient-to-br from-black via-gray-900 to-red-950"
       >
           {/* Enhanced Header */}
           <GlassMorphismCard 

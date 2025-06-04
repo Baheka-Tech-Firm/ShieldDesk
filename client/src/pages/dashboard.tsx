@@ -391,12 +391,11 @@ export default function Dashboard() {
 
   if (dashboardMode === 'interactive') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black">
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-red-950">
         <ThreeBackground />
-        <div className="flex h-screen relative z-10">
-          <Sidebar />
-          <main className="flex-1 overflow-auto">
-            <div className="p-6" ref={dashboardRef}>
+        <Sidebar />
+        <main className="ml-64 pt-12 pl-6 pr-8 pb-8 relative z-50 min-h-screen overflow-y-auto bg-gradient-to-br from-black via-gray-900 to-red-950">
+            <div ref={dashboardRef}>
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h1 className="text-4xl font-bold text-white mb-2">Interactive Security Dashboard</h1>

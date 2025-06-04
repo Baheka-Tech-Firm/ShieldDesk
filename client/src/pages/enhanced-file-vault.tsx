@@ -158,28 +158,29 @@ export default function EnhancedFileVault() {
   const [folderComplianceType, setFolderComplianceType] = useState<string>("general");
 
   // Fetch data with optimized caching
-  const { data: vaultStats, isLoading: statsLoading } = useQuery({
+  const { data: vaultStats, isLoading: statsLoading } = useOptimizedQuery({
     queryKey: ['/api/vault/stats'],
-    staleTime: 2 * 60 * 1000, // 2 minutes
-    gcTime: 5 * 60 * 1000, // 5 minutes
+    endpoint: '/api/vault/stats',
+    cacheTime: 2 * 60 * 1000, // 2 minutes
+    enablePrefetch: true
   });
 
-  const { data: folders, isLoading: foldersLoading } = useQuery({
-    queryKey: ['/api/vault/folders', currentFolder],
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
+  const { data: folders, isLoading: foldersLoading } = useOptimizedQuery({
+    queryKey: ['/api/vault/folders', currentFolder?.toString() || 'root'],
+    endpoint: `/api/vault/folders${currentFolder ? `?parent=${currentFolder}` : ''}`,
+    cacheTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  const { data: files = [], isLoading: filesLoading } = useQuery({
-    queryKey: ['/api/vault/files', currentFolder],
-    staleTime: 1 * 60 * 1000, // 1 minute
-    gcTime: 3 * 60 * 1000, // 3 minutes
+  const { data: files = [], isLoading: filesLoading } = useOptimizedQuery({
+    queryKey: ['/api/vault/files', currentFolder?.toString() || 'root'],
+    endpoint: `/api/vault/files${currentFolder ? `?folder=${currentFolder}` : ''}`,
+    cacheTime: 1 * 60 * 1000, // 1 minute
   });
 
-  const { data: vaultSettings } = useQuery({
+  const { data: vaultSettings } = useOptimizedQuery({
     queryKey: ['/api/vault/settings'],
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
+    endpoint: '/api/vault/settings',
+    cacheTime: 10 * 60 * 1000, // 10 minutes
   });
 
   // Mock data for development

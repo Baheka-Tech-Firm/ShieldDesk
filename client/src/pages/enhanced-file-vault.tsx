@@ -492,11 +492,22 @@ export default function EnhancedFileVault() {
 
   const handleFileDownload = async (fileId: number, fileName: string) => {
     try {
-      const response = await apiRequest(`/api/vault/files/${fileId}/download`);
+      const response = await fetch(`/api/vault/file/${fileId}/download`);
+      if (!response.ok) throw new Error('Download failed');
+      
+      const { downloadUrl, fileName: originalName } = await response.json();
+      
+      // Create download link
+      const link = document.createElement('a');
+      link.href = downloadUrl;
+      link.download = originalName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
       
       toast({
         title: "Download started",
-        description: `Downloading ${fileName}...`,
+        description: `Downloading ${originalName}...`,
       });
       
       // Update file access time
@@ -513,18 +524,20 @@ export default function EnhancedFileVault() {
   const handleFileShare = async (fileId: number) => {
     try {
       const shareData = {
-        shareType: "public",
-        accessLevel: "view",
+        permissions: ["view"],
         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7 days
       };
       
-      const response = await apiRequest(`/api/vault/files/${fileId}/share`, {
+      const response = await fetch(`/api/vault/file/${fileId}/share`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(shareData)
       });
       
-      navigator.clipboard.writeText(response.shareUrl);
+      if (!response.ok) throw new Error('Share failed');
+      
+      const data = await response.json();
+      navigator.clipboard.writeText(data.shareUrl);
       
       toast({
         title: "Share link created",

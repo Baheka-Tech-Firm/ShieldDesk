@@ -1,5 +1,6 @@
 import type { Express, Request } from "express";
 import { createServer, type Server } from "http";
+import crypto from "crypto";
 
 // Extend Express Request type to include user
 interface AuthenticatedRequest extends Request {
@@ -19,7 +20,6 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 import { loggingService, SecuritySeverity, EventCategory } from "./services/loggingService";
-import { registerVaultRoutes } from "./routes/vault";
 
 // Temporary auth middleware (bypassing Firebase for development)
 async function authenticateUser(req: AuthenticatedRequest, res: any, next: any) {
@@ -527,6 +527,75 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Folder permissions fetch error:', error);
       res.status(500).json({ message: 'Failed to fetch folder permissions' });
+    }
+  });
+
+  // File download endpoint
+  app.get('/api/vault/file/:id/download', async (req: AuthenticatedRequest, res) => {
+    try {
+      const fileId = parseInt(req.params.id);
+      const file = await storage.getFile(fileId);
+      
+      if (!file) {
+        return res.status(404).json({ message: 'File not found' });
+      }
+
+      // Log the download access
+      await storage.createFileAccessLog({
+        fileId: fileId,
+        userId: req.user!.id,
+        action: 'download',
+        ipAddress: req.ip || 'unknown',
+        userAgent: req.get('User-Agent') || 'unknown',
+        success: true
+      });
+
+      // For now, return download URL (in production this would handle actual file serving)
+      res.json({ 
+        downloadUrl: `/files/${file.id}/${file.originalName}`,
+        fileName: file.originalName,
+        fileSize: file.size,
+        mimeType: file.type
+      });
+    } catch (error) {
+      console.error('File download error:', error);
+      res.status(500).json({ message: 'Failed to download file' });
+    }
+  });
+
+  // File share endpoint
+  app.post('/api/vault/file/:id/share', async (req: AuthenticatedRequest, res) => {
+    try {
+      const fileId = parseInt(req.params.id);
+      const { expiresAt, permissions, password } = req.body;
+      
+      const file = await storage.getFile(fileId);
+      if (!file) {
+        return res.status(404).json({ message: 'File not found' });
+      }
+
+      // Create file share
+      const shareId = crypto.randomUUID();
+      const fileShare = await storage.createFileShare({
+        fileId: fileId,
+        createdBy: req.user!.id,
+        shareId: shareId,
+        shareType: "public",
+        accessLevel: permissions && permissions.includes("download") ? "download" : "view",
+        expiresAt: expiresAt ? new Date(expiresAt) : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days default
+        password: password,
+        maxAccess: null,
+        allowDownload: permissions && permissions.includes("download")
+      });
+
+      res.json({ 
+        shareUrl: `${req.protocol}://${req.get('host')}/shared/${shareId}`,
+        shareId: shareId,
+        expiresAt: fileShare.expiresAt
+      });
+    } catch (error) {
+      console.error('File share error:', error);
+      res.status(500).json({ message: 'Failed to share file' });
     }
   });
 

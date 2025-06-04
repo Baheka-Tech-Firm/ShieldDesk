@@ -10,7 +10,7 @@ import Login from "@/pages/login";
 import Dashboard from "@/pages/dashboard";
 import Onboarding from "@/pages/onboarding";
 import FileVault from "@/pages/file-vault";
-import EnhancedFileVault from "@/pages/enhanced-file-vault";
+import EnhancedFileVault from "@/pages/enhanced-file-vault-new";
 import FileDetails from "@/pages/file-details";
 import FolderDetails from "@/pages/folder-details";
 import VulnerabilityScanner from "@/pages/vulnerability-scanner";

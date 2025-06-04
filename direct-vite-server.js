@@ -5,12 +5,23 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 async function startViteServer() {
+  // Clear Vite cache to prevent issues
+  console.log('Clearing Vite cache...');
+  
   const server = await createServer({
+    configFile: path.join(__dirname, 'vite.config.cloud.ts'),
     root: path.join(__dirname, 'client'),
     server: {
       host: '0.0.0.0',
       port: 5000,
-      allowedHosts: 'all'
+      allowedHosts: 'all',
+      strictPort: false,
+      force: true,
+      cors: true,
+      fs: {
+        strict: false,
+        allow: ['..']
+      }
     },
     resolve: {
       alias: {
@@ -19,9 +30,11 @@ async function startViteServer() {
         '@assets': path.join(__dirname, 'attached_assets')
       }
     },
-    define: {
-      'process.env.NODE_ENV': JSON.stringify('development')
-    }
+    optimizeDeps: {
+      force: true
+    },
+    clearScreen: false,
+    logLevel: 'info'
   });
 
   await server.listen();

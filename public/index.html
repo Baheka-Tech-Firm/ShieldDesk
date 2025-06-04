@@ -87,6 +87,8 @@
             border-right: 1px solid rgba(239, 68, 68, 0.3);
             z-index: 1000;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
         
         .main-content {
@@ -272,7 +274,7 @@
                         <p className="text-sm text-gray-400">Advanced Cybersecurity Platform</p>
                     </div>
                     
-                    <nav className="px-2">
+                    <nav className="px-2 flex-1">
                         {menuItems.map(item => (
                             <div
                                 key={item.path}
@@ -287,7 +289,7 @@
                         ))}
                     </nav>
                     
-                    <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <div className="mt-auto p-6">
                         <div className="glass-morphism p-4 text-center">
                             <p className="text-sm text-gray-400 mb-2">Security Status</p>
                             <div className="flex items-center justify-center space-x-2">

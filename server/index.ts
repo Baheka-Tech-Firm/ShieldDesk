@@ -5,10 +5,10 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-console.log('Starting ShieldDesk direct Vite server...');
+console.log('Starting ShieldDesk force Vite server...');
 
-// Start the direct Vite server
-const server = spawn('node', ['direct-vite-server.js'], {
+// Start the force Vite server
+const server = spawn('node', ['force-vite-server.js'], {
   cwd: path.join(__dirname, '..'),
   stdio: 'inherit',
   env: {

@@ -160,7 +160,7 @@ export default function ProfessionalDashboard() {
       
       <Sidebar />
       
-      <main className="ml-72 p-6 relative z-10">
+      <main className="ml-72 p-6 relative z-10 space-y-8">
         {/* Header Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-8">
@@ -203,9 +203,9 @@ export default function ProfessionalDashboard() {
             {keyMetrics.map((metric) => {
               const Icon = metric.icon;
               return (
-                <div key={metric.id} className={`bg-gradient-to-br ${getMetricColor(metric.severity)} backdrop-blur-xl border rounded-xl p-6 hover:scale-[1.02] transition-all duration-300 group`}>
+                <div key={metric.id} className={`bg-gradient-to-br ${getMetricColor(metric.severity)} backdrop-blur-xl rounded-xl p-6 hover:scale-[1.02] transition-all duration-300 group`}>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="p-3 bg-gray-900/40 rounded-lg border border-gray-700/50">
+                    <div className="p-3 bg-gray-900/40 rounded-lg">
                       <Icon className="w-6 h-6 text-cyan-400 group-hover:scale-110 transition-transform duration-300" />
                     </div>
                     <div className="flex items-center space-x-1">
@@ -235,7 +235,7 @@ export default function ProfessionalDashboard() {
 
         {/* Main Dashboard Content */}
         <Tabs value={activeView} onValueChange={setActiveView} className="space-y-6">
-          <TabsList className="bg-gray-900/60 backdrop-blur-xl border border-gray-700/50 p-1">
+          <TabsList className="bg-gray-900/60 backdrop-blur-xl p-1">
             <TabsTrigger value="overview" className="data-[state=active]:bg-cyan-600/30 data-[state=active]:text-cyan-300 data-[state=active]:border-cyan-500/30">
               <BarChart3 className="w-4 h-4 mr-2" />
               Overview
@@ -258,7 +258,7 @@ export default function ProfessionalDashboard() {
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
               {/* Threat Timeline */}
               <div className="xl:col-span-2">
-                <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-xl p-6">
+                <div className="bg-gray-900/40 backdrop-blur-xl rounded-xl p-6">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-lg font-semibold text-white flex items-center">
                       <Activity className="w-5 h-5 mr-2 text-cyan-400" />
@@ -276,7 +276,7 @@ export default function ProfessionalDashboard() {
                       { id: '3', type: 'Data Exfiltration', severity: 'medium', timestamp: new Date().toISOString(), description: 'Unusual outbound data transfer', source: 'SERVER-DB01', status: 'resolved' },
                       { id: '4', type: 'Vulnerability Scan', severity: 'low', timestamp: new Date().toISOString(), description: 'Automated security scan completed', source: 'Security Scanner', status: 'resolved' }
                     ]).slice(0, 10).map((threat: ThreatEvent) => (
-                      <div key={threat.id} className="flex items-start space-x-4 p-4 bg-gray-800/30 rounded-lg border border-gray-700/30 hover:bg-gray-800/50 transition-colors duration-200">
+                      <div key={threat.id} className="flex items-start space-x-4 p-4 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition-colors duration-200">
                         <div className={`w-3 h-3 rounded-full mt-2 ${
                           threat.severity === 'critical' ? 'bg-red-500 animate-pulse' :
                           threat.severity === 'high' ? 'bg-orange-500' :

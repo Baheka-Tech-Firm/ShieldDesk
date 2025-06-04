@@ -20,8 +20,10 @@ async function startServer() {
     stdio: 'inherit'
   });
 
-  // Create Vite server in middleware mode
+  // Create Vite server in middleware mode with dev config
+  const configFile = process.env.VITE_CONFIG || 'vite.config.dev.ts';
   const vite = await createServer({
+    configFile: path.join(__dirname, configFile),
     server: { 
       middlewareMode: true,
       host: '0.0.0.0',

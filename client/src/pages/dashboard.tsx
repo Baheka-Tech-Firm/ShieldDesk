@@ -78,20 +78,20 @@ export default function Dashboard() {
   const notifications = dashboardData?.notifications || [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-red-950">
-      <AnimatedBackground />
-      <div className="flex">
+    <div className="min-h-screen bg-black relative">
+      <ThreeBackground variant="dashboard" intensity={0.9} />
+      <div className="flex relative z-10">
         <Sidebar />
         <main 
           ref={dashboardRef}
-          className="flex-1 min-h-screen overflow-y-auto bg-gradient-to-br from-black via-gray-900 to-red-950"
+          className="flex-1 min-h-screen overflow-y-auto"
         >
         {/* Immersive Header with Glass Effect */}
-        <GlassCard 
-          variant="danger" 
-          className="m-6 mb-0 glass-effect cyber-border"
-          glowIntensity="medium"
-          animated
+        <GlassMorphismCard 
+          variant="cyber" 
+          className="m-6 mb-0 animate-fade-in"
+          animated={true}
+          borderGlow={true}
         >
           <div className="px-8 py-6">
             <div className="flex items-center justify-between">
@@ -118,7 +118,7 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-        </GlassCard>
+        </GlassMorphismCard>
 
         {/* Enhanced Dashboard Content */}
         <div className="p-6 space-y-8">

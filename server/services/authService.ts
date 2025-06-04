@@ -69,7 +69,7 @@ export class AuthService {
   private calculateRiskScore(context: Partial<ZeroTrustContext>): number {
     let riskScore = 0;
 
-    // Base risk factors
+    // Base risk factors for simple heuristics
     const factors = {
       unknownDevice: 30,
       newLocation: 25,
@@ -78,9 +78,36 @@ export class AuthService {
       suspiciousUserAgent: 20
     };
 
-    // This would integrate with threat intelligence and behavioral analysis
-    // For now, we'll implement basic checks
+    // Basic contextual checks. These can later be replaced with
+    // integrations for threat intelligence and behavioral analytics.
 
+    // Missing device fingerprint suggests an unknown device
+    if (!context.deviceFingerprint) {
+      riskScore += factors.unknownDevice;
+    }
+
+    // If location is provided and flagged as new, increase risk
+    if (context.location && context.location !== 'known') {
+      riskScore += factors.newLocation;
+    }
+
+    // Logins outside typical business hours are slightly riskier
+    const currentHour = new Date().getUTCHours();
+    if (currentHour < 6 || currentHour > 20) {
+      riskScore += factors.offHours;
+    }
+
+    // Previous high risk (e.g., multiple failed attempts) boosts score
+    if (context.riskScore && context.riskScore >= this.MAX_FAILED_ATTEMPTS) {
+      riskScore += factors.multipleFailedAttempts;
+    }
+
+    // Obvious bot or script user agents are suspicious
+    if (context.userAgent && /bot|crawl|spider|curl|wget/i.test(context.userAgent)) {
+      riskScore += factors.suspiciousUserAgent;
+    }
+
+    // Ensure score does not exceed 100
     return Math.min(riskScore, 100);
   }
 

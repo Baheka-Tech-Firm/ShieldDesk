@@ -1,0 +1,67 @@
+name: Commit Quality Checks
+
+on:
+  push:
+    branches: [ '*' ]
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Check commit message format
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          echo "Checking commit message: $COMMIT_MSG"
+          
+          # Check for conventional commit format (optional but recommended)
+          if [[ "$COMMIT_MSG" =~ ^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: .+ ]]; then
+            echo "✅ Conventional commit format detected"
+          else
+            echo "ℹ️ Consider using conventional commit format: type(scope): description"
+          fi
+          
+      - name: Check for large files
+        run: |
+          echo "Checking for large files..."
+          find . -type f -size +10M -not -path "./node_modules/*" -not -path "./.git/*" | while read file; do
+            echo "⚠️ Large file detected: $file"
+          done
+          
+      - name: Security scan
+        run: |
+          echo "Running security checks..."
+          npm audit --audit-level high || echo "Security audit completed with warnings"
+          
+      - name: Quick syntax check
+        run: |
+          echo "Checking syntax..."
+          npm run type-check
+          
+      - name: Fast test run
+        run: |
+          echo "Running quick tests..."
+          npm test -- --passWithNoTests --bail --maxWorkers=2
+          
+      - name: Code quality summary
+        if: always()
+        run: |
+          echo "## Code Quality Report 🔍" >> $GITHUB_STEP_SUMMARY
+          echo "- Commit: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Branch: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Author: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Timestamp: $(date)" >> $GITHUB_STEP_SUMMARY

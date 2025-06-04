@@ -582,7 +582,7 @@ export default function EnhancedFileVault() {
       <Sidebar />
       <main 
         ref={vaultRef}
-        className="ml-64 pt-12 pl-6 pr-8 pb-8 relative z-10 min-h-screen overflow-y-auto"
+        className="ml-64 pt-12 pl-6 pr-8 pb-8 relative z-50 min-h-screen overflow-y-auto"
       >
           {/* Enhanced Header */}
           <GlassMorphismCard 

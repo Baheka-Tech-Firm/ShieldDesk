@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Sidebar } from "@/components/layout/sidebar";
+import ThreeBackground from "@/components/ui/three-background";
+import GlassMorphismCard from "@/components/ui/glass-morphism-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -575,19 +577,20 @@ export default function EnhancedFileVault() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-red-950">
-      <AnimatedBackground />
-      <div className="flex">
+    <div className="min-h-screen bg-black relative">
+      <ThreeBackground variant="vault" intensity={0.8} />
+      <div className="flex relative z-10">
         <Sidebar />
         <main 
           ref={vaultRef}
-          className="flex-1 min-h-screen overflow-y-auto bg-gradient-to-br from-black via-gray-900 to-red-950"
+          className="flex-1 min-h-screen overflow-y-auto"
         >
           {/* Enhanced Header */}
-          <GlassCard 
-            variant="danger" 
-            className="m-6 mb-0 glass-effect cyber-border"
-            glowIntensity="medium"
+          <GlassMorphismCard 
+            variant="cyber" 
+            className="m-6 mb-0 animate-slide-up"
+            animated={true}
+            borderGlow={true}
           >
             <div className="px-6 py-4">
               <div className="flex items-center justify-between">
@@ -622,13 +625,13 @@ export default function EnhancedFileVault() {
                 </div>
               </div>
             </div>
-          </GlassCard>
+          </GlassMorphismCard>
 
           <div className="p-6">
             {/* Vault Statistics */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-              <GlassCard variant="security" className="glass-effect">
-                <CardContent className="p-4">
+              <GlassMorphismCard variant="cyber" className="animate-scale-in" animated={true}>
+                <div className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-400">Total Files</p>
@@ -636,8 +639,8 @@ export default function EnhancedFileVault() {
                     </div>
                     <FileIcon className="w-8 h-8 text-red-400" />
                   </div>
-                </CardContent>
-              </GlassCard>
+                </div>
+              </GlassMorphismCard>
 
               <GlassCard variant="security" className="glass-effect">
                 <CardContent className="p-4">

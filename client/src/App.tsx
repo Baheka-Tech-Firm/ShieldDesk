@@ -8,7 +8,7 @@ import { AuthProvider, useAuth } from "@/hooks/use-auth";
 
 // Pages
 import Login from "@/pages/login";
-import Dashboard from "@/pages/enterprise-dashboard";
+import Dashboard from "@/pages/ultimate-dashboard";
 import Onboarding from "@/pages/onboarding";
 import FileVault from "@/pages/file-vault";
 import EnhancedFileVault from "@/pages/enhanced-file-vault-new";

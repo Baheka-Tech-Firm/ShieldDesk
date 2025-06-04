@@ -345,6 +345,173 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Vulnerability Scanner API Endpoints
+  app.get('/api/vulnerabilities/stats', async (req: AuthenticatedRequest, res) => {
+    try {
+      const stats = {
+        critical: 3,
+        high: 8,
+        medium: 15,
+        low: 22,
+        total: 48,
+        resolved: 156,
+        openTrend: -12,
+        avgResolutionTime: 4.2,
+        assetsScanned: 15,
+        lastScanTime: new Date().toISOString()
+      };
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch vulnerability stats' });
+    }
+  });
+
+  app.get('/api/vulnerabilities/assets', async (req: AuthenticatedRequest, res) => {
+    try {
+      const assets = [
+        {
+          id: '1',
+          name: 'Company Website',
+          type: 'url',
+          target: 'https://company.com',
+          description: 'Main corporate website with customer portal',
+          lastScan: new Date().toISOString(),
+          status: 'active',
+          vulnerabilityCount: 12,
+          riskScore: 85,
+          tags: ['web', 'public', 'customer-facing']
+        },
+        {
+          id: '2',
+          name: 'Internal API Server',
+          type: 'ip',
+          target: '192.168.1.100',
+          description: 'Internal REST API server for microservices',
+          lastScan: new Date(Date.now() - 3600000).toISOString(),
+          status: 'active',
+          vulnerabilityCount: 5,
+          riskScore: 65,
+          tags: ['api', 'internal', 'microservices']
+        }
+      ];
+      res.json(assets);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch assets' });
+    }
+  });
+
+  app.post('/api/vulnerabilities/assets', async (req: AuthenticatedRequest, res) => {
+    try {
+      const { name, type, target, description, tags } = req.body;
+      const newAsset = {
+        id: Math.random().toString(36).substr(2, 9),
+        name,
+        type,
+        target,
+        description,
+        lastScan: null,
+        status: 'active',
+        vulnerabilityCount: 0,
+        riskScore: 0,
+        tags: tags || []
+      };
+      res.status(201).json(newAsset);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to create asset' });
+    }
+  });
+
+  app.get('/api/vulnerabilities', async (req: AuthenticatedRequest, res) => {
+    try {
+      const vulnerabilities = [
+        {
+          id: '1',
+          title: 'SQL Injection in Authentication Endpoint',
+          severity: 'critical',
+          assetId: '1',
+          assetName: 'Company Website',
+          cvssScore: 9.8,
+          cveReference: 'CVE-2024-1234',
+          exploitability: 'high',
+          status: 'open',
+          discovered: new Date().toISOString(),
+          description: 'SQL injection vulnerability found in user authentication endpoint',
+          remediation: 'Implement parameterized queries and input validation',
+          affectedComponent: '/api/auth/login',
+          assignedTo: 'Security Team',
+          impact: {
+            availability: 'high',
+            confidentiality: 'high',
+            integrity: 'high'
+          }
+        }
+      ];
+      res.json(vulnerabilities);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch vulnerabilities' });
+    }
+  });
+
+  app.put('/api/vulnerabilities/:id', async (req: AuthenticatedRequest, res) => {
+    try {
+      const { id } = req.params;
+      const updates = req.body;
+      
+      // In a real implementation, update the vulnerability in the database
+      const updatedVulnerability = {
+        id,
+        ...updates,
+        updatedAt: new Date().toISOString()
+      };
+      
+      res.json(updatedVulnerability);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to update vulnerability' });
+    }
+  });
+
+  app.post('/api/vulnerabilities/scan', async (req: AuthenticatedRequest, res) => {
+    try {
+      const { assetIds, scanType, scheduled, frequency } = req.body;
+      
+      const scanJob = {
+        id: Math.random().toString(36).substr(2, 9),
+        name: `${scanType.charAt(0).toUpperCase() + scanType.slice(1)} Scan`,
+        status: 'running',
+        progress: 0,
+        startTime: new Date().toISOString(),
+        assetsScanned: assetIds.length,
+        vulnerabilitiesFound: 0,
+        scanType
+      };
+      
+      res.status(202).json(scanJob);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to start scan' });
+    }
+  });
+
+  app.get('/api/vulnerabilities/scans', async (req: AuthenticatedRequest, res) => {
+    try {
+      const scans = [
+        {
+          id: 'scan-1',
+          name: 'Weekly Security Scan',
+          status: 'completed',
+          progress: 100,
+          startTime: new Date(Date.now() - 2700000).toISOString(),
+          endTime: new Date(Date.now() - 0).toISOString(),
+          assetsScanned: 15,
+          vulnerabilitiesFound: 12,
+          scanType: 'Standard'
+        }
+      ];
+      res.json(scans);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch scan history' });
+    }
+  });
+
   app.post('/api/monitoring/incident', async (req: AuthenticatedRequest, res) => {
     try {
       const user = req.user!;

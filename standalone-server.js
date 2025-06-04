@@ -59,6 +59,19 @@ async function startServer() {
     next();
   });
 
+  // Serve PWA manifest and service worker
+  app.get('/manifest.json', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'manifest.json'));
+  });
+
+  app.get('/sw.js', (req, res) => {
+    res.setHeader('Content-Type', 'application/javascript');
+    res.sendFile(path.join(__dirname, 'public', 'sw.js'));
+  });
+
+  // Serve PWA icons
+  app.use('/icons', express.static(path.join(__dirname, 'public', 'icons')));
+
   // Use Vite's connect instance as middleware for React development
   app.use(vite.middlewares);
 

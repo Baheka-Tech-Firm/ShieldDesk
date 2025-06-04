@@ -1,1 +1,4 @@
-<!-- 144x144 icon placeholder -->
+<svg width="144" height="144" xmlns="http://www.w3.org/2000/svg">
+  <rect width="144" height="144" fill="#dc2626"/>
+  <rect x="36" y="36" width="72" height="72" fill="#ffffff"/>
+</svg>

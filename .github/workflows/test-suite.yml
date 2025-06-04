@@ -1,0 +1,228 @@
+name: Test Suite - Jest, PHPUnit, Playwright, SonarQube
+
+on:
+  push:
+    branches: [ '*' ]
+  pull_request:
+    branches: [ '*' ]
+
+jobs:
+  jest-tests:
+    name: Jest Unit Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run Jest tests with coverage
+        run: npm run test:coverage
+        
+      - name: Upload Jest coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: jest-coverage
+          path: coverage/
+          retention-days: 30
+
+  phpunit-tests:
+    name: PHPUnit Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, xml, ctype, json, curl, dom, gd, pdo_mysql, pdo_pgsql
+          coverage: xdebug
+          
+      - name: Check for PHP project files
+        id: php-check
+        run: |
+          if [ -f "composer.json" ]; then
+            echo "has_composer=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_composer=false" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Install Composer dependencies
+        if: steps.php-check.outputs.has_composer == 'true'
+        run: composer install --prefer-dist --no-progress --no-suggest
+        
+      - name: Run PHPUnit tests
+        if: steps.php-check.outputs.has_composer == 'true'
+        run: |
+          if [ -f "phpunit.xml" ] || [ -f "phpunit.xml.dist" ]; then
+            vendor/bin/phpunit --coverage-clover=phpunit-coverage.xml
+          else
+            echo "No PHPUnit configuration found"
+          fi
+          
+      - name: Upload PHPUnit coverage
+        if: steps.php-check.outputs.has_composer == 'true'
+        uses: actions/upload-artifact@v3
+        with:
+          name: phpunit-coverage
+          path: phpunit-coverage.xml
+          retention-days: 30
+
+  playwright-tests:
+    name: Playwright E2E Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: shielddesk_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+        
+      - name: Setup test database
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/shielddesk_test
+        run: |
+          npm run db:push || echo "Database setup not available"
+          
+      - name: Build application
+        run: npm run build
+        
+      - name: Run Playwright tests
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/shielddesk_test
+        run: npm run test:e2e
+        
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+          
+      - name: Upload Playwright test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-test-results
+          path: test-results/
+          retention-days: 30
+
+  sonarqube-analysis:
+    name: SonarQube Analysis
+    runs-on: ubuntu-latest
+    needs: [jest-tests]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run tests for SonarQube
+        run: npm run test:coverage
+        
+      - name: Check SonarQube configuration
+        id: sonar-check
+        run: |
+          if [ -f "sonar-project.properties" ]; then
+            echo "has_sonar_config=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_sonar_config=false" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Run SonarQube Scanner
+        if: steps.sonar-check.outputs.has_sonar_config == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: |
+          if [ ! -z "$SONAR_TOKEN" ]; then
+            npx sonar-scanner \
+              -Dsonar.projectKey=shielddesk \
+              -Dsonar.sources=. \
+              -Dsonar.host.url=${SONAR_HOST_URL:-https://sonarcloud.io} \
+              -Dsonar.login=$SONAR_TOKEN \
+              -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info \
+              -Dsonar.coverage.exclusions=**/*.test.ts,**/*.spec.ts,**/node_modules/**,**/dist/**,**/build/**,**/coverage/**
+          else
+            echo "SonarQube token not configured. Please set SONAR_TOKEN secret to enable analysis."
+          fi
+          
+      - name: Upload SonarQube results
+        if: steps.sonar-check.outputs.has_sonar_config == 'true'
+        uses: actions/upload-artifact@v3
+        with:
+          name: sonarqube-results
+          path: .scannerwork/
+          retention-days: 30
+
+  test-summary:
+    name: Test Summary
+    runs-on: ubuntu-latest
+    needs: [jest-tests, phpunit-tests, playwright-tests, sonarqube-analysis]
+    if: always()
+    
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v3
+        
+      - name: Generate test summary
+        run: |
+          echo "# Test Results Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Test Status" >> $GITHUB_STEP_SUMMARY
+          echo "- Jest Tests: ${{ needs.jest-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- PHPUnit Tests: ${{ needs.phpunit-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Playwright Tests: ${{ needs.playwright-tests.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- SonarQube Analysis: ${{ needs.sonarqube-analysis.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Artifacts Generated" >> $GITHUB_STEP_SUMMARY
+          echo "- Test coverage reports" >> $GITHUB_STEP_SUMMARY
+          echo "- Playwright test reports" >> $GITHUB_STEP_SUMMARY
+          echo "- SonarQube analysis results" >> $GITHUB_STEP_SUMMARY

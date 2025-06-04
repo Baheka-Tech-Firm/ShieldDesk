@@ -306,7 +306,7 @@ export default function ProfessionalDashboard() {
 
               {/* System Status */}
               <div className="space-y-6">
-                <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-xl p-6">
+                <div className="bg-gray-900/40 backdrop-blur-xl rounded-xl p-6">
                   <h3 className="text-lg font-semibold text-white flex items-center mb-6">
                     <Cpu className="w-5 h-5 mr-2 text-cyan-400" />
                     System Health
@@ -347,7 +347,7 @@ export default function ProfessionalDashboard() {
                 </div>
 
                 {/* Quick Actions */}
-                <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-xl p-6">
+                <div className="bg-gray-900/40 backdrop-blur-xl rounded-xl p-6">
                   <h3 className="text-lg font-semibold text-white flex items-center mb-6">
                     <Zap className="w-5 h-5 mr-2 text-cyan-400" />
                     Quick Actions
@@ -387,7 +387,7 @@ export default function ProfessionalDashboard() {
               ].map((stat, index) => {
                 const Icon = stat.icon;
                 return (
-                  <div key={index} className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-xl p-6">
+                  <div key={index} className="bg-gray-900/40 backdrop-blur-xl rounded-xl p-6">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-gray-400 text-sm">{stat.title}</p>
@@ -413,7 +413,7 @@ export default function ProfessionalDashboard() {
               ].map((asset, index) => {
                 const Icon = asset.icon;
                 return (
-                  <div key={index} className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-xl p-6 hover:scale-[1.02] transition-all duration-300">
+                  <div key={index} className="bg-gray-900/40 backdrop-blur-xl rounded-xl p-6 hover:scale-[1.02] transition-all duration-300">
                     <div className="flex items-center justify-between mb-4">
                       <Icon className="w-8 h-8 text-cyan-400" />
                       <Badge className="bg-green-600/20 text-green-300 border-green-500/30">
@@ -433,7 +433,7 @@ export default function ProfessionalDashboard() {
 
           <TabsContent value="compliance" className="space-y-6">
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-              <div className="bg-gray-900/40 backdrop-blur-xl border border-gray-700/50 rounded-xl p-6">
+              <div className="bg-gray-900/40 backdrop-blur-xl rounded-xl p-6">
                 <h3 className="text-lg font-semibold text-white mb-6">Compliance Frameworks</h3>
                 <div className="space-y-4">
                   {[

@@ -555,28 +555,28 @@ export default function UltimateDashboard() {
           <TabsList className="glassmorphism p-1.5 rounded-xl">
             <TabsTrigger 
               value="overview" 
-              className="data-[state=active]:bg-cyan-600/30 data-[state=active]:text-cyan-300 data-[state=active]:shadow-lg data-[state=active]:shadow-cyan-500/25 rounded-lg px-6 py-3 transition-all duration-300"
+              className="data-[state=active]:bg-cyan-600/30 data-[state=active]:text-cyan-300 data-[state=active]:shadow-lg data-[state=active]:shadow-cyan-500/25 rounded-lg px-6 py-3 transition-all duration-300 text-gray-400 hover:text-gray-200"
             >
               <Crosshair className="w-4 h-4 mr-2" />
               Threat Intelligence
             </TabsTrigger>
             <TabsTrigger 
               value="assets" 
-              className="data-[state=active]:bg-cyan-600/30 data-[state=active]:text-cyan-300 data-[state=active]:shadow-lg data-[state=active]:shadow-cyan-500/25 rounded-lg px-6 py-3 transition-all duration-300"
+              className="data-[state=active]:bg-cyan-600/30 data-[state=active]:text-cyan-300 data-[state=active]:shadow-lg data-[state=active]:shadow-cyan-500/25 rounded-lg px-6 py-3 transition-all duration-300 text-gray-400 hover:text-gray-200"
             >
               <Layers className="w-4 h-4 mr-2" />
               Asset Security
             </TabsTrigger>
             <TabsTrigger 
               value="compliance" 
-              className="data-[state=active]:bg-cyan-600/30 data-[state=active]:text-cyan-300 data-[state=active]:shadow-lg data-[state=active]:shadow-cyan-500/25 rounded-lg px-6 py-3 transition-all duration-300"
+              className="data-[state=active]:bg-cyan-600/30 data-[state=active]:text-cyan-300 data-[state=active]:shadow-lg data-[state=active]:shadow-cyan-500/25 rounded-lg px-6 py-3 transition-all duration-300 text-gray-400 hover:text-gray-200"
             >
               <FileText className="w-4 h-4 mr-2" />
               Compliance
             </TabsTrigger>
             <TabsTrigger 
               value="analytics" 
-              className="data-[state=active]:bg-cyan-600/30 data-[state=active]:text-cyan-300 data-[state=active]:shadow-lg data-[state=active]:shadow-cyan-500/25 rounded-lg px-6 py-3 transition-all duration-300"
+              className="data-[state=active]:bg-cyan-600/30 data-[state=active]:text-cyan-300 data-[state=active]:shadow-lg data-[state=active]:shadow-cyan-500/25 rounded-lg px-6 py-3 transition-all duration-300 text-gray-400 hover:text-gray-200"
             >
               <BarChart3 className="w-4 h-4 mr-2" />
               Analytics

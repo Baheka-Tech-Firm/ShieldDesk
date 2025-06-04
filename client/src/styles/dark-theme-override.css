@@ -1,0 +1,157 @@
+/* Dark Theme Override - Remove ALL White Borders */
+
+/* Global border color override */
+* {
+  border-color: #374151 !important; /* Gray-700 */
+}
+
+/* Remove white/light borders from all components */
+[class*="border-white"],
+[class*="border-gray-100"],
+[class*="border-gray-200"],
+[class*="border-gray-300"] {
+  border-color: #1f2937 !important; /* Gray-800 */
+}
+
+/* Shadcn UI component overrides */
+.shadcn-tabs-list,
+[data-radix-collection-item] {
+  border-color: #111827 !important; /* Gray-900 */
+}
+
+/* Tab triggers */
+[role="tab"] {
+  border-color: transparent !important;
+  color: #9ca3af !important; /* Gray-400 */
+}
+
+[role="tab"][data-state="active"] {
+  border-color: transparent !important;
+  color: #06b6d4 !important; /* Cyan-500 */
+}
+
+/* Card components */
+.card,
+[class*="card"] {
+  border-color: #1f2937 !important; /* Gray-800 */
+  background-color: rgba(17, 17, 17, 0.8) !important;
+}
+
+/* Button overrides */
+.btn,
+button,
+[role="button"] {
+  border-color: #374151 !important; /* Gray-700 */
+}
+
+/* Badge components */
+.badge,
+[class*="badge"] {
+  border-color: transparent !important;
+}
+
+/* Progress bars */
+.progress,
+[class*="progress"] {
+  background-color: #111827 !important; /* Gray-900 */
+  border-color: transparent !important;
+}
+
+/* Form elements */
+input,
+select,
+textarea {
+  border-color: #374151 !important; /* Gray-700 */
+  background-color: #1f2937 !important; /* Gray-800 */
+  color: #ffffff !important;
+}
+
+/* Dropdown menus */
+[role="menu"],
+[role="listbox"] {
+  border-color: #374151 !important; /* Gray-700 */
+  background-color: #111827 !important; /* Gray-900 */
+}
+
+/* Remove focus rings that are white */
+*:focus {
+  outline-color: #06b6d4 !important; /* Cyan-500 */
+  border-color: #06b6d4 !important; /* Cyan-500 */
+}
+
+/* Override any remaining white borders */
+.border,
+.border-t,
+.border-r,
+.border-b,
+.border-l {
+  border-color: #1f2937 !important; /* Gray-800 */
+}
+
+/* Ensure glassmorphism doesn't have white borders */
+.glassmorphism {
+  border: 1px solid rgba(55, 65, 81, 0.3) !important; /* Gray-700 with opacity */
+  background: rgba(17, 17, 17, 0.4) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+/* Remove any white borders from cyber cards */
+.cyber-card {
+  border: none !important;
+  background: rgba(17, 17, 17, 0.8) !important;
+}
+
+/* Metric cards */
+.cyber-metric {
+  border: none !important;
+  background: rgba(17, 17, 17, 0.6) !important;
+}
+
+/* Table borders */
+table,
+th,
+td {
+  border-color: #374151 !important; /* Gray-700 */
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  background-color: transparent !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #374151 !important; /* Gray-700 */
+  border: none !important;
+}
+
+/* Override any SVG strokes that might be white */
+svg {
+  stroke: currentColor !important;
+}
+
+/* Ensure no white text on dark backgrounds */
+.text-white {
+  color: #ffffff !important;
+}
+
+/* Remove white box shadows */
+[class*="shadow"] {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 
+              0 2px 4px -1px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Override Radix UI default styles */
+[data-radix-popper-content-wrapper] {
+  border-color: #374151 !important;
+}
+
+[data-state="open"] {
+  border-color: #06b6d4 !important;
+}
+
+/* Ensure all dividers are dark */
+hr,
+.divider {
+  border-color: #374151 !important;
+  background-color: #374151 !important;
+}

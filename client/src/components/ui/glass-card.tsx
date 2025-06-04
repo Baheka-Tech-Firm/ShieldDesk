@@ -161,3 +161,5 @@ export function GlassCard({
     </div>
   );
 }
+
+export default GlassCard;

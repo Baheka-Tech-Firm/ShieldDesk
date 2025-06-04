@@ -32,29 +32,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    // If Firebase auth is not available, use mock data for development
-    if (!auth) {
+    let isMounted = true;
+
+    // Set mock user data for development
+    const mockUser: AuthUser = {
+      id: 1,
+      firebaseUid: 'mock-uid',
+      email: 'admin@shielddesk.com',
+      name: 'Admin User',
+      role: 'admin',
+      companyId: 1
+    };
+    
+    const mockCompany: Company = {
+      id: 1,
+      name: 'ShieldDesk Enterprise',
+      industry: 'Cybersecurity',
+      size: 'Enterprise',
+      country: 'United States'
+    };
+
+    if (isMounted) {
+      setUser(mockUser);
+      setCompany(mockCompany);
       setFirebaseUser(null);
-      refreshUser();
       setLoading(false);
-      return;
     }
 
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      setFirebaseUser(firebaseUser);
-      
-      if (firebaseUser) {
-        // Load user data from localStorage
-        refreshUser();
-      } else {
-        setUser(null);
-        setCompany(null);
-      }
-      
-      setLoading(false);
-    });
-
-    return unsubscribe;
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (

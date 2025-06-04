@@ -22,7 +22,11 @@ async function startServer() {
 
   // Create Vite server in middleware mode
   const vite = await createServer({
-    server: { middlewareMode: true },
+    server: { 
+      middlewareMode: true,
+      host: '0.0.0.0',
+      allowedHosts: 'all'
+    },
     appType: 'spa',
     root: path.join(__dirname, 'client'),
     resolve: {

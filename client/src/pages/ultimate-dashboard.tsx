@@ -393,15 +393,15 @@ export default function UltimateDashboard() {
     const baseClass = "px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wider";
     switch (severity) {
       case 'critical':
-        return `${baseClass} bg-red-500/20 text-red-300 border border-red-500/30 animate-pulse`;
+        return `${baseClass} bg-red-500/20 text-red-300 animate-pulse`;
       case 'high':
-        return `${baseClass} bg-orange-500/20 text-orange-300 border border-orange-500/30`;
+        return `${baseClass} bg-orange-500/20 text-orange-300`;
       case 'medium':
-        return `${baseClass} bg-yellow-500/20 text-yellow-300 border border-yellow-500/30`;
+        return `${baseClass} bg-yellow-500/20 text-yellow-300`;
       case 'low':
-        return `${baseClass} bg-blue-500/20 text-blue-300 border border-blue-500/30`;
+        return `${baseClass} bg-blue-500/20 text-blue-300`;
       default:
-        return `${baseClass} bg-gray-500/20 text-gray-300 border border-gray-500/30`;
+        return `${baseClass} bg-gray-500/20 text-gray-300`;
     }
   };
 
@@ -409,15 +409,15 @@ export default function UltimateDashboard() {
     const baseClass = "px-3 py-1 rounded-lg text-xs font-semibold uppercase tracking-wide";
     switch (status) {
       case 'secure':
-        return `${baseClass} bg-green-500/20 text-green-300 border border-green-500/30`;
+        return `${baseClass} bg-green-500/20 text-green-300`;
       case 'vulnerable':
-        return `${baseClass} bg-orange-500/20 text-orange-300 border border-orange-500/30`;
+        return `${baseClass} bg-orange-500/20 text-orange-300`;
       case 'compromised':
-        return `${baseClass} bg-red-500/20 text-red-300 border border-red-500/30 animate-pulse`;
+        return `${baseClass} bg-red-500/20 text-red-300 animate-pulse`;
       case 'offline':
-        return `${baseClass} bg-gray-500/20 text-gray-300 border border-gray-500/30`;
+        return `${baseClass} bg-gray-500/20 text-gray-300`;
       default:
-        return `${baseClass} bg-gray-500/20 text-gray-300 border border-gray-500/30`;
+        return `${baseClass} bg-gray-500/20 text-gray-300`;
     }
   };
 
@@ -609,7 +609,7 @@ export default function UltimateDashboard() {
                   
                   <div className="space-y-4 max-h-96 overflow-y-auto">
                     {threatIntelligence.map((threat) => (
-                      <div key={threat.id} className="p-5 bg-gray-800/40 rounded-xl hover:bg-gray-800/60 transition-all duration-300 border border-gray-700/30 hover:border-cyan-500/30">
+                      <div key={threat.id} className="p-5 bg-gray-800/40 rounded-xl hover:bg-gray-800/60 transition-all duration-300">
                         <div className="flex items-start justify-between mb-4">
                           <div className="flex items-center space-x-4">
                             <div className={`threat-indicator ${threat.severity} w-4 h-4 rounded-full`}></div>
@@ -736,7 +736,7 @@ export default function UltimateDashboard() {
                 
                 <div className="space-y-4">
                   {assetInventory.map((asset) => (
-                    <div key={asset.id} className="p-5 bg-gray-800/40 rounded-xl hover:bg-gray-800/60 transition-all duration-300 border border-gray-700/30 hover:border-cyan-500/30">
+                    <div key={asset.id} className="p-5 bg-gray-800/40 rounded-xl hover:bg-gray-800/60 transition-all duration-300">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
                           <div className={`p-3 rounded-lg ${

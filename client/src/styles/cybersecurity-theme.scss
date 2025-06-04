@@ -130,12 +130,10 @@ body {
 .cyber-card {
   background: rgba(17, 17, 17, 0.8);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(107, 114, 128, 0.2);
   border-radius: 12px;
   transition: all 0.3s ease;
   
   &:hover {
-    border-color: var(--cyber-cyan);
     box-shadow: var(--neon-cyan);
     transform: translateY(-2px);
   }
@@ -145,13 +143,11 @@ body {
   position: relative;
   background: rgba(17, 17, 17, 0.6);
   backdrop-filter: blur(15px);
-  border: 1px solid rgba(107, 114, 128, 0.1);
   border-radius: 8px;
   padding: 1.5rem;
   transition: all 0.3s ease;
   
   &:hover {
-    border-color: var(--cyber-cyan);
     transform: translateY(-3px) scale(1.02);
   }
   
@@ -195,7 +191,6 @@ body {
   background: rgba(17, 17, 17, 0.4);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .cyber-text-gradient {

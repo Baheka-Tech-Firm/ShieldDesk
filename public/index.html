@@ -52,30 +52,156 @@
         }
     </script>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
             background: linear-gradient(135deg, #000000 0%, #1a0000 50%, #000000 100%);
             color: white;
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
         }
+        
         .glass-morphism {
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(16px);
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 12px;
         }
+        
         .cyber-glow {
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.4), inset 0 0 30px rgba(239, 68, 68, 0.1);
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(26,0,0,0.95) 100%);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(239, 68, 68, 0.3);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            padding: 24px;
+        }
+        
+        .nav-item {
+            padding: 16px 24px;
+            margin: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        
+        .nav-item:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+        
+        .nav-item.active {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.5);
             box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
         }
+        
+        .logo {
+            padding: 32px 24px;
+            border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+            margin-bottom: 24px;
+        }
+        
         .loading-spinner {
             border: 3px solid rgba(239, 68, 68, 0.3);
             border-radius: 50%;
             border-top: 3px solid #ef4444;
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
             animation: spin 1s linear infinite;
         }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            border-color: rgba(239, 68, 68, 0.4);
+            box-shadow: 0 8px 32px rgba(239, 68, 68, 0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 24px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+        
+        .metric-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(239, 68, 68, 0.2);
+        }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s infinite;
         }
     </style>
 </head>
@@ -115,64 +241,162 @@
             }
         }
         
-        function Navigation({ onNavigate }) {
+        function Sidebar({ currentPath, onNavigate }) {
+            const menuItems = [
+                { path: '/dashboard', label: 'Dashboard', icon: '🏠' },
+                { path: '/enhanced-vulnerability-scanner', label: 'Vulnerability Scanner', icon: '🛡️' },
+                { path: '/file-vault', label: 'Secure File Vault', icon: '📁' },
+                { path: '/compliance', label: 'POPIA Compliance', icon: '✅' },
+                { path: '/threat-intelligence', label: 'Threat Intelligence', icon: '🎯' },
+                { path: '/incident-response', label: 'Incident Response', icon: '🚨' },
+                { path: '/security-monitoring', label: 'Security Monitoring', icon: '📊' },
+                { path: '/user-management', label: 'User Management', icon: '👥' },
+                { path: '/admin-panel', label: 'Admin Panel', icon: '⚙️' },
+                { path: '/reports', label: 'Reports & Analytics', icon: '📈' }
+            ];
+            
             return (
-                <nav className="glass-morphism p-4 mb-6 rounded-lg">
-                    <div className="flex space-x-4">
-                        <button 
-                            onClick={() => onNavigate('/dashboard')}
-                            className="text-red-400 hover:text-red-300 px-3 py-2 rounded transition-colors"
-                        >
-                            Dashboard
-                        </button>
-                        <button 
-                            onClick={() => onNavigate('/enhanced-vulnerability-scanner')}
-                            className="text-red-400 hover:text-red-300 px-3 py-2 rounded transition-colors"
-                        >
-                            Vulnerability Scanner
-                        </button>
-                        <button 
-                            onClick={() => onNavigate('/file-vault')}
-                            className="text-red-400 hover:text-red-300 px-3 py-2 rounded transition-colors"
-                        >
-                            File Vault
-                        </button>
-                        <button 
-                            onClick={() => onNavigate('/compliance')}
-                            className="text-red-400 hover:text-red-300 px-3 py-2 rounded transition-colors"
-                        >
-                            Compliance
-                        </button>
-                        <button 
-                            onClick={() => onNavigate('/admin-panel')}
-                            className="text-red-400 hover:text-red-300 px-3 py-2 rounded transition-colors"
-                        >
-                            Admin Panel
-                        </button>
+                <div className="sidebar">
+                    <div className="logo">
+                        <h1 className="text-2xl font-bold text-red-500 mb-2">ShieldDesk</h1>
+                        <p className="text-sm text-gray-400">Advanced Cybersecurity Platform</p>
                     </div>
-                </nav>
+                    
+                    <nav className="px-2">
+                        {menuItems.map(item => (
+                            <div
+                                key={item.path}
+                                className={`nav-item ${currentPath === item.path ? 'active' : ''}`}
+                                onClick={() => onNavigate(item.path)}
+                            >
+                                <div className="flex items-center space-x-3">
+                                    <span className="text-xl">{item.icon}</span>
+                                    <span className="font-medium">{item.label}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </nav>
+                    
+                    <div className="absolute bottom-0 left-0 right-0 p-6">
+                        <div className="glass-morphism p-4 text-center">
+                            <p className="text-sm text-gray-400 mb-2">Security Status</p>
+                            <div className="flex items-center justify-center space-x-2">
+                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                <span className="text-sm text-green-400">Protected</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             );
         }
         
         function Dashboard() {
+            const [dashboardData, setDashboardData] = useState({
+                securityScore: 85,
+                activeThreats: 3,
+                compliance: 92,
+                totalFiles: 1247,
+                recentScans: 15,
+                criticalAlerts: 2
+            });
+            
             return (
-                <div className="space-y-6">
-                    <h1 className="text-4xl font-bold text-red-500 mb-6">ShieldDesk Dashboard</h1>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="glass-morphism p-6 rounded-lg cyber-glow">
-                            <h3 className="text-xl font-semibold text-red-500 mb-2">Security Score</h3>
-                            <p className="text-3xl font-bold">85/100</p>
-                            <p className="text-gray-400 text-sm">Good security posture</p>
+                <div className="space-y-8">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <h1 className="text-4xl font-bold text-red-500 mb-2">Security Dashboard</h1>
+                            <p className="text-gray-400">Real-time cybersecurity monitoring and threat intelligence</p>
                         </div>
-                        <div className="glass-morphism p-6 rounded-lg">
-                            <h3 className="text-xl font-semibold text-orange-500 mb-2">Active Threats</h3>
-                            <p className="text-3xl font-bold">3</p>
-                            <p className="text-gray-400 text-sm">Requires attention</p>
+                        <div className="flex space-x-4">
+                            <button className="btn-primary">Run Security Scan</button>
+                            <button className="btn-secondary">Generate Report</button>
                         </div>
-                        <div className="glass-morphism p-6 rounded-lg">
-                            <h3 className="text-xl font-semibold text-green-500 mb-2">Compliance</h3>
-                            <p className="text-3xl font-bold">92%</p>
-                            <p className="text-gray-400 text-sm">POPIA compliant</p>
+                    </div>
+                    
+                    {/* Key Metrics */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div className="metric-card cyber-glow">
+                            <div className="text-3xl font-bold text-red-500 mb-2">{dashboardData.securityScore}/100</div>
+                            <div className="text-sm text-gray-300 mb-1">Security Score</div>
+                            <div className="text-xs text-green-400">↑ 5% from last week</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-3xl font-bold text-orange-500 mb-2">{dashboardData.activeThreats}</div>
+                            <div className="text-sm text-gray-300 mb-1">Active Threats</div>
+                            <div className="text-xs text-red-400">Requires immediate attention</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-3xl font-bold text-green-500 mb-2">{dashboardData.compliance}%</div>
+                            <div className="text-sm text-gray-300 mb-1">POPIA Compliance</div>
+                            <div className="text-xs text-green-400">Fully compliant</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-3xl font-bold text-blue-500 mb-2">{dashboardData.totalFiles}</div>
+                            <div className="text-sm text-gray-300 mb-1">Protected Files</div>
+                            <div className="text-xs text-blue-400">Encrypted & secure</div>
+                        </div>
+                    </div>
+                    
+                    {/* Recent Activity & Threat Overview */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div className="card">
+                            <h3 className="text-xl font-bold text-red-500 mb-4">Recent Security Events</h3>
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                                    <div className="flex items-center space-x-3">
+                                        <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                                        <span>Critical vulnerability detected</span>
+                                    </div>
+                                    <span className="text-sm text-gray-400">2 hours ago</span>
+                                </div>
+                                <div className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                                    <div className="flex items-center space-x-3">
+                                        <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                        <span>Suspicious login attempt blocked</span>
+                                    </div>
+                                    <span className="text-sm text-gray-400">4 hours ago</span>
+                                </div>
+                                <div className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                                    <div className="flex items-center space-x-3">
+                                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                                        <span>Security scan completed successfully</span>
+                                    </div>
+                                    <span className="text-sm text-gray-400">6 hours ago</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="card">
+                            <h3 className="text-xl font-bold text-red-500 mb-4">System Health</h3>
+                            <div className="space-y-4">
+                                <div>
+                                    <div className="flex justify-between text-sm mb-1">
+                                        <span>Firewall Status</span>
+                                        <span className="text-green-400">Active</span>
+                                    </div>
+                                    <div className="w-full bg-gray-700 rounded-full h-2">
+                                        <div className="bg-green-500 h-2 rounded-full" style={{width: '100%'}}></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="flex justify-between text-sm mb-1">
+                                        <span>Antivirus Protection</span>
+                                        <span className="text-green-400">Up to date</span>
+                                    </div>
+                                    <div className="w-full bg-gray-700 rounded-full h-2">
+                                        <div className="bg-green-500 h-2 rounded-full" style={{width: '98%'}}></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="flex justify-between text-sm mb-1">
+                                        <span>Data Encryption</span>
+                                        <span className="text-green-400">Enabled</span>
+                                    </div>
+                                    <div className="w-full bg-gray-700 rounded-full h-2">
+                                        <div className="bg-green-500 h-2 rounded-full" style={{width: '100%'}}></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -180,20 +404,108 @@
         }
         
         function FileVault() {
+            const [files, setFiles] = useState([
+                { id: 1, name: 'Financial_Report_Q4.pdf', size: '2.4 MB', uploadedAt: '2 hours ago', status: 'encrypted', tags: ['financial', 'confidential'] },
+                { id: 2, name: 'Employee_Database.xlsx', size: '5.1 MB', uploadedAt: '1 day ago', status: 'encrypted', tags: ['hr', 'personal-data'] },
+                { id: 3, name: 'Security_Policy_2025.docx', size: '890 KB', uploadedAt: '3 days ago', status: 'encrypted', tags: ['policy', 'security'] },
+                { id: 4, name: 'Backup_Config.json', size: '45 KB', uploadedAt: '1 week ago', status: 'encrypted', tags: ['config', 'backup'] }
+            ]);
+            
             return (
-                <div className="space-y-6">
-                    <h1 className="text-4xl font-bold text-red-500 mb-6">Secure File Vault</h1>
-                    <div className="glass-morphism p-6 rounded-lg">
-                        <h3 className="text-xl font-semibold text-white mb-4">Recent Files</h3>
-                        <div className="space-y-3">
-                            <div className="bg-gray-800 p-3 rounded border border-gray-700">
-                                <p className="font-medium">Financial_Report_Q4.pdf</p>
-                                <p className="text-sm text-gray-400">Uploaded 2 hours ago • 2.4 MB</p>
+                <div className="space-y-8">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <h1 className="text-4xl font-bold text-red-500 mb-2">Secure File Vault</h1>
+                            <p className="text-gray-400">Enterprise-grade file encryption and access control</p>
+                        </div>
+                        <div className="flex space-x-4">
+                            <button className="btn-primary">Upload File</button>
+                            <button className="btn-secondary">Create Folder</button>
+                        </div>
+                    </div>
+                    
+                    {/* Storage Overview */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div className="metric-card">
+                            <div className="text-2xl font-bold text-blue-500 mb-2">1,247</div>
+                            <div className="text-sm text-gray-300">Total Files</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-2xl font-bold text-green-500 mb-2">15.6 GB</div>
+                            <div className="text-sm text-gray-300">Storage Used</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-2xl font-bold text-red-500 mb-2">100%</div>
+                            <div className="text-sm text-gray-300">Encryption Rate</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-2xl font-bold text-purple-500 mb-2">24</div>
+                            <div className="text-sm text-gray-300">Shared Files</div>
+                        </div>
+                    </div>
+                    
+                    {/* File Management */}
+                    <div className="card">
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-xl font-bold text-red-500">Recent Files</h3>
+                            <div className="flex space-x-2">
+                                <select className="bg-gray-800 border border-gray-700 rounded px-3 py-2 text-white">
+                                    <option>All Files</option>
+                                    <option>Documents</option>
+                                    <option>Images</option>
+                                    <option>Spreadsheets</option>
+                                </select>
+                                <button className="btn-secondary">Filter</button>
                             </div>
-                            <div className="bg-gray-800 p-3 rounded border border-gray-700">
-                                <p className="font-medium">Employee_Database.xlsx</p>
-                                <p className="text-sm text-gray-400">Uploaded 1 day ago • 5.1 MB</p>
-                            </div>
+                        </div>
+                        
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="border-b border-gray-700">
+                                        <th className="text-left py-3 px-4 font-semibold text-gray-300">Name</th>
+                                        <th className="text-left py-3 px-4 font-semibold text-gray-300">Size</th>
+                                        <th className="text-left py-3 px-4 font-semibold text-gray-300">Modified</th>
+                                        <th className="text-left py-3 px-4 font-semibold text-gray-300">Status</th>
+                                        <th className="text-left py-3 px-4 font-semibold text-gray-300">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {files.map(file => (
+                                        <tr key={file.id} className="border-b border-gray-800 hover:bg-gray-800/50">
+                                            <td className="py-3 px-4">
+                                                <div className="flex items-center space-x-3">
+                                                    <div className="w-8 h-8 bg-red-500/20 rounded flex items-center justify-center">
+                                                        <span className="text-red-400 text-sm">📄</span>
+                                                    </div>
+                                                    <div>
+                                                        <div className="font-medium text-white">{file.name}</div>
+                                                        <div className="flex space-x-1 mt-1">
+                                                            {file.tags.map(tag => (
+                                                                <span key={tag} className="px-2 py-1 bg-gray-700 text-xs rounded">{tag}</span>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="py-3 px-4 text-gray-300">{file.size}</td>
+                                            <td className="py-3 px-4 text-gray-300">{file.uploadedAt}</td>
+                                            <td className="py-3 px-4">
+                                                <span className="px-2 py-1 bg-green-900 text-green-300 text-xs rounded">
+                                                    {file.status}
+                                                </span>
+                                            </td>
+                                            <td className="py-3 px-4">
+                                                <div className="flex space-x-2">
+                                                    <button className="text-blue-400 hover:text-blue-300">Download</button>
+                                                    <button className="text-green-400 hover:text-green-300">Share</button>
+                                                    <button className="text-red-400 hover:text-red-300">Delete</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -201,23 +513,108 @@
         }
         
         function Compliance() {
+            const [complianceData, setComplianceData] = useState({
+                overallScore: 92,
+                completedItems: 23,
+                totalItems: 25,
+                pendingActions: 2
+            });
+            
+            const complianceItems = [
+                { id: 1, title: 'Data Processing Policy', status: 'completed', category: 'Documentation' },
+                { id: 2, title: 'Privacy Notice', status: 'completed', category: 'Documentation' },
+                { id: 3, title: 'Data Subject Request Process', status: 'pending', category: 'Process' },
+                { id: 4, title: 'Data Breach Response Plan', status: 'completed', category: 'Security' },
+                { id: 5, title: 'Employee Training Program', status: 'completed', category: 'Training' },
+                { id: 6, title: 'Third-Party Data Processing Agreements', status: 'pending', category: 'Legal' },
+                { id: 7, title: 'Data Retention Schedule', status: 'completed', category: 'Management' }
+            ];
+            
             return (
-                <div className="space-y-6">
-                    <h1 className="text-4xl font-bold text-red-500 mb-6">POPIA Compliance</h1>
-                    <div className="glass-morphism p-6 rounded-lg">
-                        <h3 className="text-xl font-semibold text-white mb-4">Compliance Checklist</h3>
-                        <div className="space-y-3">
-                            <div className="flex items-center space-x-3">
-                                <span className="text-green-500">✓</span>
-                                <span>Data Processing Policy</span>
+                <div className="space-y-8">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <h1 className="text-4xl font-bold text-red-500 mb-2">POPIA Compliance Dashboard</h1>
+                            <p className="text-gray-400">Protection of Personal Information Act compliance monitoring</p>
+                        </div>
+                        <div className="flex space-x-4">
+                            <button className="btn-primary">Generate Compliance Report</button>
+                            <button className="btn-secondary">Schedule Audit</button>
+                        </div>
+                    </div>
+                    
+                    {/* Compliance Metrics */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div className="metric-card cyber-glow">
+                            <div className="text-3xl font-bold text-green-500 mb-2">{complianceData.overallScore}%</div>
+                            <div className="text-sm text-gray-300">Overall Compliance</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-3xl font-bold text-blue-500 mb-2">{complianceData.completedItems}/{complianceData.totalItems}</div>
+                            <div className="text-sm text-gray-300">Items Completed</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-3xl font-bold text-orange-500 mb-2">{complianceData.pendingActions}</div>
+                            <div className="text-sm text-gray-300">Pending Actions</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-3xl font-bold text-purple-500 mb-2">15</div>
+                            <div className="text-sm text-gray-300">Days to Next Audit</div>
+                        </div>
+                    </div>
+                    
+                    {/* Compliance Checklist */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div className="card">
+                            <h3 className="text-xl font-bold text-red-500 mb-6">Compliance Checklist</h3>
+                            <div className="space-y-4">
+                                {complianceItems.map(item => (
+                                    <div key={item.id} className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                                        <div className="flex items-center space-x-3">
+                                            <span className={`text-xl ${item.status === 'completed' ? 'text-green-500' : 'text-yellow-500'}`}>
+                                                {item.status === 'completed' ? '✓' : '○'}
+                                            </span>
+                                            <div>
+                                                <div className="font-medium text-white">{item.title}</div>
+                                                <div className="text-sm text-gray-400">{item.category}</div>
+                                            </div>
+                                        </div>
+                                        <span className={`px-2 py-1 text-xs rounded ${
+                                            item.status === 'completed' 
+                                                ? 'bg-green-900 text-green-300' 
+                                                : 'bg-yellow-900 text-yellow-300'
+                                        }`}>
+                                            {item.status}
+                                        </span>
+                                    </div>
+                                ))}
                             </div>
-                            <div className="flex items-center space-x-3">
-                                <span className="text-green-500">✓</span>
-                                <span>Privacy Notice</span>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                                <span className="text-yellow-500">○</span>
-                                <span>Data Subject Request Process</span>
+                        </div>
+                        
+                        <div className="card">
+                            <h3 className="text-xl font-bold text-red-500 mb-6">Recent Activities</h3>
+                            <div className="space-y-4">
+                                <div className="p-3 bg-gray-800 rounded-lg">
+                                    <div className="flex justify-between items-start mb-2">
+                                        <div className="font-medium text-white">Privacy Policy Updated</div>
+                                        <span className="text-sm text-gray-400">2 days ago</span>
+                                    </div>
+                                    <p className="text-sm text-gray-400">Updated privacy policy to align with latest POPIA requirements</p>
+                                </div>
+                                <div className="p-3 bg-gray-800 rounded-lg">
+                                    <div className="flex justify-between items-start mb-2">
+                                        <div className="font-medium text-white">Staff Training Completed</div>
+                                        <span className="text-sm text-gray-400">1 week ago</span>
+                                    </div>
+                                    <p className="text-sm text-gray-400">All staff completed mandatory POPIA compliance training</p>
+                                </div>
+                                <div className="p-3 bg-gray-800 rounded-lg">
+                                    <div className="flex justify-between items-start mb-2">
+                                        <div className="font-medium text-white">Data Audit Scheduled</div>
+                                        <span className="text-sm text-gray-400">2 weeks ago</span>
+                                    </div>
+                                    <p className="text-sm text-gray-400">Quarterly data processing audit scheduled for next month</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -227,16 +624,332 @@
         
         function AdminPanel() {
             return (
-                <div className="space-y-6">
-                    <h1 className="text-4xl font-bold text-red-500 mb-6">Admin Panel</h1>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="glass-morphism p-6 rounded-lg">
-                            <h3 className="text-xl font-semibold text-white mb-4">User Management</h3>
-                            <p className="text-gray-400">Manage user accounts and permissions</p>
+                <div className="space-y-8">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <h1 className="text-4xl font-bold text-red-500 mb-2">Admin Panel</h1>
+                            <p className="text-gray-400">System administration and configuration</p>
                         </div>
-                        <div className="glass-morphism p-6 rounded-lg">
-                            <h3 className="text-xl font-semibold text-white mb-4">System Settings</h3>
-                            <p className="text-gray-400">Configure system-wide settings</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="card cursor-pointer hover:border-red-400">
+                            <h3 className="text-xl font-bold text-red-500 mb-4">👥 User Management</h3>
+                            <p className="text-gray-400 mb-4">Manage user accounts, roles, and permissions</p>
+                            <div className="text-sm text-gray-500">25 active users</div>
+                        </div>
+                        
+                        <div className="card cursor-pointer hover:border-red-400">
+                            <h3 className="text-xl font-bold text-red-500 mb-4">⚙️ System Settings</h3>
+                            <p className="text-gray-400 mb-4">Configure system-wide settings and preferences</p>
+                            <div className="text-sm text-gray-500">Last updated 2 days ago</div>
+                        </div>
+                        
+                        <div className="card cursor-pointer hover:border-red-400">
+                            <h3 className="text-xl font-bold text-red-500 mb-4">🔐 Security Policies</h3>
+                            <p className="text-gray-400 mb-4">Define and manage security policies</p>
+                            <div className="text-sm text-gray-500">15 active policies</div>
+                        </div>
+                        
+                        <div className="card cursor-pointer hover:border-red-400">
+                            <h3 className="text-xl font-bold text-red-500 mb-4">📊 System Logs</h3>
+                            <p className="text-gray-400 mb-4">View and analyze system activity logs</p>
+                            <div className="text-sm text-gray-500">1.2M log entries</div>
+                        </div>
+                        
+                        <div className="card cursor-pointer hover:border-red-400">
+                            <h3 className="text-xl font-bold text-red-500 mb-4">🔄 Backup & Recovery</h3>
+                            <p className="text-gray-400 mb-4">Manage system backups and recovery options</p>
+                            <div className="text-sm text-gray-500">Last backup: 4 hours ago</div>
+                        </div>
+                        
+                        <div className="card cursor-pointer hover:border-red-400">
+                            <h3 className="text-xl font-bold text-red-500 mb-4">📈 Performance Monitor</h3>
+                            <p className="text-gray-400 mb-4">Monitor system performance and resources</p>
+                            <div className="text-sm text-gray-500">CPU: 45% | RAM: 62%</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        
+        function ThreatIntelligence() {
+            return (
+                <div className="space-y-8">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <h1 className="text-4xl font-bold text-red-500 mb-2">Threat Intelligence</h1>
+                            <p className="text-gray-400">Real-time threat analysis and intelligence feeds</p>
+                        </div>
+                        <button className="btn-primary">Update Feeds</button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div className="metric-card cyber-glow">
+                            <div className="text-3xl font-bold text-red-500 mb-2">127</div>
+                            <div className="text-sm text-gray-300">Active Threats</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-3xl font-bold text-orange-500 mb-2">45</div>
+                            <div className="text-sm text-gray-300">IOCs Detected</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-3xl font-bold text-yellow-500 mb-2">8</div>
+                            <div className="text-sm text-gray-300">Intelligence Feeds</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-3xl font-bold text-green-500 mb-2">99.2%</div>
+                            <div className="text-sm text-gray-300">Detection Rate</div>
+                        </div>
+                    </div>
+                    
+                    <div className="card">
+                        <h3 className="text-xl font-bold text-red-500 mb-6">Recent Threat Indicators</h3>
+                        <div className="space-y-3">
+                            <div className="p-4 bg-red-900/20 border border-red-500/30 rounded-lg">
+                                <div className="font-medium text-red-400 mb-2">High Severity: APT Group Activity</div>
+                                <p className="text-gray-400 text-sm">Malicious IP range 192.168.100.0/24 detected in network traffic</p>
+                            </div>
+                            <div className="p-4 bg-orange-900/20 border border-orange-500/30 rounded-lg">
+                                <div className="font-medium text-orange-400 mb-2">Medium Severity: Phishing Campaign</div>
+                                <p className="text-gray-400 text-sm">Email domain spoofing detected: fake-bank-security.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        
+        function IncidentResponse() {
+            return (
+                <div className="space-y-8">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <h1 className="text-4xl font-bold text-red-500 mb-2">Incident Response</h1>
+                            <p className="text-gray-400">Security incident management and response coordination</p>
+                        </div>
+                        <button className="btn-primary">Create Incident</button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div className="metric-card cyber-glow">
+                            <div className="text-3xl font-bold text-red-500 mb-2">2</div>
+                            <div className="text-sm text-gray-300">Active Incidents</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-3xl font-bold text-green-500 mb-2">45</div>
+                            <div className="text-sm text-gray-300">Resolved This Month</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-3xl font-bold text-blue-500 mb-2">2.5h</div>
+                            <div className="text-sm text-gray-300">Avg Response Time</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-3xl font-bold text-purple-500 mb-2">15</div>
+                            <div className="text-sm text-gray-300">Response Playbooks</div>
+                        </div>
+                    </div>
+                    
+                    <div className="card">
+                        <h3 className="text-xl font-bold text-red-500 mb-6">Active Incidents</h3>
+                        <div className="space-y-4">
+                            <div className="p-4 bg-red-900/20 border border-red-500/30 rounded-lg">
+                                <div className="flex justify-between items-start mb-2">
+                                    <div className="font-medium text-red-400">INC-2025-001: Data Breach Investigation</div>
+                                    <span className="px-2 py-1 bg-red-900 text-red-300 text-xs rounded">Critical</span>
+                                </div>
+                                <p className="text-gray-400 text-sm mb-2">Unauthorized access detected in customer database</p>
+                                <div className="text-xs text-gray-500">Assigned to: Security Team | Created: 2 hours ago</div>
+                            </div>
+                            <div className="p-4 bg-orange-900/20 border border-orange-500/30 rounded-lg">
+                                <div className="flex justify-between items-start mb-2">
+                                    <div className="font-medium text-orange-400">INC-2025-002: Malware Detection</div>
+                                    <span className="px-2 py-1 bg-orange-900 text-orange-300 text-xs rounded">High</span>
+                                </div>
+                                <p className="text-gray-400 text-sm mb-2">Suspicious file activity on workstation WS-205</p>
+                                <div className="text-xs text-gray-500">Assigned to: IT Team | Created: 6 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        
+        function SecurityMonitoring() {
+            return (
+                <div className="space-y-8">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <h1 className="text-4xl font-bold text-red-500 mb-2">Security Monitoring</h1>
+                            <p className="text-gray-400">Real-time security event monitoring and analysis</p>
+                        </div>
+                        <button className="btn-primary">View Live Feed</button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div className="metric-card cyber-glow">
+                            <div className="text-3xl font-bold text-red-500 mb-2">1,247</div>
+                            <div className="text-sm text-gray-300">Events Today</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-3xl font-bold text-orange-500 mb-2">23</div>
+                            <div className="text-sm text-gray-300">High Priority Alerts</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-3xl font-bold text-green-500 mb-2">99.8%</div>
+                            <div className="text-sm text-gray-300">System Uptime</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-3xl font-bold text-blue-500 mb-2">156</div>
+                            <div className="text-sm text-gray-300">Blocked Attempts</div>
+                        </div>
+                    </div>
+                    
+                    <div className="card">
+                        <h3 className="text-xl font-bold text-red-500 mb-6">Recent Security Events</h3>
+                        <div className="space-y-3">
+                            <div className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                                <div className="flex items-center space-x-3">
+                                    <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                                    <span>Failed login attempt from suspicious IP</span>
+                                </div>
+                                <span className="text-sm text-gray-400">2 minutes ago</span>
+                            </div>
+                            <div className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                                <div className="flex items-center space-x-3">
+                                    <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                    <span>Unusual network traffic pattern detected</span>
+                                </div>
+                                <span className="text-sm text-gray-400">15 minutes ago</span>
+                            </div>
+                            <div className="flex items-center justify-between p-3 bg-gray-800 rounded-lg">
+                                <div className="flex items-center space-x-3">
+                                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                                    <span>Firewall rule updated successfully</span>
+                                </div>
+                                <span className="text-sm text-gray-400">1 hour ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        
+        function UserManagement() {
+            return (
+                <div className="space-y-8">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <h1 className="text-4xl font-bold text-red-500 mb-2">User Management</h1>
+                            <p className="text-gray-400">Manage user accounts, roles, and permissions</p>
+                        </div>
+                        <button className="btn-primary">Add User</button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div className="metric-card">
+                            <div className="text-3xl font-bold text-blue-500 mb-2">25</div>
+                            <div className="text-sm text-gray-300">Total Users</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-3xl font-bold text-green-500 mb-2">23</div>
+                            <div className="text-sm text-gray-300">Active Users</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-3xl font-bold text-orange-500 mb-2">5</div>
+                            <div className="text-sm text-gray-300">Admin Users</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="text-3xl font-bold text-purple-500 mb-2">12</div>
+                            <div className="text-sm text-gray-300">Role Types</div>
+                        </div>
+                    </div>
+                    
+                    <div className="card">
+                        <h3 className="text-xl font-bold text-red-500 mb-6">User Directory</h3>
+                        <div className="space-y-3">
+                            <div className="flex items-center justify-between p-4 bg-gray-800 rounded-lg">
+                                <div className="flex items-center space-x-4">
+                                    <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
+                                        <span className="text-white font-semibold">JD</span>
+                                    </div>
+                                    <div>
+                                        <div className="font-medium text-white">John Doe</div>
+                                        <div className="text-sm text-gray-400">john.doe@company.com</div>
+                                    </div>
+                                </div>
+                                <div className="flex items-center space-x-4">
+                                    <span className="px-2 py-1 bg-red-900 text-red-300 text-xs rounded">Admin</span>
+                                    <span className="text-sm text-green-400">Active</span>
+                                </div>
+                            </div>
+                            <div className="flex items-center justify-between p-4 bg-gray-800 rounded-lg">
+                                <div className="flex items-center space-x-4">
+                                    <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                                        <span className="text-white font-semibold">JS</span>
+                                    </div>
+                                    <div>
+                                        <div className="font-medium text-white">Jane Smith</div>
+                                        <div className="text-sm text-gray-400">jane.smith@company.com</div>
+                                    </div>
+                                </div>
+                                <div className="flex items-center space-x-4">
+                                    <span className="px-2 py-1 bg-blue-900 text-blue-300 text-xs rounded">Analyst</span>
+                                    <span className="text-sm text-green-400">Active</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        
+        function Reports() {
+            return (
+                <div className="space-y-8">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <h1 className="text-4xl font-bold text-red-500 mb-2">Reports & Analytics</h1>
+                            <p className="text-gray-400">Comprehensive security reporting and data analytics</p>
+                        </div>
+                        <button className="btn-primary">Generate Report</button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="card cursor-pointer hover:border-red-400">
+                            <h3 className="text-xl font-bold text-red-500 mb-4">📊 Security Dashboard</h3>
+                            <p className="text-gray-400 mb-4">Executive summary of security posture</p>
+                            <button className="btn-secondary">View Report</button>
+                        </div>
+                        
+                        <div className="card cursor-pointer hover:border-red-400">
+                            <h3 className="text-xl font-bold text-red-500 mb-4">🛡️ Vulnerability Report</h3>
+                            <p className="text-gray-400 mb-4">Detailed vulnerability assessment results</p>
+                            <button className="btn-secondary">View Report</button>
+                        </div>
+                        
+                        <div className="card cursor-pointer hover:border-red-400">
+                            <h3 className="text-xl font-bold text-red-500 mb-4">✅ Compliance Report</h3>
+                            <p className="text-gray-400 mb-4">POPIA compliance status and findings</p>
+                            <button className="btn-secondary">View Report</button>
+                        </div>
+                        
+                        <div className="card cursor-pointer hover:border-red-400">
+                            <h3 className="text-xl font-bold text-red-500 mb-4">🚨 Incident Summary</h3>
+                            <p className="text-gray-400 mb-4">Security incident trends and analysis</p>
+                            <button className="btn-secondary">View Report</button>
+                        </div>
+                        
+                        <div className="card cursor-pointer hover:border-red-400">
+                            <h3 className="text-xl font-bold text-red-500 mb-4">👥 User Activity</h3>
+                            <p className="text-gray-400 mb-4">User access patterns and behavior</p>
+                            <button className="btn-secondary">View Report</button>
+                        </div>
+                        
+                        <div className="card cursor-pointer hover:border-red-400">
+                            <h3 className="text-xl font-bold text-red-500 mb-4">📈 Performance Metrics</h3>
+                            <p className="text-gray-400 mb-4">System performance and resource usage</p>
+                            <button className="btn-secondary">View Report</button>
                         </div>
                     </div>
                 </div>
@@ -467,14 +1180,24 @@
                         return React.createElement(Compliance);
                     case '/admin-panel':
                         return React.createElement(AdminPanel);
+                    case '/threat-intelligence':
+                        return React.createElement(ThreatIntelligence);
+                    case '/incident-response':
+                        return React.createElement(IncidentResponse);
+                    case '/security-monitoring':
+                        return React.createElement(SecurityMonitoring);
+                    case '/user-management':
+                        return React.createElement(UserManagement);
+                    case '/reports':
+                        return React.createElement(Reports);
                     default:
                         return React.createElement(Dashboard);
                 }
             };
             
-            return React.createElement('div', { className: 'min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-6' },
-                React.createElement('div', { className: 'max-w-7xl mx-auto' },
-                    React.createElement(Navigation, { onNavigate: navigate }),
+            return React.createElement('div', { className: 'min-h-screen bg-gradient-to-br from-black via-gray-900 to-black' },
+                React.createElement(Sidebar, { currentPath: currentPath, onNavigate: navigate }),
+                React.createElement('div', { className: 'main-content' },
                     renderCurrentPage()
                 )
             );

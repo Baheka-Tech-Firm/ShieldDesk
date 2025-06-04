@@ -256,3 +256,5 @@ export function AnimatedBackground({
     />
   );
 }
+
+export default AnimatedBackground;

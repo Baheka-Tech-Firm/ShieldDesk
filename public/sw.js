@@ -1,8 +1,18 @@
-// Service Worker for ShieldDesk - Advanced Caching Strategy
+// Service Worker for ShieldDesk PWA - Advanced Caching Strategy
 const CACHE_NAME = 'shielddesk-v1.0.0';
 const STATIC_CACHE = 'shielddesk-static-v1';
 const API_CACHE = 'shielddesk-api-v1';
 const IMAGE_CACHE = 'shielddesk-images-v1';
+
+// PWA specific configurations
+const PWA_VERSION = '1.0.0';
+const APP_SHELL_FILES = [
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/icons/icon-192x192.png',
+  '/icons/icon-512x512.png'
+];
 
 // Assets to cache immediately
 const STATIC_ASSETS = [

@@ -32,36 +32,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    let isMounted = true;
-
-    // Set mock user data for development
-    const mockUser: AuthUser = {
-      id: 1,
-      firebaseUid: 'mock-uid',
-      email: 'admin@shielddesk.com',
-      name: 'Admin User',
-      role: 'admin',
-      companyId: 1
-    };
-    
-    const mockCompany: Company = {
-      id: 1,
-      name: 'ShieldDesk Enterprise',
-      industry: 'Cybersecurity',
-      size: 'Enterprise',
-      country: 'United States'
-    };
-
-    if (isMounted) {
-      setUser(mockUser);
-      setCompany(mockCompany);
-      setFirebaseUser(null);
+    if (!auth) {
       setLoading(false);
+      return;
     }
 
-    return () => {
-      isMounted = false;
-    };
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      setFirebaseUser(firebaseUser);
+      
+      if (firebaseUser) {
+        const userData = getCurrentUser() || {
+          id: 1,
+          firebaseUid: firebaseUser.uid,
+          email: firebaseUser.email || 'user@shielddesk.com',
+          name: firebaseUser.displayName || 'User',
+          role: 'admin',
+          companyId: 1
+        };
+        
+        const companyData = getCurrentCompany() || {
+          id: 1,
+          name: 'ShieldDesk Enterprise',
+          industry: 'Cybersecurity',
+          size: 'Enterprise',
+          country: 'United States'
+        };
+        
+        setUser(userData);
+        setCompany(companyData);
+      } else {
+        setUser(null);
+        setCompany(null);
+      }
+      
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   return (

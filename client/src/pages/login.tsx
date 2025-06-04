@@ -10,12 +10,7 @@ export default function Login() {
 
   useEffect(() => {
     if (!loading && user) {
-      // Check if user needs onboarding
-      if (!user.companyId) {
-        setLocation("/onboarding");
-      } else {
-        setLocation("/dashboard");
-      }
+      setLocation("/enhanced-dashboard");
     }
   }, [user, loading, setLocation]);
 

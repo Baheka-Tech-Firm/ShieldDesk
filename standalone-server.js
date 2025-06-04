@@ -26,14 +26,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 const { default: vulnerabilityRouter } = await import('./server/api/vulnerability.js');
 app.use('/api/vulnerability', vulnerabilityRouter);
 
-// Proxy other API requests to PHP backend
-app.use('/api', createProxyMiddleware({
-  target: 'http://localhost:8000',
-  changeOrigin: true,
-  onProxyReq: (proxyReq, req, res) => {
-    console.log('Proxying:', req.method, req.url, '-> PHP backend');
+// Proxy other API requests to PHP backend (excluding vulnerability endpoints)
+app.use('/api', (req, res, next) => {
+  if (req.path.startsWith('/vulnerability')) {
+    return next(); // Skip proxy for vulnerability endpoints
   }
-}));
+  
+  createProxyMiddleware({
+    target: 'http://localhost:8000',
+    changeOrigin: true,
+    onProxyReq: (proxyReq, req, res) => {
+      console.log('Proxying:', req.method, req.url, '-> PHP backend');
+    }
+  })(req, res, next);
+});
 
 // Handle client-side routing
 app.get('*', (req, res) => {

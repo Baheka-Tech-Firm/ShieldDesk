@@ -2,7 +2,7 @@
 
 /* Global border color override */
 * {
-  border-color: #374151 !important; /* Gray-700 */
+  border-color: #111827 !important; /* Gray-900 */
 }
 
 /* Remove white/light borders from all components */
@@ -152,6 +152,48 @@ svg {
 /* Ensure all dividers are dark */
 hr,
 .divider {
-  border-color: #374151 !important;
-  background-color: #374151 !important;
+  border-color: #111827 !important;
+  background-color: #111827 !important;
+}
+
+/* Remove borders from menu items and navigation */
+nav a,
+nav button,
+.nav-item,
+[role="menuitem"] {
+  border: none !important;
+  outline: none !important;
+}
+
+/* Remove borders from icons */
+.icon,
+svg,
+[class*="icon"] {
+  border: none !important;
+}
+
+/* Make sidebar borders darker */
+.sidebar,
+aside {
+  border-color: #0f172a !important; /* Slate-900 */
+}
+
+/* Remove borders from metric cards */
+.metric-card,
+[class*="metric"] {
+  border: none !important;
+}
+
+/* Remove borders from tabs */
+[role="tablist"],
+[role="tab"] {
+  border: none !important;
+}
+
+/* Make remaining structural borders very dark */
+.border-r,
+.border-l,
+.border-t,
+.border-b {
+  border-color: #0f172a !important; /* Very dark slate */
 }

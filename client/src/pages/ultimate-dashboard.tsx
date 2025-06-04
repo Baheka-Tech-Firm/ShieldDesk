@@ -430,7 +430,7 @@ export default function UltimateDashboard() {
       
       <Sidebar />
       
-      <main className="ml-72 p-8 relative z-10">
+      <main className="ml-64 p-8 relative z-10">
         {/* Enhanced Header with Live Status */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">

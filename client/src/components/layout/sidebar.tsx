@@ -96,7 +96,7 @@ export function Sidebar() {
   const isActive = (href: string) => location === href;
 
   return (
-    <aside className="w-72 h-screen flex-shrink-0 fixed left-0 top-0 z-50">
+    <aside className="w-64 h-screen flex-shrink-0 fixed left-0 top-0 z-50">
       <div className="h-full bg-gray-900/95 backdrop-blur-xl border-r border-gray-800/50">
         <div className="flex flex-col h-full">
           {/* Logo and Company */}

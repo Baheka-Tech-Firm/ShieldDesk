@@ -9,6 +9,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = 5000;
 
+console.log('Starting ShieldDesk standalone server...');
+
 // Start PHP backend
 console.log('Starting PHP backend on port 8000...');
 const phpServer = spawn('php', ['-S', '0.0.0.0:8000', 'simple-server.php'], {
@@ -16,7 +18,15 @@ const phpServer = spawn('php', ['-S', '0.0.0.0:8000', 'simple-server.php'], {
   stdio: 'inherit'
 });
 
-// Proxy API requests to PHP backend
+// Middleware
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Add vulnerability scanning API routes (dynamic import for ES modules)
+const { default: vulnerabilityRouter } = await import('./server/api/vulnerability.js');
+app.use('/api/vulnerability', vulnerabilityRouter);
+
+// Proxy other API requests to PHP backend
 app.use('/api', createProxyMiddleware({
   target: 'http://localhost:8000',
   changeOrigin: true,
@@ -24,9 +34,6 @@ app.use('/api', createProxyMiddleware({
     console.log('Proxying:', req.method, req.url, '-> PHP backend');
   }
 }));
-
-// Serve static files from public directory
-app.use(express.static(path.join(__dirname, 'public')));
 
 // Handle client-side routing
 app.get('*', (req, res) => {
@@ -36,6 +43,7 @@ app.get('*', (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`ShieldDesk running on http://0.0.0.0:${PORT}`);
   console.log(`Frontend accessible on all interfaces`);
+  console.log('Vulnerability Scanner API endpoints available at /api/vulnerability/*');
 });
 
 // Handle cleanup

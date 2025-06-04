@@ -7,14 +7,6 @@ export default defineConfig({
   plugins: [
     react(),
     runtimeErrorOverlay(),
-    ...(process.env.NODE_ENV !== "production" &&
-    process.env.REPL_ID !== undefined
-      ? [
-          await import("@replit/vite-plugin-cartographer").then((m) =>
-            m.cartographer(),
-          ),
-        ]
-      : []),
   ],
   resolve: {
     alias: {
@@ -31,6 +23,8 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5000,
+    allowedHosts: 'all',
+    strictPort: false,
     proxy: {
       '/api': {
         target: 'http://localhost:8000',
@@ -41,7 +35,7 @@ export default defineConfig({
             console.log('Proxy error:', err);
           });
           proxy.on('proxyReq', (proxyReq, req, res) => {
-            console.log('Proxying:', req.method, req.url, '-> Laravel backend');
+            console.log('Proxying:', req.method, req.url, '-> PHP backend');
           });
         }
       }

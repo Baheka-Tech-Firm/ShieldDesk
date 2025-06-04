@@ -18,7 +18,7 @@ const phpServer = spawn('php', ['-S', '0.0.0.0:8000', 'simple-server.php'], {
 setTimeout(() => {
   // Start Vite frontend server
   console.log('Starting Vite frontend on port 5000...');
-  const viteServer = spawn('npx', ['vite', '--host', '0.0.0.0', '--port', '5000', '--config', 'vite.config.local.ts'], {
+  const viteServer = spawn('npx', ['vite', '--config', 'vite.config.dev.ts', '--host', '0.0.0.0', '--port', '5000'], {
     cwd: path.join(__dirname, '..'),
     stdio: 'inherit'
   });

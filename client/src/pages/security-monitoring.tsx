@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ThreeBackground from "@/components/ui/three-background";
-import GlassMorphismCard from "@/components/ui/glass-morphism-card";
+import { ThreeBackground } from "@/components/ui/three-background";
+import { GlassMorphismCard } from "@/components/ui/glass-morphism-card";
 import { 
   Table, 
   TableBody, 
@@ -178,6 +178,7 @@ export default function SecurityMonitoring() {
             </TabsList>
 
             <TabsContent value="dashboard" className="space-y-6">
+          <GlassMorphismCard variant="default" className="p-6 animate-fade-in" animated={true}>
               {/* Real-time Metrics */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <Card>
@@ -340,6 +341,7 @@ export default function SecurityMonitoring() {
                   </CardContent>
                 </Card>
               </div>
+          </GlassMorphismCard>
             </TabsContent>
 
             <TabsContent value="alerts" className="space-y-6">

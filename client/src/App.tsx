@@ -14,7 +14,6 @@ import EnhancedFileVault from "@/pages/enhanced-file-vault-new";
 import FileDetails from "@/pages/file-details";
 import FolderDetails from "@/pages/folder-details";
 import VulnerabilityScanner from "@/pages/vulnerability-scanner";
-import { EnhancedVulnerabilityScanner } from "@/pages/enhanced-vulnerability-scanner";
 import ThreatIntelligence from "@/pages/threat-intelligence";
 import Compliance from "@/pages/compliance";
 import Reports from "@/pages/reports";

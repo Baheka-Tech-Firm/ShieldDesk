@@ -501,7 +501,7 @@ export default function UltimateDashboard() {
           </div>
 
           {/* Real-time Security Metrics Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-4 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 mb-12">
             {securityMetrics.map((metric) => {
               const Icon = metric.icon;
               const change = metric.value - metric.previousValue;

@@ -199,3 +199,27 @@ body {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+// Metric Cards Styling
+.cyber-metric {
+  min-height: 160px !important;
+  height: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  
+  .metric-value {
+    font-size: 2rem !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .text-xs {
+    font-size: 0.875rem !important;
+  }
+  
+  .text-sm {
+    font-size: 1rem !important;
+  }
+}

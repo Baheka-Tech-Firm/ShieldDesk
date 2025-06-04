@@ -44,11 +44,13 @@ async function startServer() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   
-  // Allow all hosts
+  // Allow all hosts and set security headers
   app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+    res.header('X-Frame-Options', 'SAMEORIGIN');
+    res.header('X-Content-Type-Options', 'nosniff');
     next();
   });
 
@@ -80,6 +82,7 @@ async function startServer() {
   const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`ShieldDesk running on http://0.0.0.0:${PORT}`);
     console.log(`Access via: http://localhost:${PORT}`);
+    console.log(`External access: https://130a9921-c16e-4e96-afd6-bab723873bee-00-es8cxb1r6vsx.janeway.replit.dev`);
     console.log(`React development server active`);
   });
 

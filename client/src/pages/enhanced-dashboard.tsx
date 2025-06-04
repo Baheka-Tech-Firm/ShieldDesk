@@ -220,23 +220,23 @@ export default function EnhancedDashboard() {
 
   if (dashboardLoading || threatsLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 flex">
+      <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-red-950">
         <Sidebar />
-        <div className="flex-1 flex items-center justify-center">
+        <main className="ml-64 pt-12 pl-6 pr-8 pb-8 relative z-50 min-h-screen overflow-y-auto bg-gradient-to-br from-black via-gray-900 to-red-950 flex items-center justify-center">
           <div className="flex items-center space-x-3 text-red-400">
             <RefreshCw className="w-6 h-6 animate-spin" />
             <span className="text-lg">Loading security dashboard...</span>
           </div>
-        </div>
+        </main>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-red-950">
       <Sidebar />
       
-      <main className="ml-72 p-8">
+      <main className="ml-64 pt-12 pl-6 pr-8 pb-8 relative z-50 min-h-screen overflow-y-auto bg-gradient-to-br from-black via-gray-900 to-red-950">
         {/* Header Section */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">

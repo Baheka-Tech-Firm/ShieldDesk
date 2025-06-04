@@ -8,7 +8,7 @@ import { createServer } from 'vite';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 
 console.log('Starting ShieldDesk with Vite development server...');
 
@@ -20,44 +20,44 @@ async function startServer() {
     stdio: 'inherit'
   });
 
-  // Create Vite server in middleware mode with dev config
-  const configFile = process.env.VITE_CONFIG || 'vite.config.dev.ts';
+  // Create Vite server in middleware mode
   const vite = await createServer({
-    configFile: path.join(__dirname, configFile),
     server: { 
       middlewareMode: true,
       host: '0.0.0.0',
-      allowedHosts: 'all'
+      allowedHosts: [
+        'localhost',
+        '127.0.0.1',
+        '130a9921-c16e-4e96-afd6-bab723873bee-00-es8cxb1r6vsx.janeway.replit.dev',
+        /\.janeway\.replit\.dev$/
+      ]
     },
     appType: 'spa',
     root: path.join(__dirname, 'client'),
     resolve: {
       alias: {
         '@': path.join(__dirname, 'client/src'),
-        '@shared': path.join(__dirname, 'shared'),
         '@assets': path.join(__dirname, 'attached_assets')
       }
-    },
-    clearScreen: false,
-    logLevel: 'info'
+    }
   });
 
-  // Basic middleware
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+  // Performance and security middleware
+  app.use(express.json({ limit: '10mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '10mb' }));
   
-  // Allow all hosts and set security headers
+  // Security headers
   app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-    res.header('X-Frame-Options', 'SAMEORIGIN');
-    res.header('X-Content-Type-Options', 'nosniff');
+    res.set({
+      'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'DENY',
+      'X-XSS-Protection': '1; mode=block',
+      'Referrer-Policy': 'strict-origin-when-cross-origin',
+      'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+      'Cache-Control': 'public, max-age=300, stale-while-revalidate=60'
+    });
     next();
   });
-
-  // Serve static files
-  app.use('/public', express.static(path.join(__dirname, 'public')));
 
   // Use Vite's connect instance as middleware for React development
   app.use(vite.middlewares);
@@ -81,16 +81,10 @@ async function startServer() {
     })(req, res, next);
   });
 
-  const server = app.listen(PORT, '0.0.0.0', () => {
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`ShieldDesk running on http://0.0.0.0:${PORT}`);
-    console.log(`Access via: http://localhost:${PORT}`);
-    console.log(`External access: https://130a9921-c16e-4e96-afd6-bab723873bee-00-es8cxb1r6vsx.janeway.replit.dev`);
-    console.log(`React development server active`);
-  });
-
-  // Handle server errors
-  server.on('error', (err) => {
-    console.error('Server error:', err);
+    console.log(`React development server with hot reload active`);
+    console.log('Vulnerability Scanner API endpoints available at /api/vulnerability/*');
   });
 
   // Handle cleanup

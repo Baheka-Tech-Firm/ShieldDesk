@@ -2,17 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background-color: #000000;
-  color: #ffffff;
-  font-family: system-ui, -apple-system, sans-serif;
-}
-
-#root {
-  min-height: 100vh;
-  background-color: #000000;
-}
-
 /* Professional Three.js and Glass Morphism Animations */
 @keyframes gradientShift {
   0% { background-position: 0% 50%; }

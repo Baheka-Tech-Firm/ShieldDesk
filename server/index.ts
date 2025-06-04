@@ -5,16 +5,12 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-console.log('Starting ShieldDesk force Vite server...');
+console.log('Starting ShieldDesk standalone server...');
 
-// Start the force Vite server
-const server = spawn('node', ['force-vite-server.js'], {
+// Start the standalone Express server
+const server = spawn('node', ['standalone-server.js'], {
   cwd: path.join(__dirname, '..'),
-  stdio: 'inherit',
-  env: {
-    ...process.env,
-    NODE_ENV: 'development'
-  }
+  stdio: 'inherit'
 });
 
 // Handle process cleanup

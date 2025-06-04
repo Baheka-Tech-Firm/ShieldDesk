@@ -8,8 +8,12 @@ import { AuthProvider, useAuth } from "@/hooks/use-auth";
 
 // Pages
 import Login from "@/pages/login";
-import Dashboard from "@/pages/enhanced-dashboard";
-import FileVault from "@/pages/enhanced-file-vault";
+import Dashboard from "@/pages/ultimate-dashboard";
+import Onboarding from "@/pages/onboarding";
+import FileVault from "@/pages/file-vault";
+import EnhancedFileVault from "@/pages/enhanced-file-vault-new";
+import FileDetails from "@/pages/file-details";
+import FolderDetails from "@/pages/folder-details";
 import { EnhancedVulnerabilityScanner } from "@/pages/enhanced-vulnerability-scanner";
 import ThreatIntelligence from "@/pages/threat-intelligence";
 import Compliance from "@/pages/compliance";
@@ -19,22 +23,22 @@ import IncidentResponse from "@/pages/incident-response";
 import AdminPanel from "@/pages/admin-panel";
 import SecurityMonitoring from "@/pages/security-monitoring";
 import NotFound from "@/pages/not-found";
-import Onboarding from "@/pages/onboarding";
-import FileDetails from "@/pages/file-details";
-import FolderDetails from "@/pages/folder-details";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-red-950">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-red-500"></div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
       </div>
     );
   }
 
-  // Always allow access for development
+  if (!user) {
+    return <Redirect to="/login" />;
+  }
+
   return <>{children}</>;
 }
 
@@ -54,12 +58,12 @@ function Router() {
       </Route>
       <Route path="/files">
         <ProtectedRoute>
-          <FileVault />
+          <EnhancedFileVault />
         </ProtectedRoute>
       </Route>
       <Route path="/enhanced-file-vault">
         <ProtectedRoute>
-          <FileVault />
+          <EnhancedFileVault />
         </ProtectedRoute>
       </Route>
       <Route path="/file-vault">
@@ -123,27 +127,23 @@ function Router() {
         </ProtectedRoute>
       </Route>
       <Route path="/">
-        <Redirect to="/enhanced-dashboard" />
+        <Redirect to="/dashboard" />
       </Route>
-      <Route>
-        <NotFound />
-      </Route>
+      <Route component={NotFound} />
     </Switch>
   );
 }
 
 function App() {
   return (
-    <div className="min-h-screen bg-black">
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Router />
-          </TooltipProvider>
-        </AuthProvider>
-      </QueryClientProvider>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
 

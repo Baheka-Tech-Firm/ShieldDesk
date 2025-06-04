@@ -32,7 +32,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
+    // If Firebase auth is not available, use mock data for development
     if (!auth) {
+      setFirebaseUser(null);
+      refreshUser();
       setLoading(false);
       return;
     }
@@ -41,25 +44,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setFirebaseUser(firebaseUser);
       
       if (firebaseUser) {
-        const userData = getCurrentUser() || {
-          id: 1,
-          firebaseUid: firebaseUser.uid,
-          email: firebaseUser.email || 'user@shielddesk.com',
-          name: firebaseUser.displayName || 'User',
-          role: 'admin',
-          companyId: 1
-        };
-        
-        const companyData = getCurrentCompany() || {
-          id: 1,
-          name: 'ShieldDesk Enterprise',
-          industry: 'Cybersecurity',
-          size: 'Enterprise',
-          country: 'United States'
-        };
-        
-        setUser(userData);
-        setCompany(companyData);
+        // Load user data from localStorage
+        refreshUser();
       } else {
         setUser(null);
         setCompany(null);
@@ -68,7 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    return unsubscribe;
   }, []);
 
   return (

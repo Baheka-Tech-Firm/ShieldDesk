@@ -1,9 +1,0 @@
-User-agent: *
-Allow: /
-
-# PWA specific
-Allow: /manifest.json
-Allow: /sw.js
-Allow: /icons/
-
-Sitemap: /sitemap.xml

@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAuthToken } from "@/lib/auth";
 import { Sidebar } from "@/components/layout/sidebar";
+import ThreeBackground from "@/components/ui/three-background";
+import GlassMorphismCard from "@/components/ui/glass-morphism-card";
 import { RiskScoreCard } from "@/components/dashboard/risk-score-card";
 import { RecentActivity } from "@/components/dashboard/recent-activity";
 import { PopiaChecklist } from "@/components/dashboard/popia-checklist";

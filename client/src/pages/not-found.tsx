@@ -1,21 +1,27 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { AlertCircle } from "lucide-react";
+import { Link } from "wouter";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, Shield } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50">
-      <Card className="w-full max-w-md mx-4">
-        <CardContent className="pt-6">
-          <div className="flex mb-4 gap-2">
-            <AlertCircle className="h-8 w-8 text-red-500" />
-            <h1 className="text-2xl font-bold text-gray-900">404 Page Not Found</h1>
-          </div>
-
-          <p className="mt-4 text-sm text-gray-600">
-            Did you forget to add the page to the router?
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-red-950 flex items-center justify-center">
+      <div className="text-center text-white max-w-md mx-auto px-6">
+        <div className="mb-8">
+          <Shield className="w-24 h-24 mx-auto text-red-500 mb-4" />
+          <h1 className="text-6xl font-bold text-red-500 mb-2">404</h1>
+          <h2 className="text-2xl font-bold mb-4">Page Not Found</h2>
+          <p className="text-gray-400 mb-8">
+            The security page you're looking for doesn't exist or has been moved.
           </p>
-        </CardContent>
-      </Card>
+        </div>
+        
+        <Link href="/enhanced-dashboard">
+          <Button className="bg-red-600 hover:bg-red-700 text-white">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Return to Dashboard
+          </Button>
+        </Link>
+      </div>
     </div>
   );
 }

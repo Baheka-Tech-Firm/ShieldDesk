@@ -19,6 +19,9 @@ import IncidentResponse from "@/pages/incident-response";
 import AdminPanel from "@/pages/admin-panel";
 import SecurityMonitoring from "@/pages/security-monitoring";
 import NotFound from "@/pages/not-found";
+import Onboarding from "@/pages/onboarding";
+import FileDetails from "@/pages/file-details";
+import FolderDetails from "@/pages/folder-details";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -51,12 +54,12 @@ function Router() {
       </Route>
       <Route path="/files">
         <ProtectedRoute>
-          <EnhancedFileVault />
+          <FileVault />
         </ProtectedRoute>
       </Route>
       <Route path="/enhanced-file-vault">
         <ProtectedRoute>
-          <EnhancedFileVault />
+          <FileVault />
         </ProtectedRoute>
       </Route>
       <Route path="/file-vault">
@@ -122,7 +125,9 @@ function Router() {
       <Route path="/">
         <Redirect to="/enhanced-dashboard" />
       </Route>
-      <Route component={NotFound} />
+      <Route>
+        <NotFound />
+      </Route>
     </Switch>
   );
 }

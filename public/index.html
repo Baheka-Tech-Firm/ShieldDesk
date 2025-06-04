@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShieldDesk - Advanced Cybersecurity Platform</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        border: "hsl(217.2 32.6% 17.5%)",
+                        input: "hsl(217.2 32.6% 17.5%)",
+                        ring: "hsl(224.3 76.3% 68%)",
+                        background: "hsl(222.2 84% 4.9%)",
+                        foreground: "hsl(210 40% 98%)",
+                        primary: {
+                            DEFAULT: "hsl(0 84% 60%)",
+                            foreground: "hsl(210 40% 98%)",
+                        },
+                        secondary: {
+                            DEFAULT: "hsl(217.2 32.6% 17.5%)",
+                            foreground: "hsl(210 40% 98%)",
+                        },
+                        destructive: {
+                            DEFAULT: "hsl(0 62.8% 30.6%)",
+                            foreground: "hsl(210 40% 98%)",
+                        },
+                        muted: {
+                            DEFAULT: "hsl(217.2 32.6% 17.5%)",
+                            foreground: "hsl(215 20.2% 65.1%)",
+                        },
+                        accent: {
+                            DEFAULT: "hsl(217.2 32.6% 17.5%)",
+                            foreground: "hsl(210 40% 98%)",
+                        },
+                        popover: {
+                            DEFAULT: "hsl(222.2 84% 4.9%)",
+                            foreground: "hsl(210 40% 98%)",
+                        },
+                        card: {
+                            DEFAULT: "hsl(222.2 84% 4.9%)",
+                            foreground: "hsl(210 40% 98%)",
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #000000 0%, #1a0000 50%, #000000 100%);
+            color: white;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        .glass-morphism {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .cyber-glow {
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+        }
+        .loading-spinner {
+            border: 3px solid rgba(239, 68, 68, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #ef4444;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-black text-white">
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        
+        function VulnerabilityScanner() {
+            const [stats, setStats] = useState(null);
+            const [assets, setAssets] = useState([]);
+            const [vulnerabilities, setVulnerabilities] = useState([]);
+            const [loading, setLoading] = useState(true);
+            const [error, setError] = useState(null);
+            
+            useEffect(() => {
+                fetchData();
+            }, []);
+            
+            const fetchData = async () => {
+                try {
+                    setLoading(true);
+                    
+                    // Fetch vulnerability statistics
+                    const statsResponse = await fetch('/api/vulnerabilities/stats');
+                    if (statsResponse.ok) {
+                        const statsData = await statsResponse.json();
+                        setStats(statsData);
+                    }
+                    
+                    // Fetch assets
+                    const assetsResponse = await fetch('/api/vulnerabilities/assets');
+                    if (assetsResponse.ok) {
+                        const assetsData = await assetsResponse.json();
+                        setAssets(assetsData);
+                    }
+                    
+                    // Fetch vulnerabilities
+                    const vulnResponse = await fetch('/api/vulnerabilities');
+                    if (vulnResponse.ok) {
+                        const vulnData = await vulnResponse.json();
+                        setVulnerabilities(vulnData);
+                    }
+                    
+                } catch (err) {
+                    console.error('Error fetching data:', err);
+                    setError('Failed to load vulnerability data');
+                } finally {
+                    setLoading(false);
+                }
+            };
+            
+            const getSeverityColor = (severity) => {
+                switch (severity) {
+                    case 'critical': return 'text-red-500';
+                    case 'high': return 'text-orange-500';
+                    case 'medium': return 'text-yellow-500';
+                    case 'low': return 'text-green-500';
+                    default: return 'text-gray-500';
+                }
+            };
+            
+            const getStatusColor = (status) => {
+                switch (status) {
+                    case 'open': return 'text-red-500';
+                    case 'in_progress': return 'text-yellow-500';
+                    case 'resolved': return 'text-green-500';
+                    default: return 'text-gray-500';
+                }
+            };
+            
+            if (loading) {
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center">
+                        <div className="text-center">
+                            <div className="loading-spinner mx-auto mb-4"></div>
+                            <p className="text-gray-300">Loading vulnerability data...</p>
+                        </div>
+                    </div>
+                );
+            }
+            
+            if (error) {
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black flex items-center justify-center">
+                        <div className="glass-morphism p-8 rounded-lg text-center">
+                            <h2 className="text-2xl font-bold text-red-500 mb-4">Error</h2>
+                            <p className="text-gray-300 mb-4">{error}</p>
+                            <button 
+                                onClick={fetchData}
+                                className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-colors"
+                            >
+                                Retry
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+            
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-6">
+                    <div className="max-w-7xl mx-auto">
+                        <header className="mb-8">
+                            <h1 className="text-4xl font-bold text-red-500 mb-2">Enhanced Vulnerability Scanner</h1>
+                            <p className="text-gray-300">Comprehensive security assessment and vulnerability management</p>
+                        </header>
+                        
+                        {/* Statistics Dashboard */}
+                        {stats && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                                <div className="glass-morphism p-6 rounded-lg cyber-glow">
+                                    <h3 className="text-lg font-semibold text-red-500 mb-2">Critical</h3>
+                                    <p className="text-3xl font-bold">{stats.critical}</p>
+                                </div>
+                                <div className="glass-morphism p-6 rounded-lg">
+                                    <h3 className="text-lg font-semibold text-orange-500 mb-2">High</h3>
+                                    <p className="text-3xl font-bold">{stats.high}</p>
+                                </div>
+                                <div className="glass-morphism p-6 rounded-lg">
+                                    <h3 className="text-lg font-semibold text-yellow-500 mb-2">Medium</h3>
+                                    <p className="text-3xl font-bold">{stats.medium}</p>
+                                </div>
+                                <div className="glass-morphism p-6 rounded-lg">
+                                    <h3 className="text-lg font-semibold text-green-500 mb-2">Low</h3>
+                                    <p className="text-3xl font-bold">{stats.low}</p>
+                                </div>
+                            </div>
+                        )}
+                        
+                        {/* Assets and Vulnerabilities Grid */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                            {/* Assets Section */}
+                            <div className="glass-morphism p-6 rounded-lg">
+                                <h2 className="text-2xl font-bold text-red-500 mb-4">Assets</h2>
+                                <div className="space-y-4">
+                                    {assets.length > 0 ? assets.map(asset => (
+                                        <div key={asset.id} className="bg-gray-800 p-4 rounded-lg border border-gray-700">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <h3 className="font-semibold text-white">{asset.name}</h3>
+                                                <span className={`px-2 py-1 rounded text-xs ${asset.status === 'active' ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}`}>
+                                                    {asset.status}
+                                                </span>
+                                            </div>
+                                            <p className="text-gray-400 text-sm mb-2">{asset.target}</p>
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-gray-300">Vulnerabilities: {asset.vulnerabilityCount}</span>
+                                                <span className="text-gray-300">Risk Score: {asset.riskScore}/10</span>
+                                            </div>
+                                        </div>
+                                    )) : (
+                                        <p className="text-gray-400">No assets configured. Add assets to begin scanning.</p>
+                                    )}
+                                </div>
+                            </div>
+                            
+                            {/* Vulnerabilities Section */}
+                            <div className="glass-morphism p-6 rounded-lg">
+                                <h2 className="text-2xl font-bold text-red-500 mb-4">Recent Vulnerabilities</h2>
+                                <div className="space-y-4">
+                                    {vulnerabilities.length > 0 ? vulnerabilities.slice(0, 5).map(vuln => (
+                                        <div key={vuln.id} className="bg-gray-800 p-4 rounded-lg border border-gray-700">
+                                            <div className="flex justify-between items-start mb-2">
+                                                <h3 className="font-semibold text-white">{vuln.title}</h3>
+                                                <span className={`px-2 py-1 rounded text-xs ${getSeverityColor(vuln.severity)} bg-gray-900`}>
+                                                    {vuln.severity.toUpperCase()}
+                                                </span>
+                                            </div>
+                                            <p className="text-gray-400 text-sm mb-2">{vuln.assetName}</p>
+                                            <div className="flex justify-between text-sm">
+                                                <span className="text-gray-300">CVSS: {vuln.cvssScore}</span>
+                                                <span className={`${getStatusColor(vuln.status)}`}>{vuln.status.replace('_', ' ')}</span>
+                                            </div>
+                                        </div>
+                                    )) : (
+                                        <p className="text-gray-400">No vulnerabilities detected. Run a scan to identify security issues.</p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {/* Action Buttons */}
+                        <div className="flex gap-4">
+                            <button 
+                                onClick={() => alert('Scan functionality will be implemented with backend integration')}
+                                className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+                            >
+                                Start New Scan
+                            </button>
+                            <button 
+                                onClick={() => alert('Report generation will be implemented with backend integration')}
+                                className="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+                            >
+                                Generate Report
+                            </button>
+                            <button 
+                                onClick={() => alert('Export functionality will be implemented with backend integration')}
+                                className="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+                            >
+                                Export Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        
+        function App() {
+            return React.createElement(VulnerabilityScanner);
+        }
+        
+        ReactDOM.render(React.createElement(App), document.getElementById('root'));
+    </script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</body>
+</html>

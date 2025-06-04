@@ -25,12 +25,12 @@ app.use('/api', createProxyMiddleware({
   }
 }));
 
-// Serve static files from client source during development
-app.use(express.static(path.join(__dirname, 'client')));
+// Serve static files from public directory
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Handle client-side routing
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(PORT, '0.0.0.0', () => {

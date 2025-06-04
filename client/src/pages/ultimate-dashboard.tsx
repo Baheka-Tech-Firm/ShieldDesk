@@ -430,9 +430,9 @@ export default function UltimateDashboard() {
       
       <Sidebar />
       
-      <main className="ml-64 p-8 relative z-10">
+      <main className="ml-64 pt-12 px-8 pb-8 relative z-10">
         {/* Enhanced Header with Live Status */}
-        <div className="mb-8">
+        <div className="mb-12">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-3">
@@ -501,7 +501,7 @@ export default function UltimateDashboard() {
           </div>
 
           {/* Real-time Security Metrics Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-4 mb-12">
             {securityMetrics.map((metric) => {
               const Icon = metric.icon;
               const change = metric.value - metric.previousValue;

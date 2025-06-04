@@ -579,12 +579,11 @@ export default function EnhancedFileVault() {
   return (
     <div className="min-h-screen bg-black relative">
       <ThreeBackground variant="vault" intensity={0.8} />
-      <div className="flex relative z-10">
-        <Sidebar />
-        <main 
-          ref={vaultRef}
-          className="ml-64 pt-12 pl-6 pr-8 pb-8 relative z-10 min-h-screen overflow-y-auto"
-        >
+      <Sidebar />
+      <main 
+        ref={vaultRef}
+        className="ml-64 pt-12 pl-6 pr-8 pb-8 relative z-10 min-h-screen overflow-y-auto"
+      >
           {/* Enhanced Header */}
           <GlassMorphismCard 
             variant="cyber" 

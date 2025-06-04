@@ -6,9 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AnimatedBackground } from "@/components/ui/animated-background";
-import { GlassCard } from "@/components/ui/glass-card";
-import { CyberHUD } from "@/components/ui/cyber-hud";
+import ThreeBackground from "@/components/ui/three-background";
+import GlassMorphismCard from "@/components/ui/glass-morphism-card";
 import { 
   Table, 
   TableBody, 

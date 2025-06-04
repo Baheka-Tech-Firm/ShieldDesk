@@ -34,38 +34,17 @@ async function startServer() {
         '@shared': path.join(__dirname, 'shared'),
         '@assets': path.join(__dirname, 'attached_assets')
       }
-    }
+    },
+    clearScreen: false,
+    logLevel: 'info'
   });
 
-  // Performance and security middleware
-  app.use(express.json({ limit: '10mb' }));
-  app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-  
-  // Security headers
-  app.use((req, res, next) => {
-    res.set({
-      'X-Content-Type-Options': 'nosniff',
-      'X-Frame-Options': 'DENY',
-      'X-XSS-Protection': '1; mode=block',
-      'Referrer-Policy': 'strict-origin-when-cross-origin',
-      'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
-      'Cache-Control': 'public, max-age=300, stale-while-revalidate=60'
-    });
-    next();
-  });
+  // Basic middleware
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
 
-  // Serve PWA manifest and service worker
-  app.get('/manifest.json', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'manifest.json'));
-  });
-
-  app.get('/sw.js', (req, res) => {
-    res.setHeader('Content-Type', 'application/javascript');
-    res.sendFile(path.join(__dirname, 'public', 'sw.js'));
-  });
-
-  // Serve PWA icons
-  app.use('/icons', express.static(path.join(__dirname, 'public', 'icons')));
+  // Serve static files
+  app.use('/public', express.static(path.join(__dirname, 'public')));
 
   // Use Vite's connect instance as middleware for React development
   app.use(vite.middlewares);

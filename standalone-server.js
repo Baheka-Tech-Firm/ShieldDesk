@@ -25,12 +25,10 @@ async function startServer() {
     server: { 
       middlewareMode: true,
       host: '0.0.0.0',
-      allowedHosts: [
-        'localhost',
-        '127.0.0.1',
-        '130a9921-c16e-4e96-afd6-bab723873bee-00-es8cxb1r6vsx.janeway.replit.dev',
-        /\.janeway\.replit\.dev$/
-      ]
+      hmr: {
+        port: 24678,
+        host: '0.0.0.0'
+      }
     },
     appType: 'spa',
     root: path.join(__dirname, 'client'),
@@ -39,6 +37,9 @@ async function startServer() {
         '@': path.join(__dirname, 'client/src'),
         '@assets': path.join(__dirname, 'attached_assets')
       }
+    },
+    optimizeDeps: {
+      include: ['react', 'react-dom']
     }
   });
 
@@ -94,10 +95,16 @@ async function startServer() {
     })(req, res, next);
   });
 
-  app.listen(PORT, '0.0.0.0', () => {
+  const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`ShieldDesk running on http://0.0.0.0:${PORT}`);
+    console.log(`External URL: https://130a9921-c16e-4e96-afd6-bab723873bee-00-es8cxb1r6vsx.janeway.replit.dev`);
     console.log(`React development server with hot reload active`);
     console.log('Vulnerability Scanner API endpoints available at /api/vulnerability/*');
+  });
+
+  // Handle server errors
+  server.on('error', (err) => {
+    console.error('Server error:', err);
   });
 
   // Handle cleanup

@@ -117,31 +117,33 @@ export function Sidebar() {
             </div>
           </div>
 
-          {/* Navigation Menu */}
-          <nav className="flex-1 p-6 space-y-3">
-            {filteredNavigation.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link key={item.name} href={item.href}>
-                  <div className={`flex items-center space-x-4 px-4 py-3 rounded-xl font-medium transition-all duration-300 cursor-pointer group ${
-                    isActive(item.href) 
-                      ? "bg-red-600 text-white shadow-lg shadow-red-600/25 scale-[1.02]" 
-                      : "text-gray-300 hover:bg-gray-800/70 hover:text-white hover:scale-[1.01]"
-                  }`}>
-                    <Icon className={`w-6 h-6 transition-transform duration-300 ${
-                      isActive(item.href) ? "" : "group-hover:scale-110"
-                    }`} />
-                    <span className="text-sm font-medium">{item.name}</span>
-                  </div>
-                </Link>
-              );
-            })}
-          </nav>
+          {/* Navigation Menu - Scrollable */}
+          <div className="flex-1 overflow-y-auto overflow-x-hidden">
+            <nav className="p-6 space-y-3">
+              {filteredNavigation.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link key={item.name} href={item.href}>
+                    <div className={`flex items-center space-x-4 px-4 py-3 rounded-xl font-medium transition-all duration-300 cursor-pointer group ${
+                      isActive(item.href) 
+                        ? "bg-red-600 text-white shadow-lg shadow-red-600/25 scale-[1.02]" 
+                        : "text-gray-300 hover:bg-gray-800/70 hover:text-white hover:scale-[1.01]"
+                    }`}>
+                      <Icon className={`w-6 h-6 flex-shrink-0 transition-transform duration-300 ${
+                        isActive(item.href) ? "" : "group-hover:scale-110"
+                      }`} />
+                      <span className="text-sm font-medium truncate">{item.name}</span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
 
-          {/* User Profile */}
-          <div className="p-6 border-t border-gray-700/50">
+          {/* User Profile - Fixed at bottom */}
+          <div className="p-6 border-t border-gray-700/50 flex-shrink-0">
             <div className="flex items-center space-x-4 p-4 bg-gray-800/50 rounded-xl">
-              <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center shadow-lg">
+              <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
                 <span className="text-white text-sm font-bold">
                   {user.name?.charAt(0) || 'U'}
                 </span>
@@ -154,7 +156,7 @@ export function Sidebar() {
                 variant="ghost" 
                 size="sm"
                 onClick={logout}
-                className="text-gray-400 hover:text-white hover:bg-gray-700/50 rounded-lg p-2"
+                className="text-gray-400 hover:text-white hover:bg-gray-700/50 rounded-lg p-2 flex-shrink-0"
               >
                 <LogOut className="w-4 h-4" />
               </Button>

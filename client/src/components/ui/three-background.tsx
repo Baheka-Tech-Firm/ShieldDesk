@@ -69,10 +69,16 @@ export function ThreeBackground({
         new THREE.Color(0xff3333),
         new THREE.Color(0x333333),
         new THREE.Color(0x000000)
+      ],
+      cyber: [
+        new THREE.Color(0xff0000),
+        new THREE.Color(0xbb0000),
+        new THREE.Color(0x444444),
+        new THREE.Color(0x111111)
       ]
     };
 
-    const currentColors = colorSchemes[variant];
+    const currentColors = colorSchemes[variant] || colorSchemes.default;
 
     for (let i = 0; i < particleCount; i++) {
       // Positions

@@ -128,16 +128,16 @@ export default function SecurityMonitoring() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-red-950">
-      <AnimatedBackground />
-      <div className="flex">
+    <div className="min-h-screen bg-black relative">
+      <ThreeBackground variant="monitoring" intensity={0.8} />
+      <div className="flex relative z-10">
         <Sidebar />
-        <main className="flex-1 min-h-screen overflow-y-auto bg-gradient-to-br from-black via-gray-900 to-red-950">
-        <GlassCard 
-          variant="danger" 
-          className="m-6 mb-0 glass-effect cyber-border"
-          glowIntensity="medium"
-          animated
+        <main className="flex-1 min-h-screen overflow-y-auto">
+        <GlassMorphismCard 
+          variant="cyber" 
+          className="m-6 mb-0 animate-fade-in"
+          animated={true}
+          borderGlow={true}
         >
           <div className="px-8 py-6">
             <div className="flex items-center justify-between">
@@ -166,7 +166,7 @@ export default function SecurityMonitoring() {
               </div>
             </div>
           </div>
-        </GlassCard>
+        </GlassMorphismCard>
 
         <div className="p-6">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">

@@ -132,10 +132,10 @@ export default function SecurityMonitoring() {
       <ThreeBackground variant="monitoring" intensity={0.8} />
       <div className="flex relative z-10">
         <Sidebar />
-        <main className="flex-1 min-h-screen overflow-y-auto">
+        <main className="flex-1 ml-64 pt-12 pl-6 pr-8 pb-8 min-h-screen overflow-y-auto">
         <GlassMorphismCard 
           variant="cyber" 
-          className="m-6 mb-0 animate-fade-in"
+          className="mb-6 animate-fade-in"
           animated={true}
           borderGlow={true}
         >
@@ -168,7 +168,7 @@ export default function SecurityMonitoring() {
           </div>
         </GlassMorphismCard>
 
-        <div className="p-6">
+        <div className="space-y-6">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="dashboard">Security Dashboard</TabsTrigger>

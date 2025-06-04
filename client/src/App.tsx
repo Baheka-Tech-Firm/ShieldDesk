@@ -83,7 +83,7 @@ function Router() {
       </Route>
       <Route path="/vulnerability-scanner">
         <ProtectedRoute>
-          <VulnerabilityScanner />
+          <EnhancedVulnerabilityScanner />
         </ProtectedRoute>
       </Route>
       <Route path="/enhanced-vulnerability-scanner">

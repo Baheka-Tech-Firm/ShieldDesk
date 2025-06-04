@@ -583,12 +583,12 @@ export default function EnhancedFileVault() {
         <Sidebar />
         <main 
           ref={vaultRef}
-          className="flex-1 min-h-screen overflow-y-auto"
+          className="ml-64 pt-12 pl-6 pr-8 pb-8 relative z-10 min-h-screen overflow-y-auto"
         >
           {/* Enhanced Header */}
           <GlassMorphismCard 
             variant="cyber" 
-            className="m-6 mb-0 animate-slide-up"
+            className="mb-6 animate-slide-up"
             animated={true}
             borderGlow={true}
           >

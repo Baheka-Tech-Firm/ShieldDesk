@@ -24,7 +24,8 @@ async function startServer() {
   const vite = await createServer({
     server: { 
       middlewareMode: true,
-      host: '0.0.0.0'
+      host: '0.0.0.0',
+      allowedHosts: 'all'
     },
     appType: 'spa',
     root: path.join(__dirname, 'client'),

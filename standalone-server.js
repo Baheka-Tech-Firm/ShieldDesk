@@ -42,8 +42,22 @@ async function startServer() {
     }
   });
 
-  // Middleware
-  app.use(express.json());
+  // Performance and security middleware
+  app.use(express.json({ limit: '10mb' }));
+  app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+  
+  // Security headers
+  app.use((req, res, next) => {
+    res.set({
+      'X-Content-Type-Options': 'nosniff',
+      'X-Frame-Options': 'DENY',
+      'X-XSS-Protection': '1; mode=block',
+      'Referrer-Policy': 'strict-origin-when-cross-origin',
+      'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+      'Cache-Control': 'public, max-age=300, stale-while-revalidate=60'
+    });
+    next();
+  });
 
   // Use Vite's connect instance as middleware for React development
   app.use(vite.middlewares);

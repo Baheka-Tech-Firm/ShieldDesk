@@ -368,9 +368,10 @@ export default function Compliance() {
                   ))}
                 </div>
               </TabsContent>
-            </Tabs>
-          </GlassCard>
-        </main>
+          </Tabs>
+        </GlassCard>
+        </div>
+      </main>
     </div>
   );
 }

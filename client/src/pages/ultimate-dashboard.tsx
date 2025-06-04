@@ -429,8 +429,7 @@ export default function UltimateDashboard() {
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-30"></div>
       
       <Sidebar />
-      
-      <main className="ml-64 pt-12 pl-6 pr-8 pb-8 relative z-10">
+      <main className="ml-64 pt-12 pl-6 pr-8 pb-8 relative z-50 min-h-screen overflow-y-auto">
         {/* Enhanced Header with Live Status */}
         <div className="mb-12">
           <div className="flex items-center justify-between mb-6">

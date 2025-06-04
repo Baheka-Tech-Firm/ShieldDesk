@@ -8,7 +8,7 @@ import { createServer } from 'vite';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 console.log('Starting ShieldDesk with Vite development server...');
 
@@ -24,22 +24,16 @@ async function startServer() {
   const vite = await createServer({
     server: { 
       middlewareMode: true,
-      host: '0.0.0.0',
-      hmr: {
-        port: 24678,
-        host: '0.0.0.0'
-      }
+      host: '0.0.0.0'
     },
     appType: 'spa',
     root: path.join(__dirname, 'client'),
     resolve: {
       alias: {
         '@': path.join(__dirname, 'client/src'),
+        '@shared': path.join(__dirname, 'shared'),
         '@assets': path.join(__dirname, 'attached_assets')
       }
-    },
-    optimizeDeps: {
-      include: ['react', 'react-dom']
     }
   });
 
@@ -97,9 +91,8 @@ async function startServer() {
 
   const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`ShieldDesk running on http://0.0.0.0:${PORT}`);
-    console.log(`External URL: https://130a9921-c16e-4e96-afd6-bab723873bee-00-es8cxb1r6vsx.janeway.replit.dev`);
-    console.log(`React development server with hot reload active`);
-    console.log('Vulnerability Scanner API endpoints available at /api/vulnerability/*');
+    console.log(`Access via: http://localhost:${PORT}`);
+    console.log(`React development server active`);
   });
 
   // Handle server errors

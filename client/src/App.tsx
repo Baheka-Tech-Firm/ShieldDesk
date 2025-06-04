@@ -8,12 +8,8 @@ import { AuthProvider, useAuth } from "@/hooks/use-auth";
 
 // Pages
 import Login from "@/pages/login";
-import Dashboard from "@/pages/ultimate-dashboard";
-import Onboarding from "@/pages/onboarding";
-import FileVault from "@/pages/file-vault";
-import EnhancedFileVault from "@/pages/enhanced-file-vault-new";
-import FileDetails from "@/pages/file-details";
-import FolderDetails from "@/pages/folder-details";
+import Dashboard from "@/pages/enhanced-dashboard";
+import FileVault from "@/pages/enhanced-file-vault";
 import { EnhancedVulnerabilityScanner } from "@/pages/enhanced-vulnerability-scanner";
 import ThreatIntelligence from "@/pages/threat-intelligence";
 import Compliance from "@/pages/compliance";

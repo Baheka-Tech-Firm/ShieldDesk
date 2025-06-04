@@ -135,7 +135,6 @@ export default function EnhancedFileVault() {
   const [currentFolder, setCurrentFolder] = useState<number | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<number[]>([]);
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
-  const [searchQuery, setSearchQuery] = useState("");
   const [filterBy, setFilterBy] = useState<"all" | "documents" | "images" | "recent" | "shared">("all");
   const [sortBy, setSortBy] = useState<"name" | "date" | "size" | "type">("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
@@ -158,21 +157,29 @@ export default function EnhancedFileVault() {
   const [newFolderColor, setNewFolderColor] = useState("#374151");
   const [folderComplianceType, setFolderComplianceType] = useState<string>("general");
 
-  // Fetch data
+  // Fetch data with optimized caching
   const { data: vaultStats, isLoading: statsLoading } = useQuery({
     queryKey: ['/api/vault/stats'],
+    staleTime: 2 * 60 * 1000, // 2 minutes
+    gcTime: 5 * 60 * 1000, // 5 minutes
   });
 
   const { data: folders, isLoading: foldersLoading } = useQuery({
     queryKey: ['/api/vault/folders', currentFolder],
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   });
 
-  const { data: files, isLoading: filesLoading } = useQuery({
-    queryKey: ['/api/vault/files', currentFolder, searchQuery, filterBy],
+  const { data: files = [], isLoading: filesLoading } = useQuery({
+    queryKey: ['/api/vault/files', currentFolder],
+    staleTime: 1 * 60 * 1000, // 1 minute
+    gcTime: 3 * 60 * 1000, // 3 minutes
   });
 
   const { data: vaultSettings } = useQuery({
     queryKey: ['/api/vault/settings'],
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
   });
 
   // Mock data for development
@@ -350,45 +357,62 @@ export default function EnhancedFileVault() {
     return <Badge variant="outline" className="border-green-500/50 text-green-400"><CheckCircle className="w-3 h-3 mr-1" />Clean</Badge>;
   };
 
-  // Filter and sort files
-  const filteredFiles = (currentFiles || []).filter(file => {
-    if (searchQuery && !file.name.toLowerCase().includes(searchQuery.toLowerCase()) && 
-        !file.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))) {
-      return false;
+  // Optimized search with debouncing
+  const { searchQuery, setSearchQuery, filteredItems: searchFilteredFiles } = useDebouncedSearch(
+    currentFiles,
+    ['name', 'tags', 'description'],
+    300
+  );
+
+  // Memoized filtering and sorting
+  const filteredFiles = useMemo(() => {
+    performanceMonitor.mark('file-filter-start');
+    
+    let filtered = searchFilteredFiles;
+
+    // Apply additional filters
+    if (filterBy !== "all") {
+      filtered = filtered.filter(file => {
+        switch (filterBy) {
+          case "documents":
+            return ["pdf", "doc", "docx", "xls", "xlsx", "txt"].includes(file.type);
+          case "images":
+            return ["jpg", "jpeg", "png", "gif", "svg"].includes(file.type);
+          case "recent":
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            return new Date(file.uploadedAt) > weekAgo;
+          case "shared":
+            return file.isShared;
+          default:
+            return true;
+        }
+      });
     }
 
-    switch (filterBy) {
-      case "documents":
-        return ["pdf", "doc", "docx", "xls", "xlsx", "txt"].includes(file.type);
-      case "images":
-        return ["jpg", "jpeg", "png", "gif", "svg"].includes(file.type);
-      case "recent":
-        const weekAgo = new Date();
-        weekAgo.setDate(weekAgo.getDate() - 7);
-        return new Date(file.uploadedAt) > weekAgo;
-      case "shared":
-        return file.isShared;
-      default:
-        return true;
-    }
-  }).sort((a, b) => {
-    let comparison = 0;
-    switch (sortBy) {
-      case "name":
-        comparison = a.name.localeCompare(b.name);
-        break;
-      case "date":
-        comparison = new Date(a.uploadedAt).getTime() - new Date(b.uploadedAt).getTime();
-        break;
-      case "size":
-        comparison = a.size - b.size;
-        break;
-      case "type":
-        comparison = a.type.localeCompare(b.type);
-        break;
-    }
-    return sortOrder === "asc" ? comparison : -comparison;
-  });
+    // Sort files
+    const sorted = filtered.sort((a, b) => {
+      let comparison = 0;
+      switch (sortBy) {
+        case "name":
+          comparison = a.name.localeCompare(b.name);
+          break;
+        case "date":
+          comparison = new Date(a.uploadedAt).getTime() - new Date(b.uploadedAt).getTime();
+          break;
+        case "size":
+          comparison = a.size - b.size;
+          break;
+        case "type":
+          comparison = a.type.localeCompare(b.type);
+          break;
+      }
+      return sortOrder === "asc" ? comparison : -comparison;
+    });
+
+    performanceMonitor.measure('file-filter-duration', 'file-filter-start');
+    return sorted;
+  }, [searchFilteredFiles, filterBy, sortBy, sortOrder]);
 
   // File operations
   const handleFileUpload = async (files: FileList | File[]) => {
